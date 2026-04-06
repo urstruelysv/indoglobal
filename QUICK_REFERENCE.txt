@@ -1,0 +1,134 @@
+================================================================================
+                    INDO GLOBAL SCHOOL - QUICK REFERENCE
+================================================================================
+
+SCHOOL DETAILS
+--------------
+Name:        Indo Global School
+Location:    Shadnagar, Telangana 509216
+Motto:       Learn • Lead • Shine
+Tagline:     Where Every Child Shines
+Chairman:    Chinnabathini Sagar
+
+CONTACT INFORMATION
+-------------------
+Phone 1:     +91 21 68 98 98
+Phone 2:     +91 21 98 38 38
+Office Hrs:  Mon-Fri: 8:30 AM - 4:30 PM
+             Saturday: 10:00 AM - 1:00 PM
+
+KEY FEATURES
+------------
+✓ CBSE Curriculum
+✓ Free Transport Facility
+✓ Smart Classrooms
+✓ Safe Nurturing Campus
+✓ Certified Expert Faculty
+✓ Experiential Learning Focus
+✓ Indian Values Emphasis
+
+COLOR SCHEME (Playful Theme)
+----------------------------
+Primary:     Teal Green (#2B7F6B)    - Trust & Growth
+Secondary:   Vibrant Orange (#FF8C42) - Energy & Fun
+Accent:      Warm Gold (#FFB84D)     - Achievement
+Text:        Blue-Grey (#1D3D56)     - Clarity
+
+WEBSITE SECTIONS
+----------------
+1. Header          - Logo, Navigation, Apply Now
+2. Hero            - Tagline, Feature Cards, Admission Form
+3. About           - Philosophy, Values, Facilities
+4. Gallery         - 8 School Activity Cards with Emojis
+5. Location        - Map, Contact Info, Chairman Quote
+6. Contact         - Inquiry Form, Phone Numbers
+7. Footer          - Branding, Links, Contact Details
+
+KEY INFORMATION LOCATIONS
+-------------------------
+Phone Numbers appear in:
+  • Location Section (2 cards)
+  • Contact Section (header)
+  • Footer (contact info)
+
+Location appears in:
+  • Hero tagline
+  • About section
+  • Gallery intro
+  • Location section
+  • Footer
+
+Motto appears in:
+  • Header (subtitle)
+  • Hero section
+  • About section
+  • Footer
+
+Chairman Quote:
+  • Location section (builds trust)
+
+FUNCTIONAL FEATURES
+-------------------
+✓ Admission form with validation
+✓ Contact form with validation
+✓ Admin dashboard at /admin
+✓ CSV export capability
+✓ Data persistence
+✓ Mobile responsive
+✓ Fast & optimized
+
+ADMIN ACCESS
+------------
+URL:  /admin
+View: All form submissions
+Do:   Export to CSV, Delete entries
+
+CUSTOMIZATION FILES
+-------------------
+Phone Numbers:
+  • LocationSection.tsx (lines 45-52)
+  • ContactSection.tsx (lines 57-59)
+  • Footer.tsx (lines 81-82)
+
+Address:
+  • LocationSection.tsx (lines 39-43)
+  • Footer.tsx (lines 87-88)
+
+Colors:
+  • app/globals.css (:root section)
+
+Logo Image:
+  • Header.tsx (line 18)
+  • Footer.tsx (line 19)
+
+Features/Gallery:
+  • HeroSection.tsx (lines 75-92)
+  • GallerySection.tsx (lines 11-18)
+
+DEPLOYMENT
+----------
+Option 1: Click "Publish" in v0 (easiest)
+Option 2: Deploy to Vercel via GitHub
+Option 3: Host anywhere with Node.js
+
+DOCUMENTATION FILES
+-------------------
+• SCHOOL_INFO.md      - Complete school information
+• CHANGES_MADE.md     - What was transformed
+• DEPLOYMENT_GUIDE.md - Detailed deployment steps
+• README.md           - Original setup instructions
+
+QUICK TIPS
+----------
+1. Visit /admin to manage form submissions
+2. Update phone numbers in 3 places (not 1!)
+3. Logo URL in 2 places (header & footer)
+4. Colors in globals.css are easy to change
+5. All forms work offline (JSON storage)
+6. Mobile tested and ready to go
+
+================================================================================
+Last Updated: April 6, 2026
+Built with: Next.js, React, Tailwind CSS, shadcn/ui
+Status: Ready for Production ✨
+================================================================================
