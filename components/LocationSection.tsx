@@ -111,8 +111,7 @@ export default function LocationSection() {
                 </div>
                 <div className="flex-1">
                   <h4 className="font-serif font-semibold text-primary mb-1">Office Hours</h4>
-                  <p className="text-foreground">Mon - Fri: 8:30 AM - 4:30 PM</p>
-                  <p className="text-foreground">Sat: 10:00 AM - 1:00 PM</p>
+                  <p className="text-foreground">Mon - Sat: 8:30 AM - 5:00 PM</p>
                 </div>
               </div>
             </div>

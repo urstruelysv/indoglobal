@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { Mail } from 'lucide-react';
+import { Mail, ArrowRight, Loader2 } from 'lucide-react';
 
 export default function ContactSection() {
   const [formData, setFormData] = useState({
@@ -62,99 +62,113 @@ export default function ContactSection() {
           </p>
         </div>
 
-        {/* Contact Form */}
-        <div className="max-w-2xl mx-auto bg-white rounded-2xl shadow-xl p-8 md:p-12 border border-border/20">
-          {submitted ? (
-            <div className="py-12 text-center space-y-4">
-              <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto">
-                <Mail className="w-8 h-8 text-primary" />
-              </div>
-              <p className="text-2xl font-serif font-bold text-primary">Message Sent!</p>
-              <p className="text-muted-foreground max-w-md mx-auto">
-                Thank you for contacting us. Our team will review your message and get back to you soon.
-              </p>
-            </div>
-          ) : (
-            <form onSubmit={handleSubmit} className="space-y-6">
-              {/* Name */}
-              <div>
-                <label className="block text-sm font-medium text-foreground mb-2">Full Name</label>
-                <Input
-                  type="text"
-                  name="name"
-                  value={formData.name}
-                  onChange={handleInputChange}
-                  placeholder="John Doe"
-                  required
-                  className="bg-background border-border"
-                />
-              </div>
+        {/* Contact Form - Redesigned to match HeroSection */}
+        <div className="max-w-2xl mx-auto">
+          <div className="bg-white rounded-2xl shadow-2xl p-8 md:p-12 border border-border/20">
+            <h2 className="text-2xl font-serif font-bold text-primary mb-2">Send an Inquiry</h2>
+            <p className="text-muted-foreground mb-8">We usually respond within 24 hours.</p>
 
-              {/* Email */}
-              <div>
-                <label className="block text-sm font-medium text-foreground mb-2">Email Address</label>
-                <Input
-                  type="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleInputChange}
-                  placeholder="your@email.com"
-                  required
-                  className="bg-background border-border"
-                />
+            {submitted ? (
+              <div className="py-12 text-center space-y-4 animate-in fade-in zoom-in duration-500">
+                <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Mail className="w-10 h-10 text-primary" />
+                </div>
+                <p className="text-2xl font-serif font-bold text-primary">Message Sent!</p>
+                <p className="text-muted-foreground max-w-md mx-auto text-lg">
+                  Thank you for contacting us. Our team will review your message and get back to you soon.
+                </p>
               </div>
+            ) : (
+              <form onSubmit={handleSubmit} className="space-y-5">
+                <div>
+                  <label className="block text-sm font-medium text-foreground mb-2">Full Name</label>
+                  <Input
+                    type="text"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleInputChange}
+                    placeholder="Enter your full name"
+                    required
+                    className="bg-background border-border"
+                  />
+                </div>
 
-              {/* Phone */}
-              <div>
-                <label className="block text-sm font-medium text-foreground mb-2">Phone Number</label>
-                <Input
-                  type="tel"
-                  name="phone"
-                  value={formData.phone}
-                  onChange={handleInputChange}
-                  placeholder="+1 (555) 000-0000"
-                  className="bg-background border-border"
-                />
-              </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                  <div>
+                    <label className="block text-sm font-medium text-foreground mb-2">Email Address</label>
+                    <Input
+                      type="email"
+                      name="email"
+                      value={formData.email}
+                      onChange={handleInputChange}
+                      placeholder="your@email.com"
+                      required
+                      className="bg-background border-border"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-foreground mb-2">Phone Number</label>
+                    <Input
+                      type="tel"
+                      name="phone"
+                      value={formData.phone}
+                      onChange={handleInputChange}
+                      placeholder="+91 9876543210"
+                      className="bg-background border-border"
+                    />
+                  </div>
+                </div>
 
-              {/* Subject */}
-              <div>
-                <label className="block text-sm font-medium text-foreground mb-2">Subject</label>
-                <Input
-                  type="text"
-                  name="subject"
-                  value={formData.subject}
-                  onChange={handleInputChange}
-                  placeholder="Inquiry about admissions"
-                  required
-                  className="bg-background border-border"
-                />
-              </div>
+                <div>
+                  <label className="block text-sm font-medium text-foreground mb-2">Subject</label>
+                  <Input
+                    type="text"
+                    name="subject"
+                    value={formData.subject}
+                    onChange={handleInputChange}
+                    placeholder="e.g., Admission Inquiry for Grade 5"
+                    required
+                    className="bg-background border-border"
+                  />
+                </div>
 
-              {/* Message */}
-              <div>
-                <label className="block text-sm font-medium text-foreground mb-2">Message</label>
-                <Textarea
-                  name="message"
-                  value={formData.message}
-                  onChange={handleInputChange}
-                  placeholder="Tell us about your inquiry..."
-                  rows={5}
-                  required
-                  className="bg-background border-border resize-none"
-                />
-              </div>
+                <div>
+                  <label className="block text-sm font-medium text-foreground mb-2">Message</label>
+                  <Textarea
+                    name="message"
+                    value={formData.message}
+                    onChange={handleInputChange}
+                    placeholder="How can we help you?"
+                    rows={5}
+                    required
+                    className="bg-background border-border resize-none"
+                  />
+                </div>
 
-              {/* Submit Button */}
-              <Button
-                type="submit"
-                disabled={loading}
-                className="w-full bg-primary hover:bg-primary/90 text-primary-foreground py-3 text-base font-medium rounded-lg transition-all"
-              >
-                {loading ? 'Sending...' : 'Send Message'}
-              </Button>
-            </form>
-          )}
+                <Button
+                  type="submit"
+                  disabled={loading}
+                  className="w-full bg-primary hover:bg-primary/90 text-primary-foreground py-4 text-lg font-bold rounded-lg transition-all flex items-center justify-center gap-2 shadow-lg shadow-primary/20"
+                >
+                  {loading ? (
+                    <>
+                      <Loader2 className="animate-spin" size={20} />
+                      Sending...
+                    </>
+                  ) : (
+                    <>
+                      Send Message
+                      <ArrowRight size={20} />
+                    </>
+                  )}
+                </Button>
+
+                <p className="text-xs text-muted-foreground text-center">
+                  By submitting this form, you agree to our privacy policy and terms.
+                </p>
+              </form>
+            )}
+          </div>
         </div>
       </div>
     </section>
