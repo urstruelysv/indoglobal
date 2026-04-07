@@ -11,6 +11,7 @@ export default function HeroSection() {
     parentName: '',
     studentDOB: '',
     phone: '',
+    altPhone: '',
     classApplying: '',
     email: '',
   });
@@ -40,7 +41,7 @@ export default function HeroSection() {
 
       if (response.ok) {
         setSubmitted(true);
-        setFormData({ parentName: '', studentDOB: '', phone: '', classApplying: '', email: '' });
+        setFormData({ parentName: '', studentDOB: '', phone: '', altPhone: '', classApplying: '', email: '' });
         setTimeout(() => setSubmitted(false), 5000);
       }
     } catch (error) {
@@ -140,6 +141,18 @@ export default function HeroSection() {
                     onChange={handleInputChange}
                     placeholder="+91 9876543210"
                     required
+                    className="bg-background border-border"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-foreground mb-2">Alternate Phone (Optional)</label>
+                  <Input
+                    type="tel"
+                    name="altPhone"
+                    value={formData.altPhone}
+                    onChange={handleInputChange}
+                    placeholder="+91 9876543210"
                     className="bg-background border-border"
                   />
                 </div>

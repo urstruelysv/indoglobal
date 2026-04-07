@@ -7,6 +7,7 @@ export const admissions = pgTable("admissions", {
   parentName: text("parent_name").notNull(),
   studentDOB: text("student_dob").notNull(),
   phone: varchar("phone", { length: 20 }).notNull(),
+  altPhone: varchar("alt_phone", { length: 20 }),
   classApplying: varchar("class_applying", { length: 50 }).notNull(),
   email: text("email"),
   status: statusEnum("status").default("New").notNull(),

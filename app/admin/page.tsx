@@ -36,6 +36,7 @@ interface Admission {
   parentName: string;
   studentDOB: string;
   phone: string;
+  altPhone: string | null;
   classApplying: string;
   email: string | null;
   status: Status;
@@ -320,6 +321,7 @@ export default function AdminDashboard() {
                           <tr className="bg-muted/30 border-b border-border/40">
                             <th className="text-left py-4 px-6 font-bold text-xs uppercase tracking-wider text-muted-foreground">Parent/Student</th>
                             <th className="text-left py-4 px-6 font-bold text-xs uppercase tracking-wider text-muted-foreground">Contact</th>
+                            <th className="text-left py-4 px-6 font-bold text-xs uppercase tracking-wider text-muted-foreground">Alt Contact</th>
                             <th className="text-left py-4 px-6 font-bold text-xs uppercase tracking-wider text-muted-foreground">Class Info</th>
                             <th className="text-left py-4 px-6 font-bold text-xs uppercase tracking-wider text-muted-foreground">Status</th>
                             <th className="text-right py-4 px-6 font-bold text-xs uppercase tracking-wider text-muted-foreground">Actions</th>
@@ -338,6 +340,9 @@ export default function AdminDashboard() {
                               <td className="py-4 px-6">
                                 <div className="text-sm font-semibold">{admission.phone}</div>
                                 <div className="text-xs text-muted-foreground">{admission.email || 'No email provided'}</div>
+                              </td>
+                              <td className="py-4 px-6">
+                                <div className="text-sm font-semibold text-muted-foreground">{admission.altPhone || '-'}</div>
                               </td>
                               <td className="py-4 px-6">
                                 <Badge variant="secondary" className="bg-primary/5 text-primary border-primary/10">

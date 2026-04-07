@@ -24,6 +24,14 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Alt phone validation
+    if (body.altPhone && !phoneRegex.test(body.altPhone)) {
+      return NextResponse.json(
+        { error: 'Invalid alternate phone number' },
+        { status: 400 }
+      );
+    }
+
     // Email validation if provided
     if (body.email) {
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -40,6 +48,7 @@ export async function POST(request: NextRequest) {
       parentName: body.parentName,
       studentDOB: body.studentDOB,
       phone: body.phone,
+      altPhone: body.altPhone || null,
       classApplying: body.classApplying,
       email: body.email || null,
     }).returning();
