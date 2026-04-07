@@ -7,10 +7,7 @@ export default function Footer() {
   const currentYear = new Date().getFullYear();
 
   const socialLinks = [
-    { icon: Facebook, href: '#', label: 'Facebook' },
-    { icon: Instagram, href: '#', label: 'Instagram' },
-    { icon: Twitter, href: '#', label: 'Twitter' },
-    { icon: Youtube, href: '#', label: 'Youtube' },
+    { icon: Instagram, href: 'https://www.instagram.com/indoglobal2025?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==', label: 'Instagram' },
   ];
 
   return (
@@ -27,7 +24,7 @@ export default function Footer() {
             <Link href="/" className="flex items-center gap-4 group">
               <div className="bg-white/10 p-2 rounded-xl backdrop-blur-sm group-hover:bg-white/20 transition-all duration-300">
                 <img 
-                  src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/INDO%20GLOBAL%20SCHOOL%20LOGO%20PNG.png-XkTAa5bf7XLyvi8yF7mgr6NtaHwNI2.jpeg"
+                  src="/igs-logo.png"
                   alt="Indo Global School"
                   className="w-12 h-12 object-contain"
                 />

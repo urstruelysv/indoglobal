@@ -16,24 +16,6 @@ const inter = Inter({
 export const metadata: Metadata = {
   title: 'Indo Global School Kishanagar, Shadnagar - Learn • Lead • Shine',
   description: 'CBSE Curriculum School in Kishanagar, Shadnagar, Telangana. Nurturing Experiential Learning, Creativity, and Global Citizens with Indian values. Free Transport, Smart Classrooms, Safe Campus.',
-  generator: 'v0.app',
-  icons: {
-    icon: [
-      {
-        url: '/icon-light-32x32.png',
-        media: '(prefers-color-scheme: light)',
-      },
-      {
-        url: '/icon-dark-32x32.png',
-        media: '(prefers-color-scheme: dark)',
-      },
-      {
-        url: '/icon.svg',
-        type: 'image/svg+xml',
-      },
-    ],
-    apple: '/apple-icon.png',
-  },
 }
 
 export default function RootLayout({
