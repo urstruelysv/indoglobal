@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Header from '@/components/Header';
 import HeroSection from '@/components/HeroSection';
 import AboutSection from '@/components/AboutSection';
+import VideoShowcase from '@/components/VideoShowcase';
 import GallerySection from '@/components/GallerySection';
 import LocationSection from '@/components/LocationSection';
 import ContactSection from '@/components/ContactSection';
@@ -16,6 +17,7 @@ export default function Home() {
       <main className="min-h-screen">
         <HeroSection />
         <AboutSection />
+        <VideoShowcase />
         <GallerySection />
         <LocationSection />
         <ContactSection />
