@@ -7,7 +7,7 @@ const protectedRoutes = ['/admin'];
 const protectedApiPrefixes = ['/api/admissions', '/api/contact'];
 const sensitiveMethods = ['GET', 'PATCH', 'DELETE'];
 
-export async function middleware(req: NextRequest) {
+export async function proxy(req: NextRequest) {
   const path = req.nextUrl.pathname;
   const isProtectedRoute = protectedRoutes.some(route => path.startsWith(route));
   
