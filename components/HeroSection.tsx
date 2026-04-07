@@ -67,7 +67,7 @@ export default function HeroSection() {
               Where Every Child Shines
             </h1>
             <p className="text-xl text-muted-foreground max-w-xl leading-relaxed">
-              A CBSE Curriculum Institution nurturing Experiential Learning, Creativity, and Global Citizens with Indian values. Join our thriving community in Shadnagar, Telangana.
+              A CBSE Curriculum Institution nurturing Experiential Learning, Creativity, and Global Citizens with Indian values. Join our thriving community in Kishanagar, Shadnagar, Telangana.
             </p>
           </div>
 
@@ -93,7 +93,7 @@ export default function HeroSection() {
         </div>
 
         {/* Right - Application Form */}
-        <div className="lg:sticky lg:top-32">
+        <div id="apply" className="lg:sticky lg:top-32">
           <div className="bg-white rounded-2xl shadow-2xl p-8 md:p-10 border border-border/20">
             <h2 className="text-2xl font-serif font-bold text-primary mb-2">Admissions Open</h2>
             <p className="text-muted-foreground mb-8">Join Indo Global School and shine!</p>
@@ -138,7 +138,7 @@ export default function HeroSection() {
                     name="phone"
                     value={formData.phone}
                     onChange={handleInputChange}
-                    placeholder="+1 (555) 000-0000"
+                    placeholder="+91 9876543210"
                     required
                     className="bg-background border-border"
                   />
@@ -157,9 +157,9 @@ export default function HeroSection() {
                       <SelectItem value="grade3">Grade 3</SelectItem>
                       <SelectItem value="grade4">Grade 4</SelectItem>
                       <SelectItem value="grade5">Grade 5</SelectItem>
-                      <SelectItem value="grade6">Grade 6-8</SelectItem>
-                      <SelectItem value="grade9">Grade 9-10</SelectItem>
-                      <SelectItem value="grade11">Grade 11-12</SelectItem>
+                      <SelectItem value="grade6">Grade 6</SelectItem>
+                      <SelectItem value="grade7">Grade 7</SelectItem>
+
                     </SelectContent>
                   </Select>
                 </div>
@@ -171,7 +171,7 @@ export default function HeroSection() {
                     name="email"
                     value={formData.email}
                     onChange={handleInputChange}
-                    placeholder="your@email.com"
+                    placeholder="your@gmail.com"
                     className="bg-background border-border"
                   />
                 </div>

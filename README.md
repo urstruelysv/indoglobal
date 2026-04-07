@@ -1,6 +1,6 @@
-# Indo Global School Shadnagar
+# Indo Global School Kishanagar, Shadnagar
 
-A premium, modern, and high-performance school website built for **Indo Global School** in Shadnagar, Telangana. This project features a playful Indian school aesthetic, a secure lead management system, and deep database integration.
+A premium, modern, and high-performance school website built for **Indo Global School** in Kishanagar, Shadnagar, Telangana. This project features a playful Indian school aesthetic, a secure lead management system, and deep database integration.
 
 ## 🌟 Key Features
 

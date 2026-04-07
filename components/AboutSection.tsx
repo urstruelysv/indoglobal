@@ -35,18 +35,25 @@ export default function AboutSection() {
             Where Every Child Shines
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            A CBSE Curriculum Institution in Shadnagar, Telangana, nurturing Experiential Learning, Creativity, and Global Citizens with strong Indian values.
+            A CBSE Curriculum Institution in Kishanagar, Shadnagar, Telangana, nurturing Experiential Learning, Creativity, and Global Citizens with strong Indian values.
           </p>
         </div>
 
         {/* Content Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mb-20">
-          {/* Image Placeholder */}
-          <div className="relative h-96 md:h-[500px] rounded-xl overflow-hidden shadow-xl border border-border/20">
-            <div className="w-full h-full bg-gradient-to-br from-primary/10 to-secondary/10 flex items-center justify-center">
-              <div className="text-center text-muted-foreground">
-                <p className="text-4xl mb-2">🏫</p>
-                <p>School Campus Image</p>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center mb-20">
+          {/* School Building Image */}
+          <div className="relative group">
+            <div className="absolute -inset-4 bg-primary/10 rounded-2xl blur-2xl group-hover:bg-primary/20 transition-all duration-500" />
+            <div className="relative h-96 md:h-[600px] rounded-2xl overflow-hidden shadow-2xl border-4 border-white">
+              <img 
+                src="/schoolbuilding.png" 
+                alt="Indo Global School Campus Building"
+                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-primary/40 to-transparent" />
+              <div className="absolute bottom-6 left-6 text-white">
+                <p className="font-serif font-bold text-xl">State-of-the-art Campus</p>
+                <p className="text-sm text-white/80">Nurturing excellence in Kishanagar, Shadnagar</p>
               </div>
             </div>
           </div>

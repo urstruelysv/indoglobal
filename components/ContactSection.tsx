@@ -58,7 +58,7 @@ export default function ContactSection() {
             Questions About Admissions?
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Call us at <strong>+91 21 68 98 98</strong> or <strong>+91 21 98 38 38</strong>, or fill out the form below to learn more about Indo Global School.
+            Call us at <a href="tel:+9121689898" className="text-primary font-bold hover:text-secondary transition-colors">+91 21 68 98 98</a> or <a href="tel:+9121983838" className="text-primary font-bold hover:text-secondary transition-colors">+91 21 98 38 38</a>, or fill out the form below to learn more about Indo Global School.
           </p>
         </div>
 
