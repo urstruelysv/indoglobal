@@ -124,7 +124,7 @@ export default function Footer() {
                   <Mail size={18} />
                 </div>
                 <div>
-                  <p className="text-white font-bold text-sm">admissions@indoglobal.school</p>
+                  <a href="mailto:indoglobalschool@gmail.com" className="text-white font-bold text-sm hover:text-accent transition-colors">indoglobalschool@gmail.com</a>
                   <p className="text-white/50 text-[10px] uppercase font-bold tracking-widest mt-1">Admissions Team</p>
                 </div>
               </div>
