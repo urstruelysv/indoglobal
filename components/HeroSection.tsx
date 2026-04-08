@@ -68,7 +68,7 @@ export default function HeroSection() {
               Where Every Child Shines
             </h1>
             <p className="text-xl text-muted-foreground max-w-xl leading-relaxed">
-              A CBSE Curriculum Institution nurturing Experiential Learning, Creativity, and Global Citizens with Indian values. Join our thriving community in Kishanagar, Shadnagar, Telangana.
+              A CBSE curriculum institution nurturing <span className="text-primary font-semibold">experiential learning</span>, <span className="text-primary font-semibold">creativity</span>, and <span className="text-primary font-semibold">global citizens</span> with <span className="text-primary font-semibold">Indian values</span>. Join our thriving community in Kishan Nagar, Shadnagar, Telangana.
             </p>
           </div>
 
@@ -164,7 +164,9 @@ export default function HeroSection() {
                       <SelectValue placeholder="Select class" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="kg">Kindergarten</SelectItem>
+                      <SelectItem value="kindergarten">Kindergarten</SelectItem>
+                      <SelectItem value="pp1">PP1 </SelectItem>
+                      <SelectItem value="pp2">PP2 </SelectItem>
                       <SelectItem value="grade1">Grade 1</SelectItem>
                       <SelectItem value="grade2">Grade 2</SelectItem>
                       <SelectItem value="grade3">Grade 3</SelectItem>
@@ -172,7 +174,6 @@ export default function HeroSection() {
                       <SelectItem value="grade5">Grade 5</SelectItem>
                       <SelectItem value="grade6">Grade 6</SelectItem>
                       <SelectItem value="grade7">Grade 7</SelectItem>
-
                     </SelectContent>
                   </Select>
                 </div>

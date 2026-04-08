@@ -9,13 +9,13 @@ export default function LocationSection() {
         {/* Section Header */}
         <div className="text-center mb-16 space-y-4">
           <p className="text-secondary font-serif text-sm uppercase tracking-widest font-semibold">
-            📍 Visit Us in Kishanagar, Shadnagar 📍
+            📍 Visit Us in Kishan Nagar, Shadnagar 📍
           </p>
           <h2 className="text-4xl md:text-5xl font-serif font-bold text-primary">
             Indo Global School Location
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Located in Kishanagar, Shadnagar, Telangana - easily accessible with free transport facility for students.
+            Located in Kishan Nagar, Shadnagar, Telangana - easily accessible with free transport facility for students.
           </p>
         </div>
 
@@ -68,7 +68,7 @@ export default function LocationSection() {
                 </div>
                 <div className="flex-1">
                   <h4 className="font-serif font-semibold text-primary mb-1">Location</h4>
-                  <p className="text-foreground">Kishanagar, Shadnagar, Telangana</p>
+                  <p className="text-foreground">Kishan Nagar, Shadnagar, Telangana</p>
                   <p className="text-sm text-muted-foreground">Postal Code: 509410</p>
                 </div>
               </div>

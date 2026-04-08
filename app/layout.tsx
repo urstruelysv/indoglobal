@@ -14,8 +14,8 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: 'Indo Global School Kishanagar, Shadnagar - Learn • Lead • Shine',
-  description: 'CBSE Curriculum School in Kishanagar, Shadnagar, Telangana. Nurturing Experiential Learning, Creativity, and Global Citizens with Indian values. Free Transport, Smart Classrooms, Safe Campus.',
+  title: 'Indo Global School Kishan Nagar, Shadnagar - Learn • Lead • Shine',
+  description: 'CBSE Curriculum School in Kishan Nagar, Shadnagar, Telangana. Nurturing Experiential Learning, Creativity, and Global Citizens with Indian values. Free Transport, Smart Classrooms, Safe Campus.',
 }
 
 export default function RootLayout({

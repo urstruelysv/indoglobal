@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import { Card } from '@/components/ui/card';
-import { BookOpen, Users, Lightbulb } from 'lucide-react';
+import { BookOpen, Users, Lightbulb, ShieldCheck } from 'lucide-react';
 
 export default function AboutSection() {
   const highlights = [
@@ -21,6 +21,11 @@ export default function AboutSection() {
       title: 'Experiential Learning',
       description: 'Hands-on learning experiences that encourage creativity, critical thinking, and real-world problem-solving skills.',
     },
+    {
+      icon: ShieldCheck,
+      title: 'Safety & Security',
+      description: 'Advanced 24/7 CCTV surveillance and secure campus protocols ensuring a safe and nurturing environment for every child.',
+    },
   ];
 
   return (
@@ -35,7 +40,7 @@ export default function AboutSection() {
             Where Every Child Shines
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            A CBSE Curriculum Institution in Kishanagar, Shadnagar, Telangana, nurturing Experiential Learning, Creativity, and Global Citizens with strong Indian values.
+            A CBSE Curriculum Institution in Kishan Nagar, Shadnagar, Telangana, nurturing Experiential Learning, Creativity, and Global Citizens with strong Indian values.
           </p>
         </div>
 
@@ -53,7 +58,7 @@ export default function AboutSection() {
               <div className="absolute inset-0 bg-gradient-to-t from-primary/40 to-transparent" />
               <div className="absolute bottom-6 left-6 text-white">
                 <p className="font-serif font-bold text-xl">State-of-the-art Campus</p>
-                <p className="text-sm text-white/80">Nurturing excellence in Kishanagar, Shadnagar</p>
+                <p className="text-sm text-white/80">Nurturing excellence in Kishan Nagar, Shadnagar</p>
               </div>
             </div>
           </div>
@@ -78,7 +83,7 @@ export default function AboutSection() {
             <div className="pt-4">
               <h4 className="font-serif text-lg font-semibold text-primary mb-4">What We Offer</h4>
               <ul className="space-y-3">
-                {['CBSE Curriculum Excellence', 'Free Transport Facility', 'Smart Classrooms & Technology', 'Safe Nurturing Campus', 'Certified Expert Faculty'].map((value) => (
+                {['CBSE Curriculum Excellence', 'Free Transport Facility', 'Smart Classrooms & Technology', '24/7 CCTV Surveillance', 'Safe Nurturing Campus', 'Certified Expert Faculty'].map((value) => (
                   <li key={value} className="flex items-start gap-3">
                     <span className="text-2xl">✓</span>
                     <span className="text-foreground">{value}</span>
@@ -90,7 +95,7 @@ export default function AboutSection() {
         </div>
 
         {/* Highlights Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {highlights.map((highlight, index) => {
             const Icon = highlight.icon;
             return (

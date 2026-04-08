@@ -36,7 +36,7 @@ export default function Footer() {
             </Link>
             
             <p className="text-white/80 text-sm leading-relaxed max-w-sm">
-              Nurturing Experiential Learning, Creativity, and Global Citizens with strong Indian values. Join our thriving community in Kishanagar, Shadnagar.
+              Nurturing Experiential Learning, Creativity, and Global Citizens with strong Indian values. Join our thriving community in Kishan Nagar, Shadnagar.
             </p>
             
             <div className="flex gap-4">
@@ -131,7 +131,7 @@ export default function Footer() {
                   <MapPin size={18} />
                 </div>
                 <div>
-                  <p className="text-white font-bold text-sm leading-tight">Kishanagar, Shadnagar, <br />Telangana 509216</p>
+                  <p className="text-white font-bold text-sm leading-tight">Kishan Nagar, Shadnagar, <br />Telangana 509216</p>
                 </div>
               </div>
             </div>
@@ -143,7 +143,7 @@ export default function Footer() {
           <div className="flex flex-col md:flex-row items-center justify-between gap-8">
             <div className="flex flex-col md:flex-row items-center gap-4 md:gap-8">
               <p className="text-white/50 text-xs font-medium">
-                © {currentYear} Indo Global School, Kishanagar, Shadnagar.
+                © {currentYear} Indo Global School, Kishan Nagar, Shadnagar.
               </p>
               <div className="flex gap-6">
                 <Link href="#" className="text-white/50 hover:text-white transition-all text-xs font-medium">Privacy Policy</Link>

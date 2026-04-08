@@ -30,7 +30,7 @@ export default function GallerySection() {
             Our Facilities & Activities
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Discover the vibrant learning environment and world-class facilities in Kishanagar, Shadnagar, Telangana.
+            Discover the vibrant learning environment and world-class facilities in Kishan Nagar, Shadnagar, Telangana.
           </p>
         </div>
 
