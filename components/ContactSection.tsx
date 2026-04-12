@@ -52,10 +52,10 @@ export default function ContactSection() {
         {/* Section Header */}
         <div className="text-center mb-16 space-y-4">
           <p className="text-secondary font-serif text-sm uppercase tracking-widest font-semibold">
-            💌 Get in Touch 💌
+            Take the First Step
           </p>
           <h2 className="text-4xl md:text-5xl font-serif font-bold text-primary">
-            Questions About Admissions?
+            Start Your Child&apos;s Journey
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
             Call us at <a href="tel:+9121689898" className="text-primary font-bold hover:text-secondary transition-colors">+91 21 68 98 98</a> or <a href="tel:+9121983838" className="text-primary font-bold hover:text-secondary transition-colors">+91 21 98 38 38</a>, or fill out the form below to learn more about Indo Global School.
