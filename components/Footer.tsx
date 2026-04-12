@@ -58,11 +58,11 @@ export default function Footer() {
             <h4 className="font-serif font-bold text-lg text-white border-l-4 border-secondary pl-4">Quick Navigation</h4>
             <nav className="grid grid-cols-1 gap-4">
               {[
-                { label: 'About Our Vision', href: '/#about' },
-                { label: 'Campus Gallery', href: '/#gallery' },
-                { label: 'School Location', href: '/#location' },
+                { label: 'About IGS', href: '/#about' },
+                { label: 'Why Choose IGS', href: '/#why-igs' },
+                { label: 'Curriculum', href: '/#curriculum' },
+                { label: 'Campus Highlights', href: '/#campus' },
                 { label: 'Contact Us', href: '/#contact' },
-                { label: 'Admissions Open', href: '/#apply' },
               ].map((link) => (
                 <Link
                   key={link.label}
@@ -81,10 +81,10 @@ export default function Footer() {
             <h4 className="font-serif font-bold text-lg text-white border-l-4 border-accent pl-4">Resources</h4>
             <nav className="grid grid-cols-1 gap-4">
               {[
-                { label: 'Academic Calendar', href: '#' },
-                { label: 'Student Portal', href: '#' },
-                { label: 'Parent Portal', href: '#' },
-                { label: 'Careers @ IGS', href: '#' },
+                { label: 'Photo Gallery', href: '/gallery' },
+                { label: 'Academic Calendar', href: '/academic-calendar' },
+                { label: 'Admissions Open', href: '/#apply' },
+                { label: 'School Location', href: '/#location' },
                 { label: 'Admin Dashboard', href: '/login' },
               ].map((link) => (
                 <Link
