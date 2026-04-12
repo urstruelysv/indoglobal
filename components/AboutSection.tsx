@@ -15,21 +15,17 @@ function IconIndiaMap({ className }: { className?: string }) {
         transition={{ duration: 1 }}
       />
       {/* Flag tricolor */}
-      <motion.rect x="20" y="16" width="8" height="2.5" rx="0.5" fill="#FF9933"
-        initial={{ scaleX: 0 }} whileInView={{ scaleX: 1 }} viewport={{ once: true }}
-        transition={{ delay: 0.6 }}
-      />
-      <motion.rect x="20" y="18.5" width="8" height="2.5" rx="0.5" fill="white"
-        initial={{ scaleX: 0 }} whileInView={{ scaleX: 1 }} viewport={{ once: true }}
-        transition={{ delay: 0.7 }}
-      />
-      <motion.rect x="20" y="21" width="8" height="2.5" rx="0.5" fill="#138808"
-        initial={{ scaleX: 0 }} whileInView={{ scaleX: 1 }} viewport={{ once: true }}
-        transition={{ delay: 0.8 }}
-      />
+      <motion.rect x="20" y="16" width="8" height="2.5" rx="0.5" fill="#FF9933" />
+      <motion.rect x="20" y="18.5" width="8" height="2.5" rx="0.5" fill="white" />
+      <motion.rect x="20" y="21" width="8" height="2.5" rx="0.5" fill="#138808" />
       <motion.circle cx="24" cy="19.75" r="1.5" stroke="#000080" strokeWidth="0.6" fill="none"
-        initial={{ scale: 0 }} whileInView={{ scale: 1 }} viewport={{ once: true }}
-        transition={{ delay: 0.9, type: 'spring' }}
+        animate={{ rotate: [0, 360] }}
+        transition={{ duration: 8, repeat: Infinity, ease: 'linear' }}
+      />
+      {/* Gentle pulse on the map */}
+      <motion.circle cx="24" cy="24" r="16" fill="currentColor" opacity={0.03}
+        animate={{ scale: [1, 1.1, 1] }}
+        transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
       />
     </motion.svg>
   );
@@ -65,14 +61,12 @@ function IconOpenBook({ className }: { className?: string }) {
         initial={{ pathLength: 0 }} whileInView={{ pathLength: 1 }} viewport={{ once: true }}
         transition={{ duration: 0.6, delay: 0.2 }}
       />
-      {/* Sparkle on book */}
+      {/* Sparkle on book — loops */}
       <motion.path
         d="M34 6l1 3 3 1-3 1-1 3-1-3-3-1 3-1 1-3z"
         fill="#FFB84D"
-        initial={{ scale: 0, rotate: -45 }}
-        whileInView={{ scale: 1, rotate: 0 }}
-        viewport={{ once: true }}
-        transition={{ type: 'spring', delay: 0.7 }}
+        animate={{ scale: [0.8, 1.2, 0.8], rotate: [0, 15, 0], opacity: [0.6, 1, 0.6] }}
+        transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
       />
     </motion.svg>
   );
@@ -131,15 +125,13 @@ function IconSafeChild({ className }: { className?: string }) {
         initial={{ pathLength: 0 }} whileInView={{ pathLength: 1 }} viewport={{ once: true }}
         transition={{ duration: 0.4, delay: 0.7 }}
       />
-      {/* Green check */}
+      {/* Green check — gentle pulse */}
       <motion.circle cx="36" cy="10" r="5" fill="#2B7F6B"
-        initial={{ scale: 0 }} whileInView={{ scale: 1 }} viewport={{ once: true }}
-        transition={{ delay: 0.8, type: 'spring' }}
+        animate={{ scale: [1, 1.15, 1] }}
+        transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
       />
       <motion.path d="M34 10l1.5 1.5L38 8.5"
         stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"
-        initial={{ pathLength: 0 }} whileInView={{ pathLength: 1 }} viewport={{ once: true }}
-        transition={{ delay: 1, duration: 0.3 }}
       />
     </motion.svg>
   );
@@ -177,8 +169,8 @@ function IconTeacher({ className }: { className?: string }) {
         transition={{ delay: 0.8, duration: 0.3 }}
       />
       <motion.circle cx="20" cy="26" r="1.5" fill="#FF8C42"
-        initial={{ scale: 0 }} whileInView={{ scale: 1 }} viewport={{ once: true }}
-        transition={{ delay: 1, type: 'spring' }}
+        animate={{ opacity: [1, 0.3, 1], scale: [1, 1.3, 1] }}
+        transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
       />
     </motion.svg>
   );
@@ -208,10 +200,10 @@ function IconKidsPlay({ className }: { className?: string }) {
         initial={{ pathLength: 0 }} whileInView={{ pathLength: 1 }} viewport={{ once: true }}
         transition={{ duration: 0.6, delay: 0.4 }}
       />
-      {/* Ball */}
+      {/* Ball — bounces */}
       <motion.circle cx="24" cy="38" r="5" stroke="#FF8C42" strokeWidth="2" fill="none"
-        initial={{ scale: 0 }} whileInView={{ scale: 1 }} viewport={{ once: true }}
-        transition={{ delay: 0.7, type: 'spring' }}
+        animate={{ y: [0, -3, 0] }}
+        transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
       />
       <motion.path d="M21 35l6 6M21 41l6-6" stroke="#FF8C42" strokeWidth="1" opacity={0.5} />
       {/* Sparkle */}
