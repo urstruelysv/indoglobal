@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { db } from '@/lib/db';
+import { getDb } from '@/lib/db';
 import { galleryImages } from '@/lib/schema';
 import { eq, desc, asc } from 'drizzle-orm';
 import { getSession } from '@/lib/auth';
@@ -28,6 +28,7 @@ function validateMagicBytes(buffer: Buffer, mimeType: string): boolean {
 // GET — fetch all gallery images (public)
 export async function GET() {
   try {
+    const db = getDb();
     const images = await db
       .select()
       .from(galleryImages)
@@ -47,6 +48,7 @@ export async function POST(req: NextRequest) {
   }
 
   try {
+    const db = getDb();
     const formData = await req.formData();
     const file = formData.get('file') as File;
     const category = (formData.get('category') as string) || 'Campus';
@@ -114,6 +116,7 @@ export async function DELETE(req: NextRequest) {
   }
 
   try {
+    const db = getDb();
     const { id } = await req.json();
 
     if (typeof id !== 'number' || id <= 0) {
