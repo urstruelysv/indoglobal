@@ -1,10 +1,11 @@
 'use client';
 
 import { useState } from 'react';
+import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, GraduationCap, Bus, Monitor, Trees } from 'lucide-react';
 
 export default function HeroSection() {
   const [formData, setFormData] = useState({
@@ -31,7 +32,7 @@ export default function HeroSection() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    
+
     try {
       const response = await fetch('/api/admissions', {
         method: 'POST',
@@ -51,161 +52,140 @@ export default function HeroSection() {
     }
   };
 
-  return (
-    <section className="relative min-h-screen flex items-center pt-20 pb-20 bg-gradient-to-br from-background via-background to-muted/30 overflow-hidden">
-      {/* Decorative elements */}
-      <div className="absolute -top-40 -right-40 w-80 h-80 bg-accent/5 rounded-full blur-3xl" />
-      <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-secondary/5 rounded-full blur-3xl" />
+  const features = [
+    { icon: GraduationCap, label: 'CBSE Curriculum', color: 'bg-secondary/10 text-secondary' },
+    { icon: Bus, label: 'Free Transport', color: 'bg-accent/10 text-accent-foreground' },
+    { icon: Monitor, label: 'Smart Classrooms', color: 'bg-primary/10 text-primary' },
+    { icon: Trees, label: '3-Acre Campus', color: 'bg-secondary/10 text-secondary' },
+  ];
 
-      <div className="max-w-7xl mx-auto px-6 w-full grid grid-cols-1 lg:grid-cols-2 gap-12 items-center relative z-10">
+  return (
+    <section className="relative flex items-center py-8 md:py-10 lg:py-12 bg-gradient-to-br from-background via-background to-muted/30 overflow-hidden">
+      {/* Decorative elements */}
+      <div className="absolute -top-20 -right-20 w-60 md:w-80 h-60 md:h-80 bg-accent/5 rounded-full blur-3xl" />
+      <div className="absolute -bottom-20 -left-20 w-60 md:w-80 h-60 md:h-80 bg-secondary/5 rounded-full blur-3xl" />
+
+      <div className="max-w-7xl mx-auto px-5 md:px-6 w-full grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-10 items-start relative z-10">
         {/* Left Content */}
-        <div className="space-y-8">
-          <div className="space-y-4">
-            <p className="text-secondary font-serif text-sm uppercase tracking-widest font-semibold">
-              ⭐ Learn • Lead • Shine ⭐
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="space-y-4 md:space-y-5"
+        >
+          <div className="space-y-2.5 md:space-y-3">
+            <p className="text-secondary font-serif text-xs md:text-sm uppercase tracking-widest font-semibold">
+              Learn &bull; Lead &bull; Shine
             </p>
-            <h1 className="text-5xl lg:text-6xl font-serif font-bold text-primary leading-tight">
+            <h1 className="text-4xl sm:text-5xl md:text-[52px] lg:text-6xl font-serif font-bold text-primary leading-[1.1]">
               Where Every Child Shines
             </h1>
-            <p className="text-xl text-muted-foreground max-w-xl leading-relaxed">
-              A CBSE curriculum institution nurturing <span className="text-primary font-semibold">experiential learning</span>, <span className="text-primary font-semibold">creativity</span>, and <span className="text-primary font-semibold">global citizens</span> with <span className="text-primary font-semibold">Indian values</span>. Join our thriving community in Kishan Nagar, Shadnagar, Telangana.
+            <p className="text-sm md:text-base text-muted-foreground max-w-xl leading-relaxed">
+              A CBSE curriculum institution nurturing <span className="text-primary font-semibold">experiential learning</span>, <span className="text-primary font-semibold">creativity</span>, and <span className="text-primary font-semibold">global citizens</span> with <span className="text-primary font-semibold">Indian values</span>.
+            </p>
+            <p className="text-xs md:text-sm text-muted-foreground">
+              Kishan Nagar, Shadnagar, Telangana
             </p>
           </div>
 
           {/* Key Features */}
-          <div className="grid grid-cols-2 gap-6 pt-8">
-            <div className="space-y-2 p-4 bg-secondary/10 rounded-lg border border-secondary/20">
-              <p className="text-3xl font-serif font-bold text-secondary">🎓</p>
-              <p className="text-sm font-semibold text-foreground">CBSE Curriculum</p>
-            </div>
-            <div className="space-y-2 p-4 bg-accent/10 rounded-lg border border-accent/20">
-              <p className="text-3xl font-serif font-bold text-accent">🚌</p>
-              <p className="text-sm font-semibold text-foreground">Free Transport</p>
-            </div>
-            <div className="space-y-2 p-4 bg-primary/10 rounded-lg border border-primary/20">
-              <p className="text-3xl font-serif font-bold text-primary">💻</p>
-              <p className="text-sm font-semibold text-foreground">Smart Classrooms</p>
-            </div>
-            <div className="space-y-2 p-4 bg-secondary/10 rounded-lg border border-secondary/20">
-              <p className="text-3xl font-serif font-bold text-secondary">🌍</p>
-              <p className="text-sm font-semibold text-foreground">Global Values</p>
-            </div>
+          <div className="grid grid-cols-2 gap-2.5 md:gap-3">
+            {features.map((f) => {
+              const Icon = f.icon;
+              return (
+                <div key={f.label} className="flex items-center gap-2.5 p-2.5 md:p-3 bg-white rounded-lg border border-border/20 shadow-sm">
+                  <div className={`w-8 h-8 md:w-9 md:h-9 rounded-lg ${f.color} flex items-center justify-center shrink-0`}>
+                    <Icon className="w-4 h-4" />
+                  </div>
+                  <p className="text-xs md:text-sm font-semibold text-foreground leading-tight">{f.label}</p>
+                </div>
+              );
+            })}
           </div>
-        </div>
+        </motion.div>
 
         {/* Right - Application Form */}
-        <div id="apply" className="lg:sticky lg:top-32">
-          <div className="bg-white rounded-2xl shadow-2xl p-8 md:p-10 border border-border/20">
-            <h2 className="text-2xl font-serif font-bold text-primary mb-2">Admissions Open</h2>
-            <p className="text-muted-foreground mb-8">Join Indo Global School and shine!</p>
+        <motion.div
+          id="apply"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+          className=""
+        >
+          <div className="bg-white rounded-xl md:rounded-2xl shadow-xl md:shadow-2xl p-5 md:p-6 lg:p-8 border border-border/20">
+            <h2 className="text-lg md:text-xl font-serif font-bold text-primary mb-0.5">Admissions Open</h2>
+            <p className="text-sm text-muted-foreground mb-4 md:mb-5">Join Indo Global School and shine!</p>
 
             {submitted ? (
-              <div className="py-12 text-center space-y-4">
-                <div className="text-5xl">✓</div>
+              <div className="py-6 md:py-8 text-center space-y-3">
+                <div className="w-12 h-12 md:w-14 md:h-14 bg-primary/10 rounded-full flex items-center justify-center mx-auto">
+                  <ArrowRight className="w-7 h-7 text-primary" />
+                </div>
                 <p className="text-lg font-semibold text-primary">Application Received!</p>
-                <p className="text-muted-foreground">Thank you for your interest. We will contact you shortly with next steps.</p>
+                <p className="text-sm text-muted-foreground">We will contact you shortly with next steps.</p>
               </div>
             ) : (
-              <form onSubmit={handleSubmit} className="space-y-5">
+              <form onSubmit={handleSubmit} className="space-y-3 md:space-y-3.5">
                 <div>
-                  <label className="block text-sm font-medium text-foreground mb-2">Parent Name</label>
-                  <Input
-                    type="text"
-                    name="parentName"
-                    value={formData.parentName}
-                    onChange={handleInputChange}
-                    placeholder="Enter your full name"
-                    required
-                    className="bg-background border-border"
-                  />
+                  <label className="block text-xs font-medium text-foreground mb-1">Parent Name</label>
+                  <Input type="text" name="parentName" value={formData.parentName} onChange={handleInputChange} placeholder="Enter your full name" required className="bg-background border-border text-sm" />
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs font-medium text-foreground mb-1">Student Date of Birth</label>
+                    <Input type="date" name="studentDOB" value={formData.studentDOB} onChange={handleInputChange} required className="bg-background border-border text-sm" />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-medium text-foreground mb-1">Class Applying For</label>
+                    <Select value={formData.classApplying} onValueChange={handleSelectChange}>
+                      <SelectTrigger className="bg-background border-border text-sm">
+                        <SelectValue placeholder="Select class" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="kindergarten">Kindergarten</SelectItem>
+                        <SelectItem value="pp1">PP1</SelectItem>
+                        <SelectItem value="pp2">PP2</SelectItem>
+                        <SelectItem value="grade1">Grade 1</SelectItem>
+                        <SelectItem value="grade2">Grade 2</SelectItem>
+                        <SelectItem value="grade3">Grade 3</SelectItem>
+                        <SelectItem value="grade4">Grade 4</SelectItem>
+                        <SelectItem value="grade5">Grade 5</SelectItem>
+                        <SelectItem value="grade6">Grade 6</SelectItem>
+                        <SelectItem value="grade7">Grade 7</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs font-medium text-foreground mb-1">Phone Number</label>
+                    <Input type="tel" name="phone" value={formData.phone} onChange={handleInputChange} placeholder="+91 9876543210" required className="bg-background border-border text-sm" />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-medium text-foreground mb-1">Alternate Phone</label>
+                    <Input type="tel" name="altPhone" value={formData.altPhone} onChange={handleInputChange} placeholder="Optional" className="bg-background border-border text-sm" />
+                  </div>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-foreground mb-2">Student Date of Birth</label>
-                  <Input
-                    type="date"
-                    name="studentDOB"
-                    value={formData.studentDOB}
-                    onChange={handleInputChange}
-                    required
-                    className="bg-background border-border"
-                  />
+                  <label className="block text-xs font-medium text-foreground mb-1">Email (Optional)</label>
+                  <Input type="email" name="email" value={formData.email} onChange={handleInputChange} placeholder="your@gmail.com" className="bg-background border-border text-sm" />
                 </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-foreground mb-2">Phone Number</label>
-                  <Input
-                    type="tel"
-                    name="phone"
-                    value={formData.phone}
-                    onChange={handleInputChange}
-                    placeholder="+91 9876543210"
-                    required
-                    className="bg-background border-border"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-foreground mb-2">Alternate Phone (Optional)</label>
-                  <Input
-                    type="tel"
-                    name="altPhone"
-                    value={formData.altPhone}
-                    onChange={handleInputChange}
-                    placeholder="+91 9876543210"
-                    className="bg-background border-border"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-foreground mb-2">Class Applying For</label>
-                  <Select value={formData.classApplying} onValueChange={handleSelectChange}>
-                    <SelectTrigger className="bg-background border-border">
-                      <SelectValue placeholder="Select class" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="kindergarten">Kindergarten</SelectItem>
-                      <SelectItem value="pp1">PP1 </SelectItem>
-                      <SelectItem value="pp2">PP2 </SelectItem>
-                      <SelectItem value="grade1">Grade 1</SelectItem>
-                      <SelectItem value="grade2">Grade 2</SelectItem>
-                      <SelectItem value="grade3">Grade 3</SelectItem>
-                      <SelectItem value="grade4">Grade 4</SelectItem>
-                      <SelectItem value="grade5">Grade 5</SelectItem>
-                      <SelectItem value="grade6">Grade 6</SelectItem>
-                      <SelectItem value="grade7">Grade 7</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-foreground mb-2">Email (Optional)</label>
-                  <Input
-                    type="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleInputChange}
-                    placeholder="your@gmail.com"
-                    className="bg-background border-border"
-                  />
-                </div>
-
-                <Button
-                  type="submit"
-                  disabled={loading}
-                  className="w-full bg-primary hover:bg-primary/90 text-primary-foreground py-3 text-base font-medium rounded-lg transition-all flex items-center justify-center gap-2"
-                >
+                <Button type="submit" disabled={loading} className="w-full bg-primary hover:bg-primary/90 text-primary-foreground py-2.5 text-sm font-medium rounded-lg transition-all flex items-center justify-center gap-2">
                   {loading ? 'Submitting...' : 'Apply Now'}
-                  <ArrowRight size={18} />
+                  <ArrowRight size={16} />
                 </Button>
 
-                <p className="text-xs text-muted-foreground text-center">
-                  We respect your privacy. Your information is secure and confidential.
+                <p className="text-[10px] md:text-[11px] text-muted-foreground text-center">
+                  Your information is secure and confidential.
                 </p>
               </form>
             )}
           </div>
-        </div>
+        </motion.div>
       </div>
     </section>
   );
