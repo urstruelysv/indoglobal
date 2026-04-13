@@ -15,7 +15,7 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: 'Indo Global School Kishan Nagar, Shadnagar - Best CBSE School in Shadnagar',
-  description: 'Indo Global School is the top CBSE curriculum school in Kishan Nagar, Shadnagar, Telangana. We offer experiential learning, smart classrooms, free transport, and 24/7 CCTV safety. Admissions open for 2025-26.',
+  description: 'Indo Global School is the top CBSE curriculum school in Kishan Nagar, Shadnagar, Telangana. Spread across a 3-acre campus, we offer experiential learning, smart classrooms, free transport, and 24/7 CCTV safety. Admissions open for 2025-26.',
   keywords: [
     'Indo Global School',
     'Indo Global School Shadnagar',
@@ -26,11 +26,13 @@ export const metadata: Metadata = {
     'CBSE curriculum schools Shadnagar',
     'Smart classrooms Shadnagar',
     'Experiential learning school Shadnagar',
+    '3 acre campus school Shadnagar',
+    'Best school with big campus Shadnagar',
   ],
   authors: [{ name: 'Indo Global School' }],
   openGraph: {
     title: 'Indo Global School Kishan Nagar, Shadnagar - Best CBSE School',
-    description: 'Nurturing excellence with experiential learning and Indian values. Join the best CBSE school in Shadnagar.',
+    description: 'Nurturing excellence on a 3-acre campus with experiential learning and Indian values. Join the best CBSE school in Shadnagar.',
     url: 'https://indoglobalschooligs.com',
     siteName: 'Indo Global School',
     images: [
@@ -64,25 +66,42 @@ export default function RootLayout({
     "@context": "https://schema.org",
     "@type": "School",
     "name": "Indo Global School",
+    "alternateName": "IGS Shadnagar",
     "url": "https://indoglobalschooligs.com",
     "logo": "https://indoglobalschooligs.com/igs-logo.png",
-    "image": "https://indoglobalschooligs.com/schoolbuilding.png",
-    "description": "Premium CBSE Curriculum School in Kishan Nagar, Shadnagar, Telangana. Nurturing Experiential Learning and Global Citizens.",
+    "image": "https://indoglobalschooligs.com/igs-banner.png",
+    "description": "Premium CBSE Curriculum School on a 3-acre campus in Kishan Nagar, Shadnagar, Telangana. Nurturing Experiential Learning and Global Citizens with Indian Values.",
     "address": {
       "@type": "PostalAddress",
       "streetAddress": "Kishan Nagar",
       "addressLocality": "Shadnagar",
       "addressRegion": "Telangana",
-      "postalCode": "509216",
+      "postalCode": "509410",
       "addressCountry": "IN"
     },
     "geo": {
       "@type": "GeoCoordinates",
-      "latitude": 17.0725, // Replace with precise coordinates if available
-      "longitude": 78.1975
+      "latitude": 17.0557001,
+      "longitude": 78.1713319
     },
     "telephone": "+91-21-68-98-98",
-    "openingHours": "Mo-Sa 08:30-16:30",
+    "contactPoint": [
+      {
+        "@type": "ContactPoint",
+        "telephone": "+91-21-68-98-98",
+        "contactType": "admissions"
+      },
+      {
+        "@type": "ContactPoint",
+        "telephone": "+91-21-98-38-38",
+        "contactType": "general"
+      }
+    ],
+    "email": "indoglobalschool@gmail.com",
+    "openingHours": "Mo-Sa 08:30-17:00",
+    "curriculumUsed": "CBSE (Central Board of Secondary Education)",
+    "educationalLevel": ["Pre-Primary", "Primary", "Middle School"],
+    "foundingDate": "2025",
     "sameAs": [
       "https://www.instagram.com/indoglobal2025"
     ]
@@ -97,6 +116,9 @@ export default function RootLayout({
         />
       </head>
       <body className="font-sans antialiased bg-background text-foreground">
+        <a href="#main-content" className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[100] focus:px-4 focus:py-2 focus:bg-primary focus:text-primary-foreground focus:rounded-lg focus:text-sm focus:font-bold">
+          Skip to main content
+        </a>
         {children}
         {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>

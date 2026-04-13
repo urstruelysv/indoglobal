@@ -1,31 +1,38 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import Link from 'next/link';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { 
-  ArrowLeft, 
-  Download, 
-  Trash2, 
-  CheckCircle2, 
-  Phone, 
-  MapPin, 
-  UserPlus, 
+import { Input } from '@/components/ui/input';
+import {
+  ArrowLeft,
+  Download,
+  Trash2,
+  CheckCircle2,
+  Phone,
+  MapPin,
+  UserPlus,
   XCircle,
   Clock,
   Filter,
   MoreVertical,
-  LogOut
+  LogOut,
+  Upload,
+  ImageIcon,
+  Loader2,
+  FileText,
+  Briefcase,
 } from 'lucide-react';
 import { format } from 'date-fns';
 import { useRouter } from 'next/navigation';
-import { 
-  DropdownMenu, 
-  DropdownMenuContent, 
-  DropdownMenuItem, 
-  DropdownMenuTrigger 
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import { toast } from 'sonner';
 
@@ -54,6 +61,31 @@ interface Contact {
   submittedAt: string;
 }
 
+type GalleryImage = {
+  id: number;
+  filename: string;
+  originalName: string;
+  category: string;
+  caption: string | null;
+  uploadedAt: string;
+};
+
+interface CareerApplication {
+  id: number;
+  fullName: string;
+  email: string;
+  phone: string;
+  positionType: 'Teaching' | 'Non-Teaching';
+  positionApplying: string;
+  qualification: string;
+  experience: string;
+  resumeFilename: string;
+  resumeOriginalName: string;
+  message: string | null;
+  status: Status;
+  submittedAt: string;
+}
+
 const statusColors: Record<Status, string> = {
   'New': 'bg-blue-100 text-blue-700 border-blue-200',
   'Called': 'bg-amber-100 text-amber-700 border-amber-200',
@@ -62,7 +94,7 @@ const statusColors: Record<Status, string> = {
   'Not Converted': 'bg-rose-100 text-rose-700 border-rose-200',
 };
 
-const statusIcons: Record<Status, any> = {
+const statusIcons: Record<Status, React.ElementType> = {
   'New': Clock,
   'Called': Phone,
   'Visited': MapPin,
@@ -70,16 +102,31 @@ const statusIcons: Record<Status, any> = {
   'Not Converted': XCircle,
 };
 
+const galleryCategories = ['Campus', 'Events', 'Sports', 'Academics'] as const;
+
 export default function AdminDashboard() {
   const [admissions, setAdmissions] = useState<Admission[]>([]);
   const [contacts, setContacts] = useState<Contact[]>([]);
-  const [activeTab, setActiveTab] = useState<'admissions' | 'contacts'>('admissions');
+  const [careers, setCareers] = useState<CareerApplication[]>([]);
+  const [activeTab, setActiveTab] = useState<'admissions' | 'contacts' | 'gallery' | 'careers'>('admissions');
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<Status | 'All'>('All');
   const router = useRouter();
 
+  // Gallery state
+  const [galleryImages, setGalleryImages] = useState<GalleryImage[]>([]);
+  const [galleryLoading, setGalleryLoading] = useState(true);
+  const [careersLoading, setCareersLoading] = useState(true);
+  const [uploading, setUploading] = useState(false);
+  const [dragOver, setDragOver] = useState(false);
+  const [uploadCategory, setUploadCategory] = useState<string>('Campus');
+  const [uploadCaption, setUploadCaption] = useState('');
+  const [galleryFilter, setGalleryFilter] = useState<string>('All');
+
   useEffect(() => {
     fetchData();
+    fetchGallery();
+    fetchCareers();
   }, []);
 
   const handleLogout = async () => {
@@ -89,7 +136,7 @@ export default function AdminDashboard() {
         toast.success('Logged out');
         router.push('/login');
       }
-    } catch (error) {
+    } catch {
       toast.error('Failed to logout');
     }
   };
@@ -111,18 +158,77 @@ export default function AdminDashboard() {
         const data = await contactsRes.json();
         setContacts(data);
       }
-    } catch (error) {
-      console.error('Error fetching data:', error);
+    } catch {
       toast.error('Failed to load data');
     } finally {
       setLoading(false);
     }
   };
 
+  const fetchGallery = useCallback(async () => {
+    try {
+      setGalleryLoading(true);
+      const res = await fetch('/api/gallery');
+      const data = await res.json();
+      if (Array.isArray(data)) setGalleryImages(data);
+    } catch {
+      toast.error('Failed to load gallery');
+    } finally {
+      setGalleryLoading(false);
+    }
+  }, []);
+
+  const fetchCareers = useCallback(async () => {
+    try {
+      setCareersLoading(true);
+      const res = await fetch('/api/careers');
+      if (res.ok) {
+        const data = await res.json();
+        setCareers(data);
+      }
+    } catch {
+      toast.error('Failed to load career applications');
+    } finally {
+      setCareersLoading(false);
+    }
+  }, []);
+
+  const updateCareerStatus = async (id: number, newStatus: Status) => {
+    try {
+      const res = await fetch('/api/careers', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id, status: newStatus }),
+      });
+      if (res.ok) {
+        setCareers(prev => prev.map(c => c.id === id ? { ...c, status: newStatus } : c));
+        toast.success(`Status updated to ${newStatus}`);
+      } else {
+        throw new Error();
+      }
+    } catch {
+      toast.error('Failed to update status');
+    }
+  };
+
+  const deleteCareer = async (id: number) => {
+    if (!confirm('Delete this application? This cannot be undone.')) return;
+    try {
+      const res = await fetch(`/api/careers?id=${id}`, { method: 'DELETE' });
+      if (res.ok) {
+        setCareers(prev => prev.filter(c => c.id !== id));
+        toast.success('Application deleted');
+      } else {
+        throw new Error();
+      }
+    } catch {
+      toast.error('Failed to delete application');
+    }
+  };
+
   const updateStatus = async (type: 'admissions' | 'contact', id: number, newStatus: Status) => {
     try {
-      const endpoint = `/api/${type}`;
-      const res = await fetch(endpoint, {
+      const res = await fetch(`/api/${type}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id, status: newStatus }),
@@ -138,14 +244,14 @@ export default function AdminDashboard() {
       } else {
         throw new Error();
       }
-    } catch (error) {
+    } catch {
       toast.error('Failed to update status');
     }
   };
 
   const deleteRecord = async (type: 'admissions' | 'contact', id: number) => {
     if (!confirm('Are you sure you want to delete this record? This action cannot be undone.')) return;
-    
+
     try {
       const res = await fetch(`/api/${type}?id=${id}`, { method: 'DELETE' });
       if (res.ok) {
@@ -158,18 +264,18 @@ export default function AdminDashboard() {
       } else {
         throw new Error();
       }
-    } catch (error) {
+    } catch {
       toast.error('Failed to delete record');
     }
   };
 
-  const exportToCSV = (data: any[], filename: string) => {
+  const exportToCSV = (data: Record<string, unknown>[], filename: string) => {
     if (data.length === 0) return;
     const headers = Object.keys(data[0]).join(',');
-    const rows = data.map(row => 
+    const rows = data.map(row =>
       Object.values(row).map(val => `"${val}"`).join(',')
     ).join('\n');
-    
+
     const csv = `${headers}\n${rows}`;
     const blob = new Blob([csv], { type: 'text/csv' });
     const url = window.URL.createObjectURL(blob);
@@ -180,8 +286,78 @@ export default function AdminDashboard() {
     window.URL.revokeObjectURL(url);
   };
 
+  // Gallery actions
+  const uploadFile = async (file: File) => {
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error('File too large. Maximum 5MB.');
+      return;
+    }
+
+    setUploading(true);
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('category', uploadCategory);
+    formData.append('caption', uploadCaption);
+
+    try {
+      const res = await fetch('/api/gallery', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (res.ok) {
+        setUploadCaption('');
+        toast.success('Photo uploaded');
+        await fetchGallery();
+      } else {
+        const error = await res.json();
+        toast.error(error.error || 'Upload failed');
+      }
+    } catch {
+      toast.error('Upload failed. Please try again.');
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const deleteImage = async (id: number) => {
+    if (!confirm('Delete this image? This cannot be undone.')) return;
+
+    try {
+      const res = await fetch('/api/gallery', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id }),
+      });
+
+      if (res.ok) {
+        setGalleryImages(prev => prev.filter(img => img.id !== id));
+        toast.success('Photo deleted');
+      } else {
+        toast.error('Failed to delete');
+      }
+    } catch {
+      toast.error('Failed to delete image.');
+    }
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    setDragOver(false);
+    const files = Array.from(e.dataTransfer.files);
+    if (files[0]) uploadFile(files[0]);
+  };
+
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) uploadFile(file);
+    e.target.value = '';
+  };
+
   const filteredAdmissions = filter === 'All' ? admissions : admissions.filter(a => a.status === filter);
   const filteredContacts = filter === 'All' ? contacts : contacts.filter(c => c.status === filter);
+  const filteredGallery = galleryFilter === 'All' ? galleryImages : galleryImages.filter(img => img.category === galleryFilter);
+  const filteredCareers = filter === 'All' ? careers : careers.filter(c => c.status === filter);
 
   const StatusBadge = ({ status }: { status: Status }) => {
     const Icon = statusIcons[status];
@@ -197,280 +373,540 @@ export default function AdminDashboard() {
     <div className="min-h-screen bg-[#F8FAFC]">
       {/* Header */}
       <header className="bg-white border-b border-border/60 sticky top-0 z-40 backdrop-blur-md bg-white/80">
-        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-4">
+        <div className="max-w-7xl mx-auto px-4 md:px-6 py-3 md:py-4 flex items-center justify-between">
+          <div className="flex items-center gap-3 md:gap-4">
             <Link href="/" className="p-2 hover:bg-muted rounded-full transition-all hover:scale-105">
               <ArrowLeft size={20} className="text-primary" />
             </Link>
             <div>
-              <h1 className="text-xl font-serif font-bold text-primary">Admin Dashboard</h1>
-              <p className="text-xs text-muted-foreground font-medium">Indo Global School Management</p>
+              <h1 className="text-lg md:text-xl font-serif font-bold text-primary">Admin Dashboard</h1>
+              <p className="text-[10px] md:text-xs text-muted-foreground font-medium">Indo Global School Management</p>
             </div>
           </div>
-          <div className="flex items-center gap-3">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => exportToCSV(activeTab === 'admissions' ? admissions : contacts, `${activeTab}.csv`)}
-              className="hidden md:flex items-center gap-2 border-primary/20 hover:bg-primary/5 text-primary"
-            >
-              <Download size={16} />
-              Export {activeTab}
-            </Button>
+          <div className="flex items-center gap-2 md:gap-3">
+            {activeTab !== 'gallery' && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => exportToCSV(
+                  (activeTab === 'admissions' ? admissions : activeTab === 'careers' ? careers : contacts) as unknown as Record<string, unknown>[],
+                  `${activeTab}.csv`
+                )}
+                className="hidden md:flex items-center gap-2 border-primary/20 hover:bg-primary/5 text-primary"
+              >
+                <Download size={16} />
+                Export
+              </Button>
+            )}
             <Button
               variant="ghost"
               size="sm"
               onClick={handleLogout}
-              className="flex items-center gap-4 text-rose-600 hover:bg-rose-50 hover:text-rose-700 font-bold px-4"
+              className="flex items-center gap-2 md:gap-4 text-rose-600 hover:bg-rose-50 hover:text-rose-700 font-bold px-3 md:px-4"
             >
               <LogOut size={16} />
-              <span>Logout</span>
+              <span className="hidden sm:inline">Logout</span>
             </Button>
           </div>
         </div>
       </header>
 
-      {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 md:px-6 py-8">
+      <main className="max-w-7xl mx-auto px-4 md:px-6 py-6 md:py-8">
         {/* Stats Summary */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-          <Card className="p-4 border-none shadow-sm bg-white">
-            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1">Total Admissions</p>
-            <p className="text-2xl font-bold text-primary">{admissions.length}</p>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 mb-6 md:mb-8">
+          <Card className="p-3 md:p-4 border-none shadow-sm bg-white">
+            <p className="text-[10px] md:text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1">Admissions</p>
+            <p className="text-xl md:text-2xl font-bold text-primary">{admissions.length}</p>
           </Card>
-          <Card className="p-4 border-none shadow-sm bg-white">
-            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1">Total Inquiries</p>
-            <p className="text-2xl font-bold text-secondary">{contacts.length}</p>
+          <Card className="p-3 md:p-4 border-none shadow-sm bg-white">
+            <p className="text-[10px] md:text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1">Inquiries</p>
+            <p className="text-xl md:text-2xl font-bold text-secondary">{contacts.length}</p>
           </Card>
-          <Card className="p-4 border-none shadow-sm bg-white">
-            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1">Converted</p>
-            <p className="text-2xl font-bold text-emerald-600">
+          <Card className="p-3 md:p-4 border-none shadow-sm bg-white">
+            <p className="text-[10px] md:text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1">Converted</p>
+            <p className="text-xl md:text-2xl font-bold text-emerald-600">
               {admissions.filter(a => a.status === 'Converted').length + contacts.filter(c => c.status === 'Converted').length}
             </p>
           </Card>
-          <Card className="p-4 border-none shadow-sm bg-white">
-            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1">New Today</p>
-            <p className="text-2xl font-bold text-blue-600">
-              {[...admissions, ...contacts].filter(r => 
-                format(new Date(r.submittedAt), 'yyyy-MM-dd') === format(new Date(), 'yyyy-MM-dd')
-              ).length}
-            </p>
+          <Card className="p-3 md:p-4 border-none shadow-sm bg-white">
+            <p className="text-[10px] md:text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1">Careers</p>
+            <p className="text-xl md:text-2xl font-bold text-blue-600">{careers.length}</p>
           </Card>
         </div>
 
-        {/* Filters & Tabs */}
+        {/* Tabs & Filters */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
-          <div className="flex bg-white p-1 rounded-xl shadow-sm border border-border/40 w-fit">
-            <button
-              onClick={() => setActiveTab('admissions')}
-              className={`px-6 py-2 rounded-lg text-sm font-semibold transition-all ${
-                activeTab === 'admissions'
-                  ? 'bg-primary text-white shadow-md'
-                  : 'text-muted-foreground hover:text-primary'
-              }`}
-            >
-              Admissions
-            </button>
-            <button
-              onClick={() => setActiveTab('contacts')}
-              className={`px-6 py-2 rounded-lg text-sm font-semibold transition-all ${
-                activeTab === 'contacts'
-                  ? 'bg-primary text-white shadow-md'
-                  : 'text-muted-foreground hover:text-primary'
-              }`}
-            >
-              Inquiries
-            </button>
+          <div className="flex bg-white p-1 rounded-xl shadow-sm border border-border/40 w-fit overflow-x-auto">
+            {(['admissions', 'contacts', 'careers', 'gallery'] as const).map((tab) => (
+              <button
+                key={tab}
+                onClick={() => { setActiveTab(tab); setFilter('All'); setGalleryFilter('All'); }}
+                className={`px-3 md:px-6 py-2 rounded-lg text-xs md:text-sm font-semibold transition-all whitespace-nowrap ${
+                  activeTab === tab
+                    ? 'bg-primary text-white shadow-md'
+                    : 'text-muted-foreground hover:text-primary'
+                }`}
+              >
+                {tab === 'admissions' ? 'Admissions' : tab === 'contacts' ? 'Inquiries' : tab === 'careers' ? 'Careers' : 'Gallery'}
+              </button>
+            ))}
           </div>
 
-          <div className="flex items-center gap-2">
-            <Filter size={16} className="text-muted-foreground" />
-            <select 
-              value={filter}
-              onChange={(e) => setFilter(e.target.value as any)}
-              className="bg-white border border-border/60 rounded-lg px-3 py-1.5 text-sm font-medium focus:ring-2 focus:ring-primary/20 outline-none transition-all"
-            >
-              <option value="All">All Statuses</option>
-              <option value="New">New</option>
-              <option value="Called">Called</option>
-              <option value="Visited">Visited</option>
-              <option value="Converted">Converted</option>
-              <option value="Not Converted">Not Converted</option>
-            </select>
-          </div>
+          {activeTab === 'gallery' ? (
+            <div className="flex items-center gap-2">
+              <Filter size={16} className="text-muted-foreground" />
+              <select
+                value={galleryFilter}
+                onChange={(e) => setGalleryFilter(e.target.value)}
+                className="bg-white border border-border/60 rounded-lg px-3 py-1.5 text-sm font-medium focus:ring-2 focus:ring-primary/20 outline-none transition-all"
+              >
+                <option value="All">All Categories</option>
+                {galleryCategories.map(cat => (
+                  <option key={cat} value={cat}>{cat}</option>
+                ))}
+              </select>
+            </div>
+          ) : (
+            <div className="flex items-center gap-2">
+              <Filter size={16} className="text-muted-foreground" />
+              <select
+                value={filter}
+                onChange={(e) => setFilter(e.target.value as Status | 'All')}
+                className="bg-white border border-border/60 rounded-lg px-3 py-1.5 text-sm font-medium focus:ring-2 focus:ring-primary/20 outline-none transition-all"
+              >
+                <option value="All">All Statuses</option>
+                <option value="New">New</option>
+                <option value="Called">Called</option>
+                <option value="Visited">Visited</option>
+                <option value="Converted">Converted</option>
+                <option value="Not Converted">Not Converted</option>
+              </select>
+            </div>
+          )}
         </div>
 
-        {loading ? (
-          <div className="flex flex-col items-center justify-center py-24 gap-4">
-            <div className="w-8 h-8 border-4 border-primary/20 border-t-primary rounded-full animate-spin" />
-            <p className="text-muted-foreground font-medium animate-pulse">Fetching records...</p>
-          </div>
-        ) : (
-          <div className="space-y-4">
-            {activeTab === 'admissions' ? (
-              <div className="grid gap-4">
-                {filteredAdmissions.length === 0 ? (
-                  <Card className="p-12 text-center bg-white border-dashed border-2 border-border/60">
-                    <p className="text-muted-foreground">No records found matching the filter</p>
-                  </Card>
-                ) : (
-                  <div className="bg-white rounded-xl shadow-sm border border-border/40 overflow-hidden">
-                    <div className="overflow-x-auto">
-                      <table className="w-full">
-                        <thead>
-                          <tr className="bg-muted/30 border-b border-border/40">
-                            <th className="text-left py-4 px-6 font-bold text-xs uppercase tracking-wider text-muted-foreground">Parent/Student</th>
-                            <th className="text-left py-4 px-6 font-bold text-xs uppercase tracking-wider text-muted-foreground">Contact</th>
-                            <th className="text-left py-4 px-6 font-bold text-xs uppercase tracking-wider text-muted-foreground">Alt Contact</th>
-                            <th className="text-left py-4 px-6 font-bold text-xs uppercase tracking-wider text-muted-foreground">Class Info</th>
-                            <th className="text-left py-4 px-6 font-bold text-xs uppercase tracking-wider text-muted-foreground">Status</th>
-                            <th className="text-right py-4 px-6 font-bold text-xs uppercase tracking-wider text-muted-foreground">Actions</th>
-                          </tr>
-                        </thead>
-                        <tbody className="divide-y divide-border/40">
-                          {filteredAdmissions.map((admission) => (
-                            <tr key={admission.id} className="hover:bg-muted/10 transition-colors group">
-                              <td className="py-4 px-6">
-                                <div className="font-bold text-primary">{admission.parentName}</div>
-                                <div className="text-xs text-muted-foreground flex items-center gap-1 mt-1">
-                                  <Clock size={10} />
-                                  DOB: {admission.studentDOB}
-                                </div>
-                              </td>
-                              <td className="py-4 px-6">
-                                <div className="text-sm font-semibold">{admission.phone}</div>
-                                <div className="text-xs text-muted-foreground">{admission.email || 'No email provided'}</div>
-                              </td>
-                              <td className="py-4 px-6">
-                                <div className="text-sm font-semibold text-muted-foreground">{admission.altPhone || '-'}</div>
-                              </td>
-                              <td className="py-4 px-6">
-                                <Badge variant="secondary" className="bg-primary/5 text-primary border-primary/10">
-                                  Class: {admission.classApplying}
-                                </Badge>
-                                <div className="text-[10px] text-muted-foreground mt-1">
-                                  {format(new Date(admission.submittedAt), 'MMM dd, yyyy HH:mm')}
-                                </div>
-                              </td>
-                              <td className="py-4 px-6">
-                                <DropdownMenu>
-                                  <DropdownMenuTrigger asChild>
-                                    <button className="hover:opacity-80 transition-opacity">
-                                      <StatusBadge status={admission.status} />
-                                    </button>
-                                  </DropdownMenuTrigger>
-                                  <DropdownMenuContent align="start" className="w-48 p-1">
-                                    {(['New', 'Called', 'Visited', 'Converted', 'Not Converted'] as Status[]).map((s) => (
-                                      <DropdownMenuItem 
-                                        key={s} 
-                                        onClick={() => updateStatus('admissions', admission.id, s)}
-                                        className="flex items-center gap-2 py-2 px-3 cursor-pointer"
-                                      >
-                                        <div className={`w-2 h-2 rounded-full ${statusColors[s].split(' ')[0]}`} />
-                                        {s}
-                                      </DropdownMenuItem>
-                                    ))}
-                                  </DropdownMenuContent>
-                                </DropdownMenu>
-                              </td>
-                              <td className="py-4 px-6 text-right">
-                                <div className="flex items-center justify-end gap-2">
-                                  <button
-                                    onClick={() => deleteRecord('admissions', admission.id)}
-                                    className="p-2 text-rose-500 hover:bg-rose-50 rounded-lg transition-all opacity-0 group-hover:opacity-100"
-                                    title="Delete Record"
-                                  >
-                                    <Trash2 size={16} />
+        {/* ========= ADMISSIONS TAB ========= */}
+        {activeTab === 'admissions' && (
+          loading ? (
+            <div className="flex flex-col items-center justify-center py-24 gap-4">
+              <div className="w-8 h-8 border-4 border-primary/20 border-t-primary rounded-full animate-spin" />
+              <p className="text-muted-foreground font-medium animate-pulse">Fetching records...</p>
+            </div>
+          ) : (
+            <div className="grid gap-4">
+              {filteredAdmissions.length === 0 ? (
+                <Card className="p-12 text-center bg-white border-dashed border-2 border-border/60">
+                  <p className="text-muted-foreground">No records found matching the filter</p>
+                </Card>
+              ) : (
+                <div className="bg-white rounded-xl shadow-sm border border-border/40 overflow-hidden">
+                  <div className="overflow-x-auto">
+                    <table className="w-full">
+                      <thead>
+                        <tr className="bg-muted/30 border-b border-border/40">
+                          <th className="text-left py-4 px-4 md:px-6 font-bold text-xs uppercase tracking-wider text-muted-foreground">Parent/Student</th>
+                          <th className="text-left py-4 px-4 md:px-6 font-bold text-xs uppercase tracking-wider text-muted-foreground">Contact</th>
+                          <th className="text-left py-4 px-4 md:px-6 font-bold text-xs uppercase tracking-wider text-muted-foreground hidden lg:table-cell">Alt Contact</th>
+                          <th className="text-left py-4 px-4 md:px-6 font-bold text-xs uppercase tracking-wider text-muted-foreground">Class</th>
+                          <th className="text-left py-4 px-4 md:px-6 font-bold text-xs uppercase tracking-wider text-muted-foreground">Status</th>
+                          <th className="text-right py-4 px-4 md:px-6 font-bold text-xs uppercase tracking-wider text-muted-foreground">Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-border/40">
+                        {filteredAdmissions.map((admission) => (
+                          <tr key={admission.id} className="hover:bg-muted/10 transition-colors group">
+                            <td className="py-4 px-4 md:px-6">
+                              <div className="font-bold text-primary text-sm">{admission.parentName}</div>
+                              <div className="text-xs text-muted-foreground flex items-center gap-1 mt-1">
+                                <Clock size={10} />
+                                DOB: {admission.studentDOB}
+                              </div>
+                            </td>
+                            <td className="py-4 px-4 md:px-6">
+                              <div className="text-sm font-semibold">{admission.phone}</div>
+                              <div className="text-xs text-muted-foreground">{admission.email || 'No email'}</div>
+                            </td>
+                            <td className="py-4 px-4 md:px-6 hidden lg:table-cell">
+                              <div className="text-sm text-muted-foreground">{admission.altPhone || '-'}</div>
+                            </td>
+                            <td className="py-4 px-4 md:px-6">
+                              <Badge variant="secondary" className="bg-primary/5 text-primary border-primary/10 text-xs">
+                                {admission.classApplying}
+                              </Badge>
+                              <div className="text-[10px] text-muted-foreground mt-1">
+                                {format(new Date(admission.submittedAt), 'MMM dd, yyyy')}
+                              </div>
+                            </td>
+                            <td className="py-4 px-4 md:px-6">
+                              <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                  <button className="hover:opacity-80 transition-opacity">
+                                    <StatusBadge status={admission.status} />
                                   </button>
-                                </div>
-                              </td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent align="start" className="w-48 p-1">
+                                  {(['New', 'Called', 'Visited', 'Converted', 'Not Converted'] as Status[]).map((s) => (
+                                    <DropdownMenuItem
+                                      key={s}
+                                      onClick={() => updateStatus('admissions', admission.id, s)}
+                                      className="flex items-center gap-2 py-2 px-3 cursor-pointer"
+                                    >
+                                      <div className={`w-2 h-2 rounded-full ${statusColors[s].split(' ')[0]}`} />
+                                      {s}
+                                    </DropdownMenuItem>
+                                  ))}
+                                </DropdownMenuContent>
+                              </DropdownMenu>
+                            </td>
+                            <td className="py-4 px-4 md:px-6 text-right">
+                              <button
+                                onClick={() => deleteRecord('admissions', admission.id)}
+                                className="p-2 text-rose-500 hover:bg-rose-50 rounded-lg transition-all opacity-0 group-hover:opacity-100"
+                                title="Delete"
+                              >
+                                <Trash2 size={16} />
+                              </button>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              )}
+            </div>
+          )
+        )}
+
+        {/* ========= CONTACTS TAB ========= */}
+        {activeTab === 'contacts' && (
+          loading ? (
+            <div className="flex flex-col items-center justify-center py-24 gap-4">
+              <div className="w-8 h-8 border-4 border-primary/20 border-t-primary rounded-full animate-spin" />
+              <p className="text-muted-foreground font-medium animate-pulse">Fetching records...</p>
+            </div>
+          ) : (
+            <div className="grid md:grid-cols-2 gap-4">
+              {filteredContacts.length === 0 ? (
+                <Card className="col-span-full p-12 text-center bg-white border-dashed border-2 border-border/60">
+                  <p className="text-muted-foreground">No inquiries found matching the filter</p>
+                </Card>
+              ) : (
+                filteredContacts.map((contact) => (
+                  <Card key={contact.id} className="p-5 md:p-6 bg-white border-none shadow-sm hover:shadow-md transition-all group overflow-hidden relative">
+                    <div className="absolute top-0 right-0 w-1.5 h-full bg-primary/20 group-hover:bg-primary transition-colors" />
+
+                    <div className="flex justify-between items-start mb-4">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-sm">
+                          {contact.name.charAt(0)}
+                        </div>
+                        <div>
+                          <h3 className="font-bold text-primary text-sm">{contact.name}</h3>
+                          <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                            <span>{contact.email}</span>
+                            {contact.phone && <span>• {contact.phone}</span>}
+                          </div>
+                        </div>
+                      </div>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <button className="p-1 hover:bg-muted rounded-md transition-colors">
+                            <MoreVertical size={16} className="text-muted-foreground" />
+                          </button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                          <DropdownMenuItem
+                            className="text-rose-600 focus:text-rose-600 cursor-pointer"
+                            onClick={() => deleteRecord('contact', contact.id)}
+                          >
+                            <Trash2 size={14} className="mr-2" />
+                            Delete inquiry
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
                     </div>
+
+                    <div className="bg-[#F1F5F9] p-3 md:p-4 rounded-xl mb-4">
+                      <div className="text-xs font-bold text-muted-foreground uppercase mb-1 flex items-center gap-2">
+                        <CheckCircle2 size={12} className="text-primary" />
+                        {contact.subject}
+                      </div>
+                      <p className="text-sm text-foreground leading-relaxed italic">&ldquo;{contact.message}&rdquo;</p>
+                    </div>
+
+                    <div className="flex items-center justify-between mt-auto pt-2">
+                      <div className="text-[10px] text-muted-foreground font-medium">
+                        {format(new Date(contact.submittedAt), 'MMM dd, yyyy HH:mm')}
+                      </div>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <button className="hover:opacity-80 transition-opacity">
+                            <StatusBadge status={contact.status} />
+                          </button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end" className="w-48 p-1">
+                          {(['New', 'Called', 'Visited', 'Converted', 'Not Converted'] as Status[]).map((s) => (
+                            <DropdownMenuItem
+                              key={s}
+                              onClick={() => updateStatus('contact', contact.id, s)}
+                              className="flex items-center gap-2 py-2 px-3 cursor-pointer"
+                            >
+                              <div className={`w-2 h-2 rounded-full ${statusColors[s].split(' ')[0]}`} />
+                              {s}
+                            </DropdownMenuItem>
+                          ))}
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </div>
+                  </Card>
+                ))
+              )}
+            </div>
+          )
+        )}
+
+        {/* ========= CAREERS TAB ========= */}
+        {activeTab === 'careers' && (
+          careersLoading ? (
+            <div className="flex flex-col items-center justify-center py-24 gap-4">
+              <div className="w-8 h-8 border-4 border-primary/20 border-t-primary rounded-full animate-spin" />
+              <p className="text-muted-foreground font-medium animate-pulse">Fetching applications...</p>
+            </div>
+          ) : (
+            <div className="grid gap-4">
+              {filteredCareers.length === 0 ? (
+                <Card className="p-12 text-center bg-white border-dashed border-2 border-border/60">
+                  <Briefcase className="w-12 h-12 text-muted-foreground/30 mx-auto mb-3" />
+                  <p className="text-muted-foreground">No career applications found</p>
+                </Card>
+              ) : (
+                <div className="bg-white rounded-xl shadow-sm border border-border/40 overflow-hidden">
+                  <div className="overflow-x-auto">
+                    <table className="w-full">
+                      <thead>
+                        <tr className="bg-muted/30 border-b border-border/40">
+                          <th className="text-left py-4 px-4 md:px-6 font-bold text-xs uppercase tracking-wider text-muted-foreground">Applicant</th>
+                          <th className="text-left py-4 px-4 md:px-6 font-bold text-xs uppercase tracking-wider text-muted-foreground hidden md:table-cell">Position</th>
+                          <th className="text-left py-4 px-4 md:px-6 font-bold text-xs uppercase tracking-wider text-muted-foreground hidden lg:table-cell">Qualification</th>
+                          <th className="text-left py-4 px-4 md:px-6 font-bold text-xs uppercase tracking-wider text-muted-foreground">Resume</th>
+                          <th className="text-left py-4 px-4 md:px-6 font-bold text-xs uppercase tracking-wider text-muted-foreground">Status</th>
+                          <th className="text-right py-4 px-4 md:px-6 font-bold text-xs uppercase tracking-wider text-muted-foreground">Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-border/40">
+                        {filteredCareers.map((app) => (
+                          <tr key={app.id} className="hover:bg-muted/10 transition-colors group">
+                            <td className="py-4 px-4 md:px-6">
+                              <div className="font-bold text-primary text-sm">{app.fullName}</div>
+                              <div className="text-xs text-muted-foreground">{app.email}</div>
+                              <div className="text-xs text-muted-foreground">{app.phone}</div>
+                              {/* Show position on mobile since column is hidden */}
+                              <div className="md:hidden mt-1">
+                                <Badge variant="secondary" className="bg-primary/5 text-primary border-primary/10 text-[10px]">
+                                  {app.positionType} — {app.positionApplying}
+                                </Badge>
+                              </div>
+                            </td>
+                            <td className="py-4 px-4 md:px-6 hidden md:table-cell">
+                              <Badge variant="secondary" className={`text-xs mb-1 ${app.positionType === 'Teaching' ? 'bg-blue-50 text-blue-700 border-blue-200' : 'bg-purple-50 text-purple-700 border-purple-200'}`}>
+                                {app.positionType}
+                              </Badge>
+                              <div className="text-sm font-medium text-foreground">{app.positionApplying}</div>
+                              <div className="text-[10px] text-muted-foreground mt-0.5">{app.experience}</div>
+                            </td>
+                            <td className="py-4 px-4 md:px-6 hidden lg:table-cell">
+                              <div className="text-sm text-foreground">{app.qualification}</div>
+                              {app.message && (
+                                <p className="text-xs text-muted-foreground mt-1 max-w-[200px] truncate" title={app.message}>
+                                  {app.message}
+                                </p>
+                              )}
+                            </td>
+                            <td className="py-4 px-4 md:px-6">
+                              <a
+                                href={`/api/careers/resume?filename=${encodeURIComponent(app.resumeFilename)}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="inline-flex items-center gap-1.5 text-xs font-semibold text-primary hover:text-primary/80 transition-colors"
+                              >
+                                <FileText size={14} />
+                                <span className="hidden sm:inline">{app.resumeOriginalName.length > 15 ? app.resumeOriginalName.slice(0, 15) + '...' : app.resumeOriginalName}</span>
+                                <span className="sm:hidden">View</span>
+                              </a>
+                              <div className="text-[10px] text-muted-foreground mt-1">
+                                {format(new Date(app.submittedAt), 'MMM dd, yyyy')}
+                              </div>
+                            </td>
+                            <td className="py-4 px-4 md:px-6">
+                              <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                  <button className="hover:opacity-80 transition-opacity">
+                                    <StatusBadge status={app.status} />
+                                  </button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent align="start" className="w-48 p-1">
+                                  {(['New', 'Called', 'Visited', 'Converted', 'Not Converted'] as Status[]).map((s) => (
+                                    <DropdownMenuItem
+                                      key={s}
+                                      onClick={() => updateCareerStatus(app.id, s)}
+                                      className="flex items-center gap-2 py-2 px-3 cursor-pointer"
+                                    >
+                                      <div className={`w-2 h-2 rounded-full ${statusColors[s].split(' ')[0]}`} />
+                                      {s}
+                                    </DropdownMenuItem>
+                                  ))}
+                                </DropdownMenuContent>
+                              </DropdownMenu>
+                            </td>
+                            <td className="py-4 px-4 md:px-6 text-right">
+                              <button
+                                onClick={() => deleteCareer(app.id)}
+                                className="p-2 text-rose-500 hover:bg-rose-50 rounded-lg transition-all opacity-0 group-hover:opacity-100"
+                                title="Delete"
+                              >
+                                <Trash2 size={16} />
+                              </button>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              )}
+            </div>
+          )
+        )}
+
+        {/* ========= GALLERY TAB ========= */}
+        {activeTab === 'gallery' && (
+          <div className="space-y-6">
+            {/* Upload Area */}
+            <div className="bg-white rounded-xl md:rounded-2xl border border-border/20 shadow-sm p-5 md:p-8">
+              <h2 className="font-serif font-bold text-lg md:text-xl text-primary mb-4 md:mb-6">Upload New Photo</h2>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4 mb-4 md:mb-6">
+                <div>
+                  <label className="block text-xs md:text-sm font-medium text-foreground mb-1.5">Category</label>
+                  <Select value={uploadCategory} onValueChange={setUploadCategory}>
+                    <SelectTrigger className="bg-background text-sm">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {galleryCategories.map((cat) => (
+                        <SelectItem key={cat} value={cat}>{cat}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="md:col-span-2">
+                  <label className="block text-xs md:text-sm font-medium text-foreground mb-1.5">Caption (optional)</label>
+                  <Input
+                    value={uploadCaption}
+                    onChange={(e) => setUploadCaption(e.target.value)}
+                    placeholder="e.g. Annual Sports Day 2025"
+                    className="bg-background text-sm"
+                    maxLength={300}
+                  />
+                </div>
+              </div>
+
+              {/* Drop Zone */}
+              <div
+                onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
+                onDragLeave={() => setDragOver(false)}
+                onDrop={handleDrop}
+                className={`relative border-2 border-dashed rounded-xl p-8 md:p-12 text-center transition-colors duration-200 ${
+                  dragOver
+                    ? 'border-primary bg-primary/5'
+                    : 'border-border/40 hover:border-border/60'
+                }`}
+              >
+                {uploading ? (
+                  <div className="flex flex-col items-center gap-3">
+                    <Loader2 className="w-8 h-8 md:w-10 md:h-10 text-primary animate-spin" />
+                    <p className="text-primary font-medium text-sm">Uploading...</p>
+                  </div>
+                ) : (
+                  <div className="flex flex-col items-center gap-2 md:gap-3">
+                    <Upload className="w-8 h-8 md:w-10 md:h-10 text-muted-foreground" />
+                    <p className="text-foreground font-medium text-sm">
+                      Drag and drop a photo here, or{' '}
+                      <label className="text-primary font-semibold cursor-pointer hover:underline">
+                        browse
+                        <input
+                          type="file"
+                          accept="image/jpeg,image/png,image/webp"
+                          onChange={handleFileSelect}
+                          className="hidden"
+                        />
+                      </label>
+                    </p>
+                    <p className="text-[11px] text-muted-foreground">JPEG, PNG, or WebP — Max 5MB</p>
                   </div>
                 )}
               </div>
-            ) : (
-              <div className="grid md:grid-cols-2 gap-4">
-                {filteredContacts.length === 0 ? (
-                  <Card className="col-span-full p-12 text-center bg-white border-dashed border-2 border-border/60">
-                    <p className="text-muted-foreground">No inquiries found matching the filter</p>
-                  </Card>
-                ) : (
-                  filteredContacts.map((contact) => (
-                    <Card key={contact.id} className="p-6 bg-white border-none shadow-sm hover:shadow-md transition-all group overflow-hidden relative">
-                      <div className="absolute top-0 right-0 w-1.5 h-full bg-primary/20 group-hover:bg-primary transition-colors" />
-                      
-                      <div className="flex justify-between items-start mb-4">
-                        <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold">
-                            {contact.name.charAt(0)}
-                          </div>
-                          <div>
-                            <h3 className="font-bold text-primary">{contact.name}</h3>
-                            <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                              <span>{contact.email}</span>
-                              {contact.phone && <span>• {contact.phone}</span>}
-                            </div>
-                          </div>
-                        </div>
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <button className="p-1 hover:bg-muted rounded-md transition-colors">
-                              <MoreVertical size={16} className="text-muted-foreground" />
-                            </button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuItem 
-                              className="text-rose-600 focus:text-rose-600 cursor-pointer"
-                              onClick={() => deleteRecord('contact', contact.id)}
-                            >
-                              <Trash2 size={14} className="mr-2" />
-                              Delete inquiry
-                            </DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </div>
+            </div>
 
-                      <div className="bg-[#F1F5F9] p-4 rounded-xl mb-4 relative">
-                        <div className="text-xs font-bold text-muted-foreground uppercase mb-1 flex items-center gap-2">
-                          <CheckCircle2 size={12} className="text-primary" />
-                          {contact.subject}
-                        </div>
-                        <p className="text-sm text-foreground leading-relaxed italic">"{contact.message}"</p>
-                      </div>
-
-                      <div className="flex items-center justify-between mt-auto pt-2">
-                        <div className="text-[10px] text-muted-foreground font-medium">
-                          {format(new Date(contact.submittedAt), 'MMM dd, yyyy HH:mm')}
-                        </div>
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <button className="hover:opacity-80 transition-opacity">
-                              <StatusBadge status={contact.status} />
-                            </button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end" className="w-48 p-1">
-                            {(['New', 'Called', 'Visited', 'Converted', 'Not Converted'] as Status[]).map((s) => (
-                              <DropdownMenuItem 
-                                key={s} 
-                                onClick={() => updateStatus('contact', contact.id, s)}
-                                className="flex items-center gap-2 py-2 px-3 cursor-pointer"
-                              >
-                                <div className={`w-2 h-2 rounded-full ${statusColors[s].split(' ')[0]}`} />
-                                {s}
-                              </DropdownMenuItem>
-                            ))}
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </div>
-                    </Card>
-                  ))
-                )}
+            {/* Image Grid */}
+            <div className="bg-white rounded-xl md:rounded-2xl border border-border/20 shadow-sm p-5 md:p-8">
+              <div className="flex items-center justify-between mb-4 md:mb-6">
+                <h2 className="font-serif font-bold text-lg md:text-xl text-primary">
+                  {galleryFilter === 'All' ? 'All Photos' : galleryFilter}
+                </h2>
+                <span className="text-xs md:text-sm text-muted-foreground">{filteredGallery.length} photos</span>
               </div>
-            )}
+
+              {galleryLoading ? (
+                <div className="text-center py-12">
+                  <Loader2 className="w-8 h-8 text-primary animate-spin mx-auto" />
+                </div>
+              ) : filteredGallery.length === 0 ? (
+                <div className="text-center py-12">
+                  <ImageIcon className="w-12 h-12 md:w-16 md:h-16 text-muted-foreground/30 mx-auto mb-3" />
+                  <p className="text-muted-foreground text-sm">
+                    {galleryFilter === 'All' ? 'No photos uploaded yet.' : `No photos in ${galleryFilter}.`}
+                  </p>
+                </div>
+              ) : (
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">
+                  {filteredGallery.map((image) => (
+                    <div key={image.id} className="group relative rounded-xl overflow-hidden border border-border/20">
+                      <img
+                        src={`/images/gallery/${image.filename}`}
+                        alt={image.caption || image.originalName}
+                        className="w-full h-36 md:h-48 object-cover"
+                        loading="lazy"
+                      />
+                      {/* Hover overlay */}
+                      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/50 transition-colors duration-200">
+                        <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                          <Button
+                            variant="destructive"
+                            size="sm"
+                            onClick={() => deleteImage(image.id)}
+                            className="rounded-full text-xs"
+                          >
+                            <Trash2 size={14} className="mr-1" />
+                            Delete
+                          </Button>
+                        </div>
+                      </div>
+                      {/* Info bar */}
+                      <div className="p-2.5 md:p-3 bg-white">
+                        <p className="text-xs font-medium text-foreground truncate">
+                          {image.caption || image.originalName}
+                        </p>
+                        <p className="text-[10px] text-muted-foreground uppercase tracking-wider mt-0.5">
+                          {image.category}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
         )}
       </main>

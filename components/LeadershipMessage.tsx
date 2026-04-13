@@ -131,13 +131,15 @@ export default function LeadershipMessage() {
           {/* Nav arrows — hidden on small mobile, visible from 400px+ */}
           <button
             onClick={prev}
-            className="hidden min-[400px]:flex absolute -left-2 md:-left-5 top-1/2 -translate-y-1/2 w-8 h-8 md:w-10 md:h-10 rounded-full bg-white/90 shadow-md border border-border/20 items-center justify-center text-primary hover:bg-primary hover:text-white transition-colors z-10"
+            aria-label="Previous leader message"
+            className="hidden min-[400px]:flex absolute -left-2 md:-left-5 top-1/2 -translate-y-1/2 w-8 h-8 md:w-10 md:h-10 rounded-full bg-white/90 shadow-md border border-border/20 items-center justify-center text-primary hover:bg-primary hover:text-white transition-colors z-10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
           >
             <ChevronLeft size={16} className="md:w-5 md:h-5" />
           </button>
           <button
             onClick={next}
-            className="hidden min-[400px]:flex absolute -right-2 md:-right-5 top-1/2 -translate-y-1/2 w-8 h-8 md:w-10 md:h-10 rounded-full bg-white/90 shadow-md border border-border/20 items-center justify-center text-primary hover:bg-primary hover:text-white transition-colors z-10"
+            aria-label="Next leader message"
+            className="hidden min-[400px]:flex absolute -right-2 md:-right-5 top-1/2 -translate-y-1/2 w-8 h-8 md:w-10 md:h-10 rounded-full bg-white/90 shadow-md border border-border/20 items-center justify-center text-primary hover:bg-primary hover:text-white transition-colors z-10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
           >
             <ChevronRight size={16} className="md:w-5 md:h-5" />
           </button>

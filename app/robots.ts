@@ -3,7 +3,7 @@ export default function robots() {
     rules: {
       userAgent: '*',
       allow: '/',
-      disallow: '/admin/',
+      disallow: ['/admin/', '/api/', '/login'],
     },
     sitemap: 'https://indoglobalschooligs.com/sitemap.xml',
   }
