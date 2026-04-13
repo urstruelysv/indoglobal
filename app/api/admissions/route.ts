@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { db } from '@/lib/db';
+import { getDb } from '@/lib/db';
 import { admissions } from '@/lib/schema';
 import { eq, desc } from 'drizzle-orm';
 import { rateLimit } from '@/lib/rate-limit';
@@ -18,6 +18,7 @@ function sanitize(str: string, maxLength: number): string {
 
 export async function POST(request: NextRequest) {
   try {
+    const db = getDb();
     // Rate limit: 5 submissions per minute per IP
     const ip = request.headers.get('x-forwarded-for')?.split(',')[0] || 'unknown';
     const { success } = rateLimit(`admission:${ip}`, { maxRequests: 5, windowMs: 60 * 1000 });
@@ -91,6 +92,7 @@ export async function POST(request: NextRequest) {
 // Protected by middleware — admin only
 export async function GET() {
   try {
+    const db = getDb();
     const data = await db.query.admissions.findMany({
       orderBy: [desc(admissions.submittedAt)]
     });
@@ -104,6 +106,7 @@ export async function GET() {
 // Protected by middleware — admin only
 export async function PATCH(request: NextRequest) {
   try {
+    const db = getDb();
     const body = await request.json();
     const { id, status } = body;
 
@@ -129,6 +132,7 @@ export async function PATCH(request: NextRequest) {
 // Protected by middleware — admin only
 export async function DELETE(request: NextRequest) {
   try {
+    const db = getDb();
     const { searchParams } = new URL(request.url);
     const idParam = searchParams.get('id');
 
