@@ -6,19 +6,26 @@ const protectedRoutes = ['/admin'];
 // Protected API routes (sensitive methods only)
 const protectedApiPrefixes = ['/api/admissions', '/api/contact'];
 const sensitiveMethods = ['GET', 'PATCH', 'DELETE'];
+// Gallery: public GET (homepage needs it), auth for write methods
+const galleryPrefix = '/api/gallery';
+const gallerySensitiveMethods = ['POST', 'PATCH', 'DELETE'];
 
 export async function proxy(req: NextRequest) {
   const path = req.nextUrl.pathname;
   const isProtectedRoute = protectedRoutes.some(route => path.startsWith(route));
   
-  const isProtectedApi = protectedApiPrefixes.some(prefix => path.startsWith(prefix)) && 
+  const isProtectedApi = protectedApiPrefixes.some(prefix => path.startsWith(prefix)) &&
                          sensitiveMethods.includes(req.method);
 
-  if (isProtectedRoute || isProtectedApi) {
+  const isProtectedGallery = path.startsWith(galleryPrefix) &&
+                             gallerySensitiveMethods.includes(req.method);
+
+  if (isProtectedRoute || isProtectedApi || isProtectedGallery) {
     const session = req.cookies.get('admin_session')?.value;
-    
+    const isApi = isProtectedApi || isProtectedGallery;
+
     if (!session) {
-      if (isProtectedApi) {
+      if (isApi) {
         return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
       }
       return NextResponse.redirect(new URL('/login', req.url));
@@ -28,7 +35,7 @@ export async function proxy(req: NextRequest) {
       await decrypt(session);
       return NextResponse.next();
     } catch (error) {
-      if (isProtectedApi) {
+      if (isApi) {
         return NextResponse.json({ error: 'Invalid session' }, { status: 401 });
       }
       return NextResponse.redirect(new URL('/login', req.url));
@@ -43,5 +50,6 @@ export const config = {
     '/admin/:path*',
     '/api/admissions/:path*',
     '/api/contact/:path*',
+    '/api/gallery/:path*',
   ],
 };

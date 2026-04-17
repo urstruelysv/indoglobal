@@ -1,4 +1,4 @@
-import { pgTable, serial, text, timestamp, varchar, integer, pgEnum } from "drizzle-orm/pg-core";
+import { pgTable, serial, text, timestamp, varchar, integer, boolean, pgEnum } from "drizzle-orm/pg-core";
 
 export const statusEnum = pgEnum("status", ["New", "Called", "Visited", "Converted", "Not Converted"]);
 
@@ -23,4 +23,15 @@ export const contacts = pgTable("contacts", {
   message: text("message").notNull(),
   status: statusEnum("status").default("New").notNull(),
   submittedAt: timestamp("submitted_at").defaultNow().notNull(),
+});
+
+export const galleryImages = pgTable("gallery_images", {
+  id: serial("id").primaryKey(),
+  title: text("title").notNull(),
+  category: text("category").notNull(),
+  // Full data URL: "data:image/jpeg;base64,...."
+  imageData: text("image_data").notNull(),
+  displayOrder: integer("display_order").default(0).notNull(),
+  active: boolean("active").default(true).notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
 });

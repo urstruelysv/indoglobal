@@ -28,6 +28,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Badge } from '@/components/ui/badge';
 import { toast } from 'sonner';
+import GalleryManager from '@/components/admin/GalleryManager';
 
 type Status = 'New' | 'Called' | 'Visited' | 'Converted' | 'Not Converted';
 
@@ -73,7 +74,7 @@ const statusIcons: Record<Status, any> = {
 export default function AdminDashboard() {
   const [admissions, setAdmissions] = useState<Admission[]>([]);
   const [contacts, setContacts] = useState<Contact[]>([]);
-  const [activeTab, setActiveTab] = useState<'admissions' | 'contacts'>('admissions');
+  const [activeTab, setActiveTab] = useState<'admissions' | 'contacts' | 'gallery'>('admissions');
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<Status | 'All'>('All');
   const router = useRouter();
@@ -208,15 +209,17 @@ export default function AdminDashboard() {
             </div>
           </div>
           <div className="flex items-center gap-3">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => exportToCSV(activeTab === 'admissions' ? admissions : contacts, `${activeTab}.csv`)}
-              className="hidden md:flex items-center gap-2 border-primary/20 hover:bg-primary/5 text-primary"
-            >
-              <Download size={16} />
-              Export {activeTab}
-            </Button>
+            {activeTab !== 'gallery' && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => exportToCSV(activeTab === 'admissions' ? admissions : contacts, `${activeTab}.csv`)}
+                className="hidden md:flex items-center gap-2 border-primary/20 hover:bg-primary/5 text-primary"
+              >
+                <Download size={16} />
+                Export {activeTab}
+              </Button>
+            )}
             <Button
               variant="ghost"
               size="sm"
@@ -281,26 +284,40 @@ export default function AdminDashboard() {
             >
               Inquiries
             </button>
+            <button
+              onClick={() => setActiveTab('gallery')}
+              className={`px-6 py-2 rounded-lg text-sm font-semibold transition-all ${
+                activeTab === 'gallery'
+                  ? 'bg-primary text-white shadow-md'
+                  : 'text-muted-foreground hover:text-primary'
+              }`}
+            >
+              Gallery
+            </button>
           </div>
 
-          <div className="flex items-center gap-2">
-            <Filter size={16} className="text-muted-foreground" />
-            <select 
-              value={filter}
-              onChange={(e) => setFilter(e.target.value as any)}
-              className="bg-white border border-border/60 rounded-lg px-3 py-1.5 text-sm font-medium focus:ring-2 focus:ring-primary/20 outline-none transition-all"
-            >
-              <option value="All">All Statuses</option>
-              <option value="New">New</option>
-              <option value="Called">Called</option>
-              <option value="Visited">Visited</option>
-              <option value="Converted">Converted</option>
-              <option value="Not Converted">Not Converted</option>
-            </select>
-          </div>
+          {activeTab !== 'gallery' && (
+            <div className="flex items-center gap-2">
+              <Filter size={16} className="text-muted-foreground" />
+              <select
+                value={filter}
+                onChange={(e) => setFilter(e.target.value as any)}
+                className="bg-white border border-border/60 rounded-lg px-3 py-1.5 text-sm font-medium focus:ring-2 focus:ring-primary/20 outline-none transition-all"
+              >
+                <option value="All">All Statuses</option>
+                <option value="New">New</option>
+                <option value="Called">Called</option>
+                <option value="Visited">Visited</option>
+                <option value="Converted">Converted</option>
+                <option value="Not Converted">Not Converted</option>
+              </select>
+            </div>
+          )}
         </div>
 
-        {loading ? (
+        {activeTab === 'gallery' ? (
+          <GalleryManager />
+        ) : loading ? (
           <div className="flex flex-col items-center justify-center py-24 gap-4">
             <div className="w-8 h-8 border-4 border-primary/20 border-t-primary rounded-full animate-spin" />
             <p className="text-muted-foreground font-medium animate-pulse">Fetching records...</p>
