@@ -36,10 +36,10 @@ export default function GallerySection() {
       <div className="max-w-7xl mx-auto px-6">
         {/* Section Header */}
         <div className="text-center mb-16 space-y-4">
-          <p className="text-secondary font-serif text-sm uppercase tracking-widest font-semibold">
+          <p className="text-secondary font-serif text-base md:text-lg uppercase tracking-widest font-semibold">
             ✨ Experience Indo Global School ✨
           </p>
-          <h2 className="text-4xl md:text-5xl font-serif font-bold text-primary">
+          <h2 className="text-primary">
             Our Facilities & Activities
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">

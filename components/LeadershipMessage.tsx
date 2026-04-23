@@ -44,122 +44,165 @@ export default function LeadershipMessage() {
   }, [paused, next]);
 
   const leader = leaders[active];
+  const counter = `${String(active + 1).padStart(2, '0')} / ${String(leaders.length).padStart(2, '0')}`;
 
   return (
     <section
       id="leadership"
-      className="relative section-y-tight surface-cream overflow-hidden"
+      className="relative py-20 md:py-28 lg:py-32 bg-background overflow-hidden"
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
       onTouchStart={() => setPaused(true)}
       onTouchEnd={() => setPaused(false)}
     >
-      <div className="decor-blob -top-16 left-10 w-80 h-80 bg-primary/10" />
-      <div className="decor-blob -bottom-16 right-10 w-80 h-80 bg-accent/15" />
+      {/* Ambient wash */}
+      <div
+        aria-hidden
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background:
+            'radial-gradient(800px 500px at 15% 20%, rgba(15,118,110,0.07), transparent 60%), radial-gradient(700px 400px at 90% 90%, rgba(240,167,38,0.09), transparent 60%)',
+        }}
+      />
 
-      <div className="max-w-5xl mx-auto px-5 md:px-8 relative">
-        {/* Section label */}
-        <div className="text-center mb-10 md:mb-14 space-y-3">
-          <span className="eyebrow centered">From Our Leadership</span>
-          <div className="ornament"><span className="ornament-dot" /></div>
+      <div className="relative max-w-[1240px] mx-auto px-5 md:px-8">
+        {/* Editorial header */}
+        <div className="max-w-3xl mb-14 md:mb-20">
+          <div className="flex items-center gap-3 mb-5">
+            <span className="h-px w-10 bg-gradient-to-r from-secondary to-accent" />
+            <span className="eyebrow !tracking-[0.28em]">From Our Leadership</span>
+          </div>
+          <h2 className="font-serif font-bold leading-[1.02] tracking-tight">
+            <span className="text-foreground">Voices that </span>
+            <span className="gradient-text-brand italic">shape us.</span>
+          </h2>
         </div>
 
-        {/* Slider */}
+        {/* Magazine spread */}
         <div className="relative">
           <AnimatePresence mode="wait">
             <motion.div
               key={active}
-              initial={{ opacity: 0, x: 40 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -40 }}
-              transition={{ duration: 0.35 }}
-              className="bg-card rounded-2xl md:rounded-[1.5rem] shadow-[0_20px_50px_-20px_rgba(15,42,63,0.18)] border border-border/60 overflow-hidden relative"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.4 }}
+              className="grid grid-cols-1 lg:grid-cols-12 gap-8 md:gap-12 lg:gap-16 items-center"
             >
-              {/* Mobile: stacked — photo small + text compact */}
-              {/* Desktop: side-by-side */}
-              <div className="flex flex-col md:flex-row">
-                {/* Photo */}
-                <div className="relative w-full md:w-60 lg:w-80 shrink-0">
-                  {/* Mobile: centered circle photo */}
-                  <div className="flex md:hidden items-center gap-4 p-6 pb-0">
-                    <div className="relative shrink-0">
-                      <div className="absolute -inset-1 rounded-full bg-gradient-to-br from-primary/30 to-accent/30 blur-sm" />
-                      <div className="relative w-20 h-20 rounded-full overflow-hidden ring-4 ring-card">
-                        <img src={leader.photo} alt={leader.name} className="w-full h-full object-cover" />
-                      </div>
-                    </div>
-                    <div>
-                      <p className="font-serif font-bold text-lg text-foreground leading-tight">{leader.name}</p>
-                      <p className="text-secondary text-[11px] font-bold uppercase tracking-[0.2em] mt-1">{leader.role}</p>
+              {/* Portrait — left half */}
+              <motion.div
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.6, delay: 0.1 }}
+                className="lg:col-span-5 relative"
+              >
+                <div className="relative aspect-[4/5] max-w-md mx-auto lg:mx-0">
+                  {/* Backing block */}
+                  <div
+                    aria-hidden
+                    className="absolute inset-0 translate-x-4 translate-y-4 rounded-[1.25rem] bg-gradient-to-br from-primary/20 via-accent/15 to-secondary/15"
+                  />
+                  <div className="relative h-full w-full rounded-[1.25rem] overflow-hidden ring-1 ring-border/60 shadow-[0_30px_80px_-30px_rgba(15,42,63,0.35)]">
+                    <img
+                      src={leader.photo}
+                      alt={leader.name}
+                      className="w-full h-full object-cover"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-primary/35 via-transparent to-transparent" />
+
+                    {/* Name plate overlay */}
+                    <div className="absolute bottom-0 left-0 right-0 p-5 md:p-6 text-white">
+                      <p className="text-[11px] uppercase tracking-[0.24em] font-semibold text-white/85">
+                        {leader.role}
+                      </p>
+                      <p className="font-serif font-bold text-2xl md:text-[1.75rem] leading-tight mt-1 drop-shadow">
+                        {leader.name}
+                      </p>
                     </div>
                   </div>
 
-                  {/* Desktop: full-height photo */}
-                  <div className="hidden md:block relative h-full min-h-[340px] lg:min-h-[380px]">
-                    <img src={leader.photo} alt={leader.name} className="w-full h-full object-cover" />
-                    <div className="absolute inset-0 bg-gradient-to-t from-primary/30 via-transparent to-transparent" />
+                  {/* Counter badge */}
+                  <div className="absolute -top-3 -right-3 md:-top-4 md:-right-4 bg-card border border-border/60 rounded-full px-4 py-1.5 shadow-[0_8px_24px_-8px_rgba(15,42,63,0.2)]">
+                    <span className="text-[11px] font-semibold tracking-[0.18em] text-muted-foreground tabular-nums">
+                      {counter}
+                    </span>
                   </div>
                 </div>
+              </motion.div>
 
-                {/* Content */}
-                <div className="flex-1 p-6 pt-4 md:p-10 lg:p-12 flex flex-col justify-center relative">
-                  {/* Decorative corner accent */}
-                  <div className="hidden md:block absolute top-8 right-8 w-12 h-12 rounded-full bg-gradient-to-br from-accent/20 to-secondary/20 blur-md" />
+              {/* Message — right half */}
+              <motion.div
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.6, delay: 0.2 }}
+                className="lg:col-span-7 relative"
+              >
+                {/* Giant decorative quote mark */}
+                <Quote
+                  aria-hidden
+                  className="absolute -top-6 -left-2 md:-top-10 md:-left-6 w-16 h-16 md:w-24 md:h-24 text-accent/20"
+                  strokeWidth={1.5}
+                />
 
-                  {/* Desktop name */}
-                  <div className="hidden md:block mb-5">
-                    <span className="eyebrow">{leader.role}&apos;s Message</span>
-                    <h3 className="font-serif font-bold text-2xl lg:text-[1.75rem] text-foreground mt-3">{leader.name}</h3>
-                  </div>
+                <p className="relative font-serif text-xl md:text-2xl lg:text-[1.6rem] text-foreground leading-[1.55] tracking-[-0.005em]">
+                  {leader.message}
+                </p>
 
-                  {/* Message */}
-                  <div className="relative mb-5">
-                    <Quote className="absolute -top-2 -left-2 md:-top-3 md:-left-3 w-8 h-8 md:w-10 md:h-10 text-accent/40" />
-                    <p className="text-foreground leading-[1.75] text-[15px] md:text-base lg:text-[17px] pl-6 md:pl-8">
-                      {leader.message}
-                    </p>
-                  </div>
-
-                  {/* Signature quote */}
-                  <div className="relative pl-5 md:pl-6 border-l-[3px] border-gradient bg-gradient-to-r from-accent/5 to-transparent py-2 rounded-r-lg" style={{ borderImage: 'linear-gradient(180deg, var(--secondary), var(--accent)) 1' }}>
-                    <p className="text-sm md:text-[15px] lg:text-base font-serif italic text-muted-foreground leading-relaxed">
-                      &ldquo;{leader.signature}&rdquo;
-                    </p>
-                  </div>
+                <div className="mt-8 md:mt-10 flex items-start gap-5">
+                  <div className="h-px flex-1 bg-gradient-to-r from-border to-transparent mt-4" />
+                  <p className="font-serif italic text-[15px] md:text-base text-muted-foreground leading-relaxed max-w-md text-right shrink-0">
+                    &ldquo;{leader.signature}&rdquo;
+                  </p>
                 </div>
-              </div>
+              </motion.div>
             </motion.div>
           </AnimatePresence>
 
-          {/* Nav arrows — hidden on small mobile, visible from 400px+ */}
-          <button
-            onClick={prev}
-            aria-label="Previous leader message"
-            className="hidden min-[400px]:flex absolute -left-3 md:-left-6 top-1/2 -translate-y-1/2 w-10 h-10 md:w-12 md:h-12 rounded-full bg-card shadow-lg border border-border/60 items-center justify-center text-primary hover:bg-primary hover:text-white hover:border-primary hover:scale-110 transition-all z-10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
-          >
-            <ChevronLeft size={18} className="md:w-5 md:h-5" />
-          </button>
-          <button
-            onClick={next}
-            aria-label="Next leader message"
-            className="hidden min-[400px]:flex absolute -right-3 md:-right-6 top-1/2 -translate-y-1/2 w-10 h-10 md:w-12 md:h-12 rounded-full bg-card shadow-lg border border-border/60 items-center justify-center text-primary hover:bg-primary hover:text-white hover:border-primary hover:scale-110 transition-all z-10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
-          >
-            <ChevronRight size={18} className="md:w-5 md:h-5" />
-          </button>
-        </div>
+          {/* Controls row */}
+          <div className="flex items-center justify-between mt-14 md:mt-20 pt-6 border-t border-border/50">
+            {/* Tabs for leaders */}
+            <div className="flex items-center gap-1">
+              {leaders.map((l, i) => (
+                <button
+                  key={i}
+                  onClick={() => setActive(i)}
+                  className={`group relative px-3 md:px-4 py-2 text-xs md:text-sm font-semibold tracking-wide transition-colors ${
+                    i === active ? 'text-foreground' : 'text-muted-foreground hover:text-foreground'
+                  }`}
+                  aria-label={`View ${l.role}'s message`}
+                >
+                  <span className="inline-block align-middle mr-2 text-[10px] font-mono text-muted-foreground">
+                    0{i + 1}
+                  </span>
+                  {l.role}
+                  {i === active && (
+                    <motion.span
+                      layoutId="leader-underline"
+                      className="absolute left-0 right-0 -bottom-[9px] h-[2px] bg-gradient-to-r from-secondary to-accent rounded-full"
+                    />
+                  )}
+                </button>
+              ))}
+            </div>
 
-        {/* Dots — also tappable on mobile */}
-        <div className="flex justify-center gap-3 mt-8">
-          {leaders.map((_, i) => (
-            <button
-              key={i}
-              onClick={() => setActive(i)}
-              className={`h-2 rounded-full transition-all duration-300 ${
-                i === active ? 'w-10 bg-gradient-to-r from-secondary to-accent' : 'w-2 bg-border hover:bg-primary/30'
-              }`}
-              aria-label={`View ${leaders[i].role}'s message`}
-            />
-          ))}
+            {/* Arrows */}
+            <div className="flex items-center gap-2">
+              <button
+                onClick={prev}
+                aria-label="Previous leader message"
+                className="w-11 h-11 rounded-full border border-border/70 text-foreground hover:bg-foreground hover:text-background hover:border-foreground transition-all flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+              >
+                <ChevronLeft size={18} />
+              </button>
+              <button
+                onClick={next}
+                aria-label="Next leader message"
+                className="w-11 h-11 rounded-full border border-border/70 text-foreground hover:bg-foreground hover:text-background hover:border-foreground transition-all flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+              >
+                <ChevronRight size={18} />
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </section>

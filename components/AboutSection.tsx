@@ -221,178 +221,210 @@ const highlights = [
     Icon: IconOpenBook,
     title: 'CBSE Excellence',
     description: 'Rigorous academics with skill-building and value education at every stage.',
-    bg: 'bg-[rgba(15,118,110,0.05)]',
-    hoverBg: 'group-hover:bg-[rgba(15,118,110,0.1)]',
-    accent: 'bg-primary',
     iconColor: 'text-primary',
-    ring: 'ring-primary/15',
+    chipBg: 'bg-primary/8',
+    chipRing: 'ring-primary/15',
+    accent: 'from-primary to-primary/50',
   },
   {
     Icon: IconIndiaMap,
     title: 'Indian Roots, Global Wings',
     description: 'Grounded in Indian culture and wisdom, built for a global future.',
-    bg: 'bg-[rgba(229,106,31,0.06)]',
-    hoverBg: 'group-hover:bg-[rgba(229,106,31,0.12)]',
-    accent: 'bg-secondary',
     iconColor: 'text-secondary',
-    ring: 'ring-secondary/15',
+    chipBg: 'bg-secondary/8',
+    chipRing: 'ring-secondary/15',
+    accent: 'from-secondary to-secondary/50',
   },
   {
     Icon: IconBrainBulb,
     title: 'Experiential Learning',
     description: 'Hands-on experiments, real projects, and curiosity-driven classrooms.',
-    bg: 'bg-[rgba(240,167,38,0.08)]',
-    hoverBg: 'group-hover:bg-[rgba(240,167,38,0.15)]',
-    accent: 'bg-accent',
     iconColor: 'text-[#8A5A10]',
-    ring: 'ring-accent/20',
+    chipBg: 'bg-accent/12',
+    chipRing: 'ring-accent/20',
+    accent: 'from-accent to-accent/50',
   },
   {
     Icon: IconSafeChild,
     title: 'Safe & Secure',
     description: '24/7 CCTV, GPS buses, medical room — your child\'s safety is our priority.',
-    bg: 'bg-[rgba(15,118,110,0.05)]',
-    hoverBg: 'group-hover:bg-[rgba(15,118,110,0.1)]',
-    accent: 'bg-primary',
     iconColor: 'text-primary',
-    ring: 'ring-primary/15',
+    chipBg: 'bg-primary/8',
+    chipRing: 'ring-primary/15',
+    accent: 'from-primary to-primary/50',
   },
   {
     Icon: IconTeacher,
     title: 'Passionate Faculty',
     description: 'Teachers who mentor, challenge, and bring out the best in every child.',
-    bg: 'bg-[rgba(229,106,31,0.06)]',
-    hoverBg: 'group-hover:bg-[rgba(229,106,31,0.12)]',
-    accent: 'bg-secondary',
     iconColor: 'text-secondary',
-    ring: 'ring-secondary/15',
+    chipBg: 'bg-secondary/8',
+    chipRing: 'ring-secondary/15',
+    accent: 'from-secondary to-secondary/50',
   },
   {
     Icon: IconKidsPlay,
     title: 'Holistic Growth',
     description: 'Sports, arts, yoga, and life skills — shaping confident, well-rounded kids.',
-    bg: 'bg-[rgba(240,167,38,0.08)]',
-    hoverBg: 'group-hover:bg-[rgba(240,167,38,0.15)]',
-    accent: 'bg-accent',
     iconColor: 'text-[#8A5A10]',
-    ring: 'ring-accent/20',
+    chipBg: 'bg-accent/12',
+    chipRing: 'ring-accent/20',
+    accent: 'from-accent to-accent/50',
   },
 ];
 
 export default function AboutSection() {
   return (
-    <section id="about" className="relative section-y surface-warm overflow-hidden">
-      <div className="decor-blob top-20 -right-24 w-96 h-96 bg-primary/10" />
-      <div className="max-w-7xl mx-auto px-5 md:px-8 relative">
+    <section id="about" className="relative py-20 md:py-28 lg:py-32 bg-background overflow-hidden">
+      {/* Ambient wash */}
+      <div
+        aria-hidden
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background:
+            'radial-gradient(900px 500px at 95% 10%, rgba(15,118,110,0.08), transparent 60%), radial-gradient(800px 400px at 5% 90%, rgba(240,167,38,0.08), transparent 60%)',
+        }}
+      />
+
+      <div className="relative max-w-[1240px] mx-auto px-5 md:px-8">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: '-80px' }}
-          transition={{ duration: 0.5 }}
-          className="text-center mb-14 md:mb-20 space-y-4"
+          transition={{ duration: 0.6 }}
+          className="max-w-3xl mb-16 md:mb-24"
         >
-          <span className="eyebrow centered">Discover Our Story</span>
-          <h2 className="font-serif font-bold">
+          <div className="flex items-center gap-3 mb-5">
+            <span className="h-px w-10 bg-gradient-to-r from-secondary to-accent" />
+            <span className="eyebrow !tracking-[0.28em]">Discover Our Story</span>
+          </div>
+          <h2 className="font-serif font-bold leading-[1.02] tracking-tight">
             <span className="text-foreground">About </span>
-            <span className="gradient-text-brand">Indo Global School</span>
+            <span className="gradient-text-brand italic">Indo Global School</span>
           </h2>
-          <div className="ornament"><span className="ornament-dot" /></div>
-          <p className="text-base md:text-lg text-muted-foreground max-w-2xl mx-auto pt-1">
+          <p className="mt-6 text-lg md:text-xl text-muted-foreground leading-[1.6] max-w-2xl">
             Where every child is encouraged to dream, explore, and shine.
           </p>
         </motion.div>
 
-        {/* Two-column: image + text */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center mb-16 md:mb-24">
+        {/* Editorial spread — image + text */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-center mb-24 md:mb-32">
           {/* Image */}
           <motion.div
-            initial={{ opacity: 0, x: -30 }}
-            whileInView={{ opacity: 1, x: 0 }}
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: '-80px' }}
-            transition={{ duration: 0.6 }}
-            className="relative group"
+            transition={{ duration: 0.7 }}
+            className="lg:col-span-6 relative group"
           >
-            <div className="absolute -inset-4 bg-gradient-to-br from-primary/15 via-accent/10 to-secondary/10 rounded-[2rem] blur-2xl group-hover:from-primary/20 group-hover:to-secondary/15 transition-all duration-500" />
-            <div className="relative aspect-[4/3] md:aspect-[3/4] lg:aspect-[4/3] rounded-2xl md:rounded-[1.5rem] overflow-hidden shadow-2xl border-4 border-card">
-              <img
-                src="/schoolbuilding.png"
-                alt="Indo Global School Campus"
-                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                loading="lazy"
+            <div className="relative">
+              {/* Backing block for depth */}
+              <div
+                aria-hidden
+                className="absolute inset-0 translate-x-5 translate-y-5 rounded-[1.5rem] bg-gradient-to-br from-primary/18 via-accent/12 to-secondary/15"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-primary/70 via-primary/20 to-transparent" />
-              <div className="absolute bottom-5 left-5 md:bottom-6 md:left-6 text-white">
-                <p className="font-serif font-bold text-lg md:text-xl drop-shadow">Our Campus</p>
-                <p className="text-xs md:text-sm text-white/85">Kishan Nagar, Shadnagar</p>
+              <div className="relative aspect-[5/6] md:aspect-[4/5] rounded-[1.5rem] overflow-hidden ring-1 ring-border/60 shadow-[0_30px_80px_-30px_rgba(15,42,63,0.35)]">
+                <img
+                  src="/schoolbuilding.png"
+                  alt="Indo Global School Campus"
+                  className="w-full h-full object-cover transition-transform duration-[1200ms] group-hover:scale-[1.04]"
+                  loading="lazy"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-primary/55 via-primary/10 to-transparent" />
+
+                {/* Bottom overlay label */}
+                <div className="absolute bottom-0 left-0 right-0 p-6 md:p-8 text-white">
+                  <p className="text-[11px] uppercase tracking-[0.24em] font-semibold text-white/85 mb-1">
+                    Our Campus
+                  </p>
+                  <p className="font-serif font-bold text-xl md:text-2xl drop-shadow">
+                    Kishan Nagar, Shadnagar
+                  </p>
+                </div>
               </div>
+
+              {/* Floating stat card */}
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: 0.3 }}
+                className="hidden md:block absolute -bottom-8 -right-8 bg-card border border-border/60 rounded-2xl px-6 py-5 shadow-[0_20px_50px_-20px_rgba(15,42,63,0.25)]"
+              >
+                <p className="text-[11px] uppercase tracking-[0.22em] font-semibold text-muted-foreground">
+                  Campus
+                </p>
+                <p className="font-serif font-bold text-3xl text-foreground mt-1">3 Acres</p>
+                <div className="mt-2 h-[2px] w-10 bg-gradient-to-r from-secondary to-accent rounded-full" />
+              </motion.div>
             </div>
           </motion.div>
 
           {/* Text */}
           <motion.div
-            initial={{ opacity: 0, x: 30 }}
-            whileInView={{ opacity: 1, x: 0 }}
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: '-80px' }}
-            transition={{ duration: 0.6, delay: 0.15 }}
-            className="space-y-5 md:space-y-6"
+            transition={{ duration: 0.7, delay: 0.15 }}
+            className="lg:col-span-6 space-y-6"
           >
-            <h3 className="font-serif font-bold">
+            <h3 className="font-serif font-bold tracking-tight">
               <span className="gradient-text-sunrise">Learn. Lead. Shine.</span>
             </h3>
-            <p className="text-base md:text-lg text-foreground/90 leading-[1.8]">
+            <p className="text-base md:text-lg text-foreground/85 leading-[1.8]">
               At Indo Global School, education is not merely the acquisition of knowledge — it is the art of shaping character, igniting curiosity, and cultivating leadership. We blend the best of global learning practices with the timeless strength of Indian values.
             </p>
-            <p className="text-base md:text-lg text-foreground/90 leading-[1.8]">
+            <p className="text-base md:text-lg text-foreground/85 leading-[1.8]">
               Every classroom is a vibrant space for discovery, dialogue, and creativity — inspiring children to become confident thinkers and compassionate leaders.
             </p>
-            <div className="relative rounded-2xl p-5 md:p-6 overflow-hidden" style={{ background: 'linear-gradient(135deg, rgba(15,118,110,0.07), rgba(240,167,38,0.06))' }}>
-              <div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-primary via-secondary to-accent" />
-              <p className="text-[15px] md:text-base font-serif italic text-foreground leading-relaxed pl-2">
+            <div className="relative pl-6 border-l-2 border-accent/60 mt-8">
+              <p className="font-serif italic text-lg md:text-xl text-foreground leading-[1.65]">
                 &ldquo;Education at IGS is not confined to textbooks — it is an awakening of the mind and spirit.&rdquo;
               </p>
             </div>
           </motion.div>
         </div>
 
-        {/* Cards — 2 columns on mobile, 3 on desktop */}
-        <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+        {/* Highlights — refined editorial grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6">
           {highlights.map((item, i) => (
             <motion.div
               key={i}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: '-30px' }}
-              transition={{ duration: 0.35, delay: i * 0.06 }}
+              viewport={{ once: true, margin: '-40px' }}
+              transition={{ duration: 0.5, delay: i * 0.06 }}
               whileHover={{ y: -4 }}
-              className="group"
+              className="group relative"
             >
-              <div className={`relative h-full rounded-2xl p-5 md:p-7 bg-card border border-border/60 ring-1 ${item.ring} shadow-[0_2px_10px_-4px_rgba(15,42,63,0.06)] group-hover:shadow-[0_16px_40px_-16px_rgba(15,42,63,0.18)] transition-all duration-300 overflow-hidden`}>
-                {/* Floating accent */}
-                <div className={`absolute -top-6 -right-6 w-20 h-20 md:w-24 md:h-24 ${item.accent} rounded-full opacity-[0.06] group-hover:opacity-[0.14] group-hover:scale-[1.5] transition-all duration-700`} />
+              <div className="relative h-full rounded-2xl p-6 md:p-8 bg-card border border-border/60 hover:border-border transition-all duration-500 shadow-[0_2px_10px_-4px_rgba(15,42,63,0.05)] group-hover:shadow-[0_24px_50px_-24px_rgba(15,42,63,0.2)] overflow-hidden">
+                {/* Top accent bar — grows on hover */}
+                <div
+                  className={`absolute top-0 left-0 h-[3px] w-8 bg-gradient-to-r ${item.accent} rounded-full transition-all duration-500 group-hover:w-full group-hover:opacity-90 opacity-60`}
+                />
 
-                {/* Soft bg surface on hover */}
-                <div className={`absolute inset-0 ${item.bg} opacity-0 ${item.hoverBg.replace('group-hover:', 'group-hover:opacity-100 group-hover:')} transition-opacity duration-500`} />
-
-                <div className="relative">
-                  {/* Icon */}
-                  <div className={`w-12 h-12 md:w-16 md:h-16 mb-4 md:mb-5 ${item.iconColor} p-2 md:p-2.5 rounded-xl ${item.bg} inline-flex items-center justify-center ring-1 ${item.ring}`}>
-                    <item.Icon className="w-full h-full" />
-                  </div>
-
-                  {/* Title */}
-                  <h3 className="text-[15px] md:text-lg font-serif font-bold text-foreground mb-1.5 md:mb-2 leading-snug">
-                    {item.title}
-                  </h3>
-
-                  {/* Description */}
-                  <p className="text-xs md:text-sm text-muted-foreground leading-relaxed line-clamp-3 md:line-clamp-none">
-                    {item.description}
-                  </p>
-
-                  {/* Accent bar on hover */}
-                  <div className={`mt-4 md:mt-5 h-[3px] w-8 ${item.accent} rounded-full opacity-50 group-hover:w-16 group-hover:opacity-100 transition-all duration-500`} />
+                {/* Icon chip */}
+                <div
+                  className={`w-14 h-14 md:w-16 md:h-16 mb-6 ${item.iconColor} p-3 rounded-xl ${item.chipBg} inline-flex items-center justify-center ring-1 ${item.chipRing}`}
+                >
+                  <item.Icon className="w-full h-full" />
                 </div>
+
+                {/* Title */}
+                <h3 className="!text-xl md:!text-[1.4rem] font-serif font-bold text-foreground mb-2 leading-tight tracking-tight">
+                  {item.title}
+                </h3>
+
+                {/* Description */}
+                <p className="text-sm md:text-[15px] text-muted-foreground leading-[1.65]">
+                  {item.description}
+                </p>
+
+                {/* Number marker */}
+                <span className="absolute bottom-5 right-6 text-[11px] font-mono text-muted-foreground/50 tabular-nums tracking-wider">
+                  0{i + 1}
+                </span>
               </div>
             </motion.div>
           ))}
