@@ -221,77 +221,90 @@ const highlights = [
     Icon: IconOpenBook,
     title: 'CBSE Excellence',
     description: 'Rigorous academics with skill-building and value education at every stage.',
-    bg: 'bg-primary/[0.06]',
-    hoverBg: 'hover:bg-primary/[0.1]',
+    bg: 'bg-[rgba(15,118,110,0.05)]',
+    hoverBg: 'group-hover:bg-[rgba(15,118,110,0.1)]',
     accent: 'bg-primary',
+    iconColor: 'text-primary',
+    ring: 'ring-primary/15',
   },
   {
     Icon: IconIndiaMap,
     title: 'Indian Roots, Global Wings',
     description: 'Grounded in Indian culture and wisdom, built for a global future.',
-    bg: 'bg-secondary/[0.06]',
-    hoverBg: 'hover:bg-secondary/[0.1]',
+    bg: 'bg-[rgba(229,106,31,0.06)]',
+    hoverBg: 'group-hover:bg-[rgba(229,106,31,0.12)]',
     accent: 'bg-secondary',
+    iconColor: 'text-secondary',
+    ring: 'ring-secondary/15',
   },
   {
     Icon: IconBrainBulb,
     title: 'Experiential Learning',
     description: 'Hands-on experiments, real projects, and curiosity-driven classrooms.',
-    bg: 'bg-accent/[0.06]',
-    hoverBg: 'hover:bg-accent/[0.1]',
+    bg: 'bg-[rgba(240,167,38,0.08)]',
+    hoverBg: 'group-hover:bg-[rgba(240,167,38,0.15)]',
     accent: 'bg-accent',
+    iconColor: 'text-[#8A5A10]',
+    ring: 'ring-accent/20',
   },
   {
     Icon: IconSafeChild,
     title: 'Safe & Secure',
     description: '24/7 CCTV, GPS buses, medical room — your child\'s safety is our priority.',
-    bg: 'bg-primary/[0.06]',
-    hoverBg: 'hover:bg-primary/[0.1]',
+    bg: 'bg-[rgba(15,118,110,0.05)]',
+    hoverBg: 'group-hover:bg-[rgba(15,118,110,0.1)]',
     accent: 'bg-primary',
+    iconColor: 'text-primary',
+    ring: 'ring-primary/15',
   },
   {
     Icon: IconTeacher,
     title: 'Passionate Faculty',
     description: 'Teachers who mentor, challenge, and bring out the best in every child.',
-    bg: 'bg-secondary/[0.06]',
-    hoverBg: 'hover:bg-secondary/[0.1]',
+    bg: 'bg-[rgba(229,106,31,0.06)]',
+    hoverBg: 'group-hover:bg-[rgba(229,106,31,0.12)]',
     accent: 'bg-secondary',
+    iconColor: 'text-secondary',
+    ring: 'ring-secondary/15',
   },
   {
     Icon: IconKidsPlay,
     title: 'Holistic Growth',
     description: 'Sports, arts, yoga, and life skills — shaping confident, well-rounded kids.',
-    bg: 'bg-accent/[0.06]',
-    hoverBg: 'hover:bg-accent/[0.1]',
+    bg: 'bg-[rgba(240,167,38,0.08)]',
+    hoverBg: 'group-hover:bg-[rgba(240,167,38,0.15)]',
     accent: 'bg-accent',
+    iconColor: 'text-[#8A5A10]',
+    ring: 'ring-accent/20',
   },
 ];
 
 export default function AboutSection() {
   return (
-    <section id="about" className="py-14 md:py-20 lg:py-24 bg-background overflow-hidden">
-      <div className="max-w-7xl mx-auto px-5 md:px-6">
+    <section id="about" className="relative section-y surface-warm overflow-hidden">
+      <div className="decor-blob top-20 -right-24 w-96 h-96 bg-primary/10" />
+      <div className="max-w-7xl mx-auto px-5 md:px-8 relative">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: '-80px' }}
           transition={{ duration: 0.5 }}
-          className="text-center mb-10 md:mb-16 space-y-2 md:space-y-3"
+          className="text-center mb-14 md:mb-20 space-y-4"
         >
-          <p className="text-secondary font-serif text-xs md:text-sm uppercase tracking-widest font-semibold">
-            Discover Our Story
-          </p>
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-serif font-bold text-primary">
-            About Indo Global School
+          <span className="eyebrow centered">Discover Our Story</span>
+          <h2 className="font-serif font-bold">
+            <span className="text-foreground">About </span>
+            <span className="gradient-text-brand">Indo Global School</span>
           </h2>
-          <p className="text-sm md:text-base lg:text-lg text-muted-foreground max-w-2xl mx-auto">
+          <div className="ornament"><span className="ornament-dot" /></div>
+          <p className="text-base md:text-lg text-muted-foreground max-w-2xl mx-auto pt-1">
             Where every child is encouraged to dream, explore, and shine.
           </p>
         </motion.div>
 
         {/* Two-column: image + text */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-14 items-center mb-14 md:mb-20">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center mb-16 md:mb-24">
           {/* Image */}
           <motion.div
             initial={{ opacity: 0, x: -30 }}
@@ -300,18 +313,18 @@ export default function AboutSection() {
             transition={{ duration: 0.6 }}
             className="relative group"
           >
-            <div className="absolute -inset-3 bg-primary/8 rounded-2xl blur-2xl group-hover:bg-primary/12 transition-all duration-500" />
-            <div className="relative aspect-[4/3] md:aspect-[3/4] lg:aspect-[4/3] rounded-2xl overflow-hidden shadow-xl border-2 border-white">
+            <div className="absolute -inset-4 bg-gradient-to-br from-primary/15 via-accent/10 to-secondary/10 rounded-[2rem] blur-2xl group-hover:from-primary/20 group-hover:to-secondary/15 transition-all duration-500" />
+            <div className="relative aspect-[4/3] md:aspect-[3/4] lg:aspect-[4/3] rounded-2xl md:rounded-[1.5rem] overflow-hidden shadow-2xl border-4 border-card">
               <img
                 src="/schoolbuilding.png"
                 alt="Indo Global School Campus"
                 className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                 loading="lazy"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-primary/50 via-transparent to-transparent" />
-              <div className="absolute bottom-4 left-4 md:bottom-5 md:left-5 text-white">
-                <p className="font-serif font-bold text-base md:text-lg">Our Campus</p>
-                <p className="text-xs text-white/80">Kishan Nagar, Shadnagar</p>
+              <div className="absolute inset-0 bg-gradient-to-t from-primary/70 via-primary/20 to-transparent" />
+              <div className="absolute bottom-5 left-5 md:bottom-6 md:left-6 text-white">
+                <p className="font-serif font-bold text-lg md:text-xl drop-shadow">Our Campus</p>
+                <p className="text-xs md:text-sm text-white/85">Kishan Nagar, Shadnagar</p>
               </div>
             </div>
           </motion.div>
@@ -322,19 +335,20 @@ export default function AboutSection() {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true, margin: '-80px' }}
             transition={{ duration: 0.6, delay: 0.15 }}
-            className="space-y-4 md:space-y-5"
+            className="space-y-5 md:space-y-6"
           >
-            <h3 className="text-2xl md:text-3xl font-serif font-bold text-primary">
-              Learn. Lead. Shine.
+            <h3 className="font-serif font-bold">
+              <span className="gradient-text-sunrise">Learn. Lead. Shine.</span>
             </h3>
-            <p className="text-sm md:text-base lg:text-lg text-foreground leading-relaxed">
+            <p className="text-base md:text-lg text-foreground/90 leading-[1.8]">
               At Indo Global School, education is not merely the acquisition of knowledge — it is the art of shaping character, igniting curiosity, and cultivating leadership. We blend the best of global learning practices with the timeless strength of Indian values.
             </p>
-            <p className="text-sm md:text-base lg:text-lg text-foreground leading-relaxed">
+            <p className="text-base md:text-lg text-foreground/90 leading-[1.8]">
               Every classroom is a vibrant space for discovery, dialogue, and creativity — inspiring children to become confident thinkers and compassionate leaders.
             </p>
-            <div className="bg-primary/5 rounded-xl p-4 md:p-5 border-l-4 border-primary">
-              <p className="text-sm md:text-base font-serif italic text-foreground leading-relaxed">
+            <div className="relative rounded-2xl p-5 md:p-6 overflow-hidden" style={{ background: 'linear-gradient(135deg, rgba(15,118,110,0.07), rgba(240,167,38,0.06))' }}>
+              <div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-primary via-secondary to-accent" />
+              <p className="text-[15px] md:text-base font-serif italic text-foreground leading-relaxed pl-2">
                 &ldquo;Education at IGS is not confined to textbooks — it is an awakening of the mind and spirit.&rdquo;
               </p>
             </div>
@@ -342,7 +356,7 @@ export default function AboutSection() {
         </div>
 
         {/* Cards — 2 columns on mobile, 3 on desktop */}
-        <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 md:gap-5">
+        <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
           {highlights.map((item, i) => (
             <motion.div
               key={i}
@@ -353,27 +367,32 @@ export default function AboutSection() {
               whileHover={{ y: -4 }}
               className="group"
             >
-              <div className={`relative h-full rounded-xl md:rounded-2xl p-4 md:p-6 ${item.bg} ${item.hoverBg} transition-colors duration-300 overflow-hidden`}>
+              <div className={`relative h-full rounded-2xl p-5 md:p-7 bg-card border border-border/60 ring-1 ${item.ring} shadow-[0_2px_10px_-4px_rgba(15,42,63,0.06)] group-hover:shadow-[0_16px_40px_-16px_rgba(15,42,63,0.18)] transition-all duration-300 overflow-hidden`}>
                 {/* Floating accent */}
-                <div className={`absolute -top-4 -right-4 w-12 h-12 md:w-16 md:h-16 ${item.accent} rounded-full opacity-[0.05] group-hover:opacity-[0.1] group-hover:scale-[2] transition-all duration-700`} />
+                <div className={`absolute -top-6 -right-6 w-20 h-20 md:w-24 md:h-24 ${item.accent} rounded-full opacity-[0.06] group-hover:opacity-[0.14] group-hover:scale-[1.5] transition-all duration-700`} />
 
-                {/* Icon */}
-                <div className="w-10 h-10 md:w-14 md:h-14 mb-3 md:mb-4 text-primary">
-                  <item.Icon className="w-full h-full" />
+                {/* Soft bg surface on hover */}
+                <div className={`absolute inset-0 ${item.bg} opacity-0 ${item.hoverBg.replace('group-hover:', 'group-hover:opacity-100 group-hover:')} transition-opacity duration-500`} />
+
+                <div className="relative">
+                  {/* Icon */}
+                  <div className={`w-12 h-12 md:w-16 md:h-16 mb-4 md:mb-5 ${item.iconColor} p-2 md:p-2.5 rounded-xl ${item.bg} inline-flex items-center justify-center ring-1 ${item.ring}`}>
+                    <item.Icon className="w-full h-full" />
+                  </div>
+
+                  {/* Title */}
+                  <h3 className="text-[15px] md:text-lg font-serif font-bold text-foreground mb-1.5 md:mb-2 leading-snug">
+                    {item.title}
+                  </h3>
+
+                  {/* Description */}
+                  <p className="text-xs md:text-sm text-muted-foreground leading-relaxed line-clamp-3 md:line-clamp-none">
+                    {item.description}
+                  </p>
+
+                  {/* Accent bar on hover */}
+                  <div className={`mt-4 md:mt-5 h-[3px] w-8 ${item.accent} rounded-full opacity-50 group-hover:w-16 group-hover:opacity-100 transition-all duration-500`} />
                 </div>
-
-                {/* Title */}
-                <h3 className="text-sm md:text-lg font-serif font-bold text-primary mb-1 md:mb-2 leading-snug">
-                  {item.title}
-                </h3>
-
-                {/* Description — hidden on very small, shown from 360px+ */}
-                <p className="text-xs md:text-sm text-foreground/75 leading-relaxed line-clamp-3 md:line-clamp-none">
-                  {item.description}
-                </p>
-
-                {/* Accent bar on hover */}
-                <div className={`mt-3 md:mt-4 h-0.5 md:h-1 w-0 group-hover:w-8 md:group-hover:w-10 ${item.accent} rounded-full transition-all duration-500`} />
               </div>
             </motion.div>
           ))}

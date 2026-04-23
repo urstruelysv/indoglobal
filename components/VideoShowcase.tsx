@@ -8,22 +8,24 @@ export default function VideoShowcase() {
   const [isPlaying, setIsPlaying] = useState(false);
 
   return (
-    <section className="py-14 md:py-20 lg:py-24 bg-white overflow-hidden">
-      <div className="max-w-5xl mx-auto px-5 md:px-6">
+    <section className="relative section-y overflow-hidden" style={{ background: 'linear-gradient(180deg, var(--background) 0%, #FAF3E4 100%)' }}>
+      <div className="decor-blob top-10 left-10 w-80 h-80 bg-primary/8" />
+      <div className="decor-blob bottom-10 right-10 w-80 h-80 bg-accent/10" />
+      <div className="max-w-5xl mx-auto px-5 md:px-8 relative">
         {/* Section Header */}
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: '-80px' }}
           transition={{ duration: 0.5 }}
-          className="text-center mb-8 md:mb-12 space-y-2 md:space-y-3"
+          className="text-center mb-12 md:mb-16 space-y-4"
         >
-          <p className="text-secondary font-serif text-xs md:text-sm uppercase tracking-widest font-semibold">
-            Our Story in Motion
-          </p>
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-serif font-bold text-primary">
-            Experience Indo Global School
+          <span className="eyebrow centered">Our Story in Motion</span>
+          <h2 className="font-serif font-bold">
+            <span className="text-foreground">Experience </span>
+            <span className="gradient-text-brand">Indo Global School</span>
           </h2>
+          <div className="ornament"><span className="ornament-dot" /></div>
         </motion.div>
 
         {/* Video Player */}
@@ -34,9 +36,9 @@ export default function VideoShowcase() {
           transition={{ duration: 0.5, delay: 0.1 }}
           className="relative group"
         >
-          <div className="absolute -inset-3 md:-inset-4 bg-gradient-to-tr from-secondary/10 via-primary/5 to-accent/10 rounded-2xl md:rounded-[2rem] blur-xl opacity-50 group-hover:opacity-70 transition-opacity duration-500" />
+          <div className="absolute -inset-4 md:-inset-6 bg-gradient-to-tr from-secondary/20 via-primary/12 to-accent/20 rounded-[2rem] md:rounded-[2.5rem] blur-2xl opacity-70 group-hover:opacity-100 transition-opacity duration-500" />
 
-          <div className="relative aspect-video rounded-xl md:rounded-2xl overflow-hidden shadow-lg md:shadow-xl border-4 md:border-8 border-white bg-muted">
+          <div className="relative aspect-video rounded-2xl md:rounded-[1.5rem] overflow-hidden shadow-2xl border-4 md:border-[6px] border-card bg-muted">
             {!isPlaying ? (
               <div
                 role="button"

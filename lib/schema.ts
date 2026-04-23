@@ -1,4 +1,4 @@
-import { pgTable, serial, text, timestamp, varchar, integer, pgEnum, boolean } from "drizzle-orm/pg-core";
+import { pgTable, serial, text, timestamp, varchar, integer, boolean, pgEnum } from "drizzle-orm/pg-core";
 
 export const statusEnum = pgEnum("status", ["New", "Called", "Visited", "Converted", "Not Converted"]);
 
@@ -14,16 +14,26 @@ export const admissions = pgTable("admissions", {
   submittedAt: timestamp("submitted_at").defaultNow().notNull(),
 });
 
-export const galleryCategoryEnum = pgEnum("gallery_category", ["Campus", "Events", "Sports", "Academics"]);
+export const contacts = pgTable("contacts", {
+  id: serial("id").primaryKey(),
+  name: text("name").notNull(),
+  email: text("email").notNull(),
+  phone: varchar("phone", { length: 20 }),
+  subject: text("subject").notNull(),
+  message: text("message").notNull(),
+  status: statusEnum("status").default("New").notNull(),
+  submittedAt: timestamp("submitted_at").defaultNow().notNull(),
+});
 
 export const galleryImages = pgTable("gallery_images", {
   id: serial("id").primaryKey(),
+  title: text("title").notNull(),
+  category: text("category").notNull(),
   filename: text("filename").notNull(),
-  originalName: text("original_name").notNull(),
-  category: galleryCategoryEnum("category").default("Campus").notNull(),
-  caption: text("caption"),
-  sortOrder: integer("sort_order").default(0).notNull(),
-  uploadedAt: timestamp("uploaded_at").defaultNow().notNull(),
+  mimeType: varchar("mime_type", { length: 50 }).notNull(),
+  displayOrder: integer("display_order").default(0).notNull(),
+  active: boolean("active").default(true).notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
 export const positionTypeEnum = pgEnum("position_type", ["Teaching", "Non-Teaching"]);
@@ -40,17 +50,6 @@ export const careerApplications = pgTable("career_applications", {
   resumeFilename: text("resume_filename").notNull(),
   resumeOriginalName: text("resume_original_name").notNull(),
   message: text("message"),
-  status: statusEnum("status").default("New").notNull(),
-  submittedAt: timestamp("submitted_at").defaultNow().notNull(),
-});
-
-export const contacts = pgTable("contacts", {
-  id: serial("id").primaryKey(),
-  name: text("name").notNull(),
-  email: text("email").notNull(),
-  phone: varchar("phone", { length: 20 }),
-  subject: text("subject").notNull(),
-  message: text("message").notNull(),
   status: statusEnum("status").default("New").notNull(),
   submittedAt: timestamp("submitted_at").defaultNow().notNull(),
 });

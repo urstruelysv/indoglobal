@@ -35,6 +35,7 @@ import {
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import { toast } from 'sonner';
+import GalleryManager from '@/components/admin/GalleryManager';
 
 type Status = 'New' | 'Called' | 'Visited' | 'Converted' | 'Not Converted';
 
@@ -60,15 +61,6 @@ interface Contact {
   status: Status;
   submittedAt: string;
 }
-
-type GalleryImage = {
-  id: number;
-  filename: string;
-  originalName: string;
-  category: string;
-  caption: string | null;
-  uploadedAt: string;
-};
 
 interface CareerApplication {
   id: number;
@@ -102,8 +94,6 @@ const statusIcons: Record<Status, React.ElementType> = {
   'Not Converted': XCircle,
 };
 
-const galleryCategories = ['Campus', 'Events', 'Sports', 'Academics'] as const;
-
 export default function AdminDashboard() {
   const [admissions, setAdmissions] = useState<Admission[]>([]);
   const [contacts, setContacts] = useState<Contact[]>([]);
@@ -113,19 +103,10 @@ export default function AdminDashboard() {
   const [filter, setFilter] = useState<Status | 'All'>('All');
   const router = useRouter();
 
-  // Gallery state
-  const [galleryImages, setGalleryImages] = useState<GalleryImage[]>([]);
-  const [galleryLoading, setGalleryLoading] = useState(true);
   const [careersLoading, setCareersLoading] = useState(true);
-  const [uploading, setUploading] = useState(false);
-  const [dragOver, setDragOver] = useState(false);
-  const [uploadCategory, setUploadCategory] = useState<string>('Campus');
-  const [uploadCaption, setUploadCaption] = useState('');
-  const [galleryFilter, setGalleryFilter] = useState<string>('All');
 
   useEffect(() => {
     fetchData();
-    fetchGallery();
     fetchCareers();
   }, []);
 
@@ -164,19 +145,6 @@ export default function AdminDashboard() {
       setLoading(false);
     }
   };
-
-  const fetchGallery = useCallback(async () => {
-    try {
-      setGalleryLoading(true);
-      const res = await fetch('/api/gallery');
-      const data = await res.json();
-      if (Array.isArray(data)) setGalleryImages(data);
-    } catch {
-      toast.error('Failed to load gallery');
-    } finally {
-      setGalleryLoading(false);
-    }
-  }, []);
 
   const fetchCareers = useCallback(async () => {
     try {
@@ -286,77 +254,8 @@ export default function AdminDashboard() {
     window.URL.revokeObjectURL(url);
   };
 
-  // Gallery actions
-  const uploadFile = async (file: File) => {
-    if (file.size > 5 * 1024 * 1024) {
-      toast.error('File too large. Maximum 5MB.');
-      return;
-    }
-
-    setUploading(true);
-    const formData = new FormData();
-    formData.append('file', file);
-    formData.append('category', uploadCategory);
-    formData.append('caption', uploadCaption);
-
-    try {
-      const res = await fetch('/api/gallery', {
-        method: 'POST',
-        body: formData,
-      });
-
-      if (res.ok) {
-        setUploadCaption('');
-        toast.success('Photo uploaded');
-        await fetchGallery();
-      } else {
-        const error = await res.json();
-        toast.error(error.error || 'Upload failed');
-      }
-    } catch {
-      toast.error('Upload failed. Please try again.');
-    } finally {
-      setUploading(false);
-    }
-  };
-
-  const deleteImage = async (id: number) => {
-    if (!confirm('Delete this image? This cannot be undone.')) return;
-
-    try {
-      const res = await fetch('/api/gallery', {
-        method: 'DELETE',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id }),
-      });
-
-      if (res.ok) {
-        setGalleryImages(prev => prev.filter(img => img.id !== id));
-        toast.success('Photo deleted');
-      } else {
-        toast.error('Failed to delete');
-      }
-    } catch {
-      toast.error('Failed to delete image.');
-    }
-  };
-
-  const handleDrop = (e: React.DragEvent) => {
-    e.preventDefault();
-    setDragOver(false);
-    const files = Array.from(e.dataTransfer.files);
-    if (files[0]) uploadFile(files[0]);
-  };
-
-  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) uploadFile(file);
-    e.target.value = '';
-  };
-
   const filteredAdmissions = filter === 'All' ? admissions : admissions.filter(a => a.status === filter);
   const filteredContacts = filter === 'All' ? contacts : contacts.filter(c => c.status === filter);
-  const filteredGallery = galleryFilter === 'All' ? galleryImages : galleryImages.filter(img => img.category === galleryFilter);
   const filteredCareers = filter === 'All' ? careers : careers.filter(c => c.status === filter);
 
   const StatusBadge = ({ status }: { status: Status }) => {
@@ -440,7 +339,7 @@ export default function AdminDashboard() {
             {(['admissions', 'contacts', 'careers', 'gallery'] as const).map((tab) => (
               <button
                 key={tab}
-                onClick={() => { setActiveTab(tab); setFilter('All'); setGalleryFilter('All'); }}
+                onClick={() => { setActiveTab(tab); setFilter('All'); }}
                 className={`px-3 md:px-6 py-2 rounded-lg text-xs md:text-sm font-semibold transition-all whitespace-nowrap ${
                   activeTab === tab
                     ? 'bg-primary text-white shadow-md'
@@ -454,17 +353,7 @@ export default function AdminDashboard() {
 
           {activeTab === 'gallery' ? (
             <div className="flex items-center gap-2">
-              <Filter size={16} className="text-muted-foreground" />
-              <select
-                value={galleryFilter}
-                onChange={(e) => setGalleryFilter(e.target.value)}
-                className="bg-white border border-border/60 rounded-lg px-3 py-1.5 text-sm font-medium focus:ring-2 focus:ring-primary/20 outline-none transition-all"
-              >
-                <option value="All">All Categories</option>
-                {galleryCategories.map(cat => (
-                  <option key={cat} value={cat}>{cat}</option>
-                ))}
-              </select>
+              <span className="text-sm text-muted-foreground italic">Gallery management is handled in the Gallery tab.</span>
             </div>
           ) : (
             <div className="flex items-center gap-2">
@@ -484,6 +373,9 @@ export default function AdminDashboard() {
             </div>
           )}
         </div>
+
+        {/* ========= CONTENT AREA ========= */}
+        {activeTab === 'gallery' && <GalleryManager />}
 
         {/* ========= ADMISSIONS TAB ========= */}
         {activeTab === 'admissions' && (
@@ -777,137 +669,6 @@ export default function AdminDashboard() {
               )}
             </div>
           )
-        )}
-
-        {/* ========= GALLERY TAB ========= */}
-        {activeTab === 'gallery' && (
-          <div className="space-y-6">
-            {/* Upload Area */}
-            <div className="bg-white rounded-xl md:rounded-2xl border border-border/20 shadow-sm p-5 md:p-8">
-              <h2 className="font-serif font-bold text-lg md:text-xl text-primary mb-4 md:mb-6">Upload New Photo</h2>
-
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4 mb-4 md:mb-6">
-                <div>
-                  <label className="block text-xs md:text-sm font-medium text-foreground mb-1.5">Category</label>
-                  <Select value={uploadCategory} onValueChange={setUploadCategory}>
-                    <SelectTrigger className="bg-background text-sm">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {galleryCategories.map((cat) => (
-                        <SelectItem key={cat} value={cat}>{cat}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="md:col-span-2">
-                  <label className="block text-xs md:text-sm font-medium text-foreground mb-1.5">Caption (optional)</label>
-                  <Input
-                    value={uploadCaption}
-                    onChange={(e) => setUploadCaption(e.target.value)}
-                    placeholder="e.g. Annual Sports Day 2025"
-                    className="bg-background text-sm"
-                    maxLength={300}
-                  />
-                </div>
-              </div>
-
-              {/* Drop Zone */}
-              <div
-                onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
-                onDragLeave={() => setDragOver(false)}
-                onDrop={handleDrop}
-                className={`relative border-2 border-dashed rounded-xl p-8 md:p-12 text-center transition-colors duration-200 ${
-                  dragOver
-                    ? 'border-primary bg-primary/5'
-                    : 'border-border/40 hover:border-border/60'
-                }`}
-              >
-                {uploading ? (
-                  <div className="flex flex-col items-center gap-3">
-                    <Loader2 className="w-8 h-8 md:w-10 md:h-10 text-primary animate-spin" />
-                    <p className="text-primary font-medium text-sm">Uploading...</p>
-                  </div>
-                ) : (
-                  <div className="flex flex-col items-center gap-2 md:gap-3">
-                    <Upload className="w-8 h-8 md:w-10 md:h-10 text-muted-foreground" />
-                    <p className="text-foreground font-medium text-sm">
-                      Drag and drop a photo here, or{' '}
-                      <label className="text-primary font-semibold cursor-pointer hover:underline">
-                        browse
-                        <input
-                          type="file"
-                          accept="image/jpeg,image/png,image/webp"
-                          onChange={handleFileSelect}
-                          className="hidden"
-                        />
-                      </label>
-                    </p>
-                    <p className="text-[11px] text-muted-foreground">JPEG, PNG, or WebP — Max 5MB</p>
-                  </div>
-                )}
-              </div>
-            </div>
-
-            {/* Image Grid */}
-            <div className="bg-white rounded-xl md:rounded-2xl border border-border/20 shadow-sm p-5 md:p-8">
-              <div className="flex items-center justify-between mb-4 md:mb-6">
-                <h2 className="font-serif font-bold text-lg md:text-xl text-primary">
-                  {galleryFilter === 'All' ? 'All Photos' : galleryFilter}
-                </h2>
-                <span className="text-xs md:text-sm text-muted-foreground">{filteredGallery.length} photos</span>
-              </div>
-
-              {galleryLoading ? (
-                <div className="text-center py-12">
-                  <Loader2 className="w-8 h-8 text-primary animate-spin mx-auto" />
-                </div>
-              ) : filteredGallery.length === 0 ? (
-                <div className="text-center py-12">
-                  <ImageIcon className="w-12 h-12 md:w-16 md:h-16 text-muted-foreground/30 mx-auto mb-3" />
-                  <p className="text-muted-foreground text-sm">
-                    {galleryFilter === 'All' ? 'No photos uploaded yet.' : `No photos in ${galleryFilter}.`}
-                  </p>
-                </div>
-              ) : (
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">
-                  {filteredGallery.map((image) => (
-                    <div key={image.id} className="group relative rounded-xl overflow-hidden border border-border/20">
-                      <img
-                        src={`/images/gallery/${image.filename}`}
-                        alt={image.caption || image.originalName}
-                        className="w-full h-36 md:h-48 object-cover"
-                        loading="lazy"
-                      />
-                      {/* Hover overlay */}
-                      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/50 transition-colors duration-200">
-                        <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                          <Button
-                            variant="destructive"
-                            size="sm"
-                            onClick={() => deleteImage(image.id)}
-                            className="rounded-full text-xs"
-                          >
-                            <Trash2 size={14} className="mr-1" />
-                            Delete
-                          </Button>
-                        </div>
-                      </div>
-                      {/* Info bar */}
-                      <div className="p-2.5 md:p-3 bg-white">
-                        <p className="text-xs font-medium text-foreground truncate">
-                          {image.caption || image.originalName}
-                        </p>
-                        <p className="text-[10px] text-muted-foreground uppercase tracking-wider mt-0.5">
-                          {image.category}
-                        </p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-          </div>
         )}
       </main>
     </div>

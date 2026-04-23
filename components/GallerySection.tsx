@@ -1,22 +1,35 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card } from '@/components/ui/card';
-import { X } from 'lucide-react';
+import { X, ImageIcon, Loader2 } from 'lucide-react';
+
+interface GalleryImage {
+  id: number;
+  title: string;
+  category: string;
+  filename: string;
+  displayOrder: number;
+  active: boolean;
+}
 
 export default function GallerySection() {
+  const [images, setImages] = useState<GalleryImage[]>([]);
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
+  const [loading, setLoading] = useState(true);
 
-  const images = [
-    { id: 1, title: 'Smart Classrooms', category: '💻 Learning', emoji: '🎓' },
-    { id: 2, title: 'Free Transport Service', category: '🚌 Facility', emoji: '🚌' },
-    { id: 3, title: 'Safe Campus', category: '🏫 Campus', emoji: '🛡️' },
-    { id: 4, title: 'Arts & Creativity', category: '🎨 Culture', emoji: '🎨' },
-    { id: 5, title: 'Sports Activities', category: '⚽ Sports', emoji: '⚽' },
-    { id: 6, title: 'CBSE Excellence', category: '📚 Academic', emoji: '📚' },
-    { id: 7, title: 'Student Achievements', category: '🏆 Awards', emoji: '🏆' },
-    { id: 8, title: 'Global Citizens', category: '🌍 Values', emoji: '🌍' },
-  ];
+  useEffect(() => {
+    fetch('/api/gallery')
+      .then((res) => res.json())
+      .then((data) => {
+        if (Array.isArray(data)) {
+          // Limit to 8 images for the home section
+          setImages(data.slice(0, 8));
+        }
+        setLoading(false);
+      })
+      .catch(() => setLoading(false));
+  }, []);
 
   return (
     <section id="gallery" className="py-24 bg-muted/30">
@@ -35,56 +48,93 @@ export default function GallerySection() {
         </div>
 
         {/* Gallery Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {images.map((image, index) => (
-            <button
-              key={image.id}
-              onClick={() => setSelectedIndex(index)}
-              className="group relative h-64 rounded-xl overflow-hidden bg-gradient-to-br from-primary/10 to-secondary/10 border border-border/20 hover:border-secondary/40 transition-all duration-300 cursor-pointer hover:shadow-lg"
-            >
-              {/* Placeholder Content */}
-              <div className="w-full h-full flex items-center justify-center flex-col gap-3 p-4">
-                <div className="text-7xl group-hover:scale-125 transition-transform duration-300">
-                  {image.emoji}
+        {loading ? (
+          <div className="flex flex-col items-center justify-center py-20 gap-4">
+            <Loader2 className="w-10 h-10 text-primary animate-spin" />
+            <p className="text-muted-foreground font-medium">Loading gallery...</p>
+          </div>
+        ) : images.length === 0 ? (
+          <div className="text-center py-20 bg-white rounded-2xl border border-dashed border-border/60">
+            <ImageIcon className="w-16 h-16 text-muted-foreground/20 mx-auto mb-4" />
+            <p className="text-muted-foreground">Photos will be appearing here soon.</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {images.map((image, index) => (
+              <button
+                key={image.id}
+                onClick={() => setSelectedIndex(index)}
+                className="group relative h-64 rounded-xl overflow-hidden border border-border/20 hover:border-secondary/40 transition-all duration-300 cursor-pointer hover:shadow-lg"
+              >
+                {/* Real Image */}
+                <img
+                  src={`/api/gallery/file/${image.filename}`}
+                  alt={image.title}
+                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                />
+                
+                {/* Info Overlay */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-6 text-left">
+                  <p className="text-secondary-foreground bg-secondary/90 w-fit px-2 py-0.5 rounded text-[10px] uppercase tracking-wider font-bold mb-2">
+                    {image.category}
+                  </p>
+                  <h3 className="text-white font-serif font-bold text-lg leading-tight">
+                    {image.title}
+                  </h3>
                 </div>
-                <div className="text-center px-4">
-                  <h3 className="font-serif font-semibold text-primary text-base">{image.title}</h3>
-                  <p className="text-xs text-muted-foreground">{image.category}</p>
-                </div>
-              </div>
 
-              {/* Overlay */}
-              <div className="absolute inset-0 bg-secondary/0 group-hover:bg-secondary/5 transition-all duration-300" />
-            </button>
-          ))}
-        </div>
+                {/* Initial Info (Subtle) */}
+                <div className="absolute bottom-0 left-0 right-0 p-4 bg-white/90 backdrop-blur-sm group-hover:opacity-0 transition-opacity duration-300">
+                  <h3 className="font-serif font-semibold text-primary text-sm truncate">{image.title}</h3>
+                  <p className="text-[10px] text-muted-foreground uppercase tracking-wider">{image.category}</p>
+                </div>
+              </button>
+            ))}
+          </div>
+        )}
+
+        {/* View All Button */}
+        {!loading && images.length > 0 && (
+          <div className="mt-12 text-center">
+            <a 
+              href="/gallery" 
+              className="inline-flex items-center px-8 py-3 bg-primary text-white rounded-full font-serif font-bold hover:bg-primary/90 transition-all hover:scale-105 shadow-lg shadow-primary/20"
+            >
+              View Full Gallery
+            </a>
+          </div>
+        )}
 
         {/* Lightbox Modal */}
-        {selectedIndex !== null && (
+        {selectedIndex !== null && images[selectedIndex] && (
           <div
-            className="fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4 backdrop-blur-sm"
+            className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4 backdrop-blur-md"
             onClick={() => setSelectedIndex(null)}
           >
-            <div className="bg-white rounded-lg shadow-2xl max-w-2xl w-full max-h-96 flex flex-col">
-              {/* Image Container */}
-              <div className="flex-1 bg-gradient-to-br from-primary/10 to-secondary/10 flex items-center justify-center rounded-t-lg">
-                <div className="text-6xl">📸</div>
-              </div>
+            <div className="relative max-w-5xl w-full max-h-[90vh] flex flex-col items-center">
+              <button
+                onClick={() => setSelectedIndex(null)}
+                className="absolute -top-12 right-0 text-white/70 hover:text-white p-2 transition-colors"
+              >
+                <X size={32} />
+              </button>
 
-              {/* Info Footer */}
-              <div className="p-6 flex items-center justify-between">
-                <div>
-                  <h3 className="font-serif font-semibold text-primary text-lg">
-                    {images[selectedIndex].title}
-                  </h3>
-                  <p className="text-muted-foreground">{images[selectedIndex].category}</p>
-                </div>
-                <button
-                  onClick={() => setSelectedIndex(null)}
-                  className="p-2 hover:bg-muted rounded-lg transition-colors"
-                >
-                  <X size={24} />
-                </button>
+              {/* Image Container */}
+              <img
+                src={`/api/gallery/file/${images[selectedIndex].filename}`}
+                alt={images[selectedIndex].title}
+                className="max-w-full max-h-[75vh] object-contain rounded-lg shadow-2xl shadow-black/50"
+                onClick={(e) => e.stopPropagation()}
+              />
+
+              {/* Info Area */}
+              <div className="mt-6 text-center text-white space-y-2">
+                <span className="inline-block px-3 py-1 bg-secondary text-secondary-foreground text-xs font-bold rounded-full uppercase tracking-widest">
+                  {images[selectedIndex].category}
+                </span>
+                <h3 className="font-serif font-bold text-2xl md:text-3xl">
+                  {images[selectedIndex].title}
+                </h3>
               </div>
             </div>
           </div>
