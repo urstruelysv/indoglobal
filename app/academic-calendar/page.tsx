@@ -134,7 +134,7 @@ export default function AcademicCalendarPage() {
             <p className="text-secondary font-serif text-sm uppercase tracking-widest font-semibold">
               2025–2026 Academic Year
             </p>
-            <h1 className="text-4xl md:text-5xl font-serif font-bold text-primary">
+            <h1 className="text-5xl md:text-6xl lg:text-7xl font-serif font-bold text-primary tracking-tight">
               Academic Calendar
             </h1>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">

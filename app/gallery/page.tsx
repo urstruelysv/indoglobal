@@ -58,7 +58,7 @@ export default function GalleryPage() {
             <p className="text-secondary font-serif text-sm uppercase tracking-widest font-semibold">
               Life at IGS
             </p>
-            <h1 className="text-4xl md:text-5xl font-serif font-bold text-primary">
+            <h1 className="text-5xl md:text-6xl lg:text-7xl font-serif font-bold text-primary tracking-tight">
               Photo Gallery
             </h1>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">

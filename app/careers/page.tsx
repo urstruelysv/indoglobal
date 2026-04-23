@@ -146,7 +146,7 @@ export default function CareersPage() {
               <p className="text-secondary font-serif text-xs md:text-sm uppercase tracking-widest font-semibold">
                 Join Our Team
               </p>
-              <h1 className="text-3xl md:text-4xl lg:text-5xl font-serif font-bold text-primary leading-tight">
+              <h1 className="text-5xl md:text-6xl lg:text-7xl font-serif font-bold text-primary leading-tight tracking-tight">
                 Build Futures With Us
               </h1>
               <p className="text-sm md:text-base lg:text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
