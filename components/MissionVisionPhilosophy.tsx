@@ -9,67 +9,73 @@ const values = [
     icon: Target,
     title: 'Mission',
     text: 'To deliver a holistic, future-ready education that blends global learning standards with the richness of Indian values — inspiring creativity, character, and a lifelong love for learning.',
-    bg: 'bg-primary/[0.07]',
-    numColor: 'text-primary/10',
+    gradient: 'linear-gradient(135deg, rgba(15,118,110,0.08) 0%, rgba(15,118,110,0.02) 100%)',
+    ringClass: 'ring-primary/15',
+    numColor: 'text-primary/8',
     iconBg: 'bg-primary/10',
     iconColor: 'text-primary',
     titleColor: 'text-primary',
-    textColor: 'text-foreground',
     accent: 'bg-primary',
+    topBar: 'bg-gradient-to-r from-primary to-primary/60',
   },
   {
     num: '02',
     icon: Eye,
     title: 'Vision',
     text: 'A world where every child learns with curiosity, leads with integrity, and shines with purpose — growing into a confident, compassionate, and globally aware citizen rooted in strong values.',
-    bg: 'bg-secondary/[0.07]',
-    numColor: 'text-secondary/10',
+    gradient: 'linear-gradient(135deg, rgba(229,106,31,0.08) 0%, rgba(229,106,31,0.02) 100%)',
+    ringClass: 'ring-secondary/15',
+    numColor: 'text-secondary/8',
     iconBg: 'bg-secondary/10',
     iconColor: 'text-secondary',
     titleColor: 'text-secondary',
-    textColor: 'text-foreground',
     accent: 'bg-secondary',
+    topBar: 'bg-gradient-to-r from-secondary to-secondary/60',
   },
   {
     num: '03',
     icon: Sparkles,
     title: 'Philosophy',
     text: 'Every child carries a spark of brilliance. We create the right environment for that spark to shine — because education is not confined to textbooks; it is an awakening of the mind and spirit.',
-    bg: 'bg-accent/[0.07]',
-    numColor: 'text-accent/10',
-    iconBg: 'bg-accent/10',
-    iconColor: 'text-accent-foreground',
-    titleColor: 'text-primary',
-    textColor: 'text-foreground',
+    gradient: 'linear-gradient(135deg, rgba(240,167,38,0.1) 0%, rgba(240,167,38,0.02) 100%)',
+    ringClass: 'ring-accent/20',
+    numColor: 'text-accent/15',
+    iconBg: 'bg-accent/15',
+    iconColor: 'text-[#8A5A10]',
+    titleColor: 'text-[#8A5A10]',
     accent: 'bg-accent',
+    topBar: 'bg-gradient-to-r from-accent to-accent/60',
   },
 ];
 
 export default function MissionVisionPhilosophy() {
   return (
-    <section id="values" className="py-14 md:py-20 lg:py-24 bg-muted/20 overflow-hidden">
-      <div className="max-w-7xl mx-auto px-5 md:px-6">
-        {/* Header — matches site style */}
+    <section id="values" className="relative section-y overflow-hidden" style={{ background: 'linear-gradient(180deg, var(--background) 0%, #FAF3E4 100%)' }}>
+      <div className="decor-blob top-20 left-10 w-80 h-80 bg-primary/8" />
+      <div className="decor-blob bottom-20 right-10 w-80 h-80 bg-secondary/10" />
+
+      <div className="max-w-7xl mx-auto px-5 md:px-8 relative">
+        {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: '-80px' }}
           transition={{ duration: 0.5 }}
-          className="text-center mb-10 md:mb-14 space-y-2 md:space-y-3"
+          className="text-center mb-14 md:mb-20 space-y-4"
         >
-          <p className="text-secondary font-serif text-xs md:text-sm uppercase tracking-widest font-semibold">
-            Our Foundation
-          </p>
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-serif font-bold text-primary">
-            What Drives Us
+          <span className="eyebrow centered">Our Foundation</span>
+          <h2 className="font-serif font-bold">
+            <span className="text-foreground">What </span>
+            <span className="gradient-text-sunrise">Drives Us</span>
           </h2>
-          <p className="text-sm md:text-base text-muted-foreground max-w-xl mx-auto">
+          <div className="ornament"><span className="ornament-dot" /></div>
+          <p className="text-base md:text-lg text-muted-foreground max-w-xl mx-auto pt-1">
             The pillars that guide every decision we make and every child we shape.
           </p>
         </motion.div>
 
-        {/* Cards — dark panels but with site's rounded style */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-5">
+        {/* Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5 md:gap-6">
           {values.map((v, i) => {
             const Icon = v.icon;
             return (
@@ -79,33 +85,37 @@ export default function MissionVisionPhilosophy() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: '-40px' }}
                 transition={{ duration: 0.4, delay: i * 0.1 }}
-                whileHover={{ y: -4 }}
-                className={`${v.bg} relative rounded-xl md:rounded-2xl overflow-hidden group`}
+                whileHover={{ y: -6 }}
+                className={`relative rounded-2xl md:rounded-[1.5rem] overflow-hidden group bg-card border border-border/60 ring-1 ${v.ringClass} shadow-[0_2px_12px_-4px_rgba(15,42,63,0.06)] hover:shadow-[0_20px_50px_-20px_rgba(15,42,63,0.2)] transition-all duration-500`}
+                style={{ backgroundImage: v.gradient }}
               >
+                {/* Top gradient bar */}
+                <div className={`h-1.5 w-full ${v.topBar}`} />
+
                 {/* Big background number */}
-                <span className={`absolute -top-3 -right-1 text-[6.5rem] md:text-[7rem] lg:text-[8rem] font-serif font-black leading-none pointer-events-none select-none ${v.numColor}`}>
+                <span className={`absolute -top-2 -right-2 text-[7rem] md:text-[7.5rem] lg:text-[9rem] font-serif font-black leading-none pointer-events-none select-none ${v.numColor} group-hover:scale-110 transition-transform duration-700`}>
                   {v.num}
                 </span>
 
-                {/* Content — identical structure for all three */}
-                <div className="relative z-10 p-6 md:p-7 lg:p-8 flex flex-col h-full">
+                {/* Content */}
+                <div className="relative z-10 p-7 md:p-8 lg:p-10 flex flex-col h-full">
                   {/* Icon */}
-                  <div className={`w-10 h-10 md:w-11 md:h-11 rounded-lg ${v.iconBg} flex items-center justify-center mb-5`}>
-                    <Icon className={`w-5 h-5 ${v.iconColor}`} />
+                  <div className={`w-12 h-12 md:w-14 md:h-14 rounded-xl ${v.iconBg} flex items-center justify-center mb-6 ring-1 ${v.ringClass}`}>
+                    <Icon className={`w-6 h-6 ${v.iconColor}`} />
                   </div>
 
                   {/* Title */}
-                  <h3 className={`text-xl md:text-lg lg:text-xl font-serif font-bold ${v.titleColor} mb-3`}>
+                  <h3 className={`text-2xl md:text-xl lg:text-2xl font-serif font-bold ${v.titleColor} mb-3`}>
                     {v.title}
                   </h3>
 
-                  {/* Text — dark on light, max readability */}
-                  <p className={`text-[14px] md:text-[13.5px] lg:text-[15px] ${v.textColor} leading-[1.8] flex-1`}>
+                  {/* Text */}
+                  <p className="text-[15px] md:text-[14px] lg:text-[15.5px] text-foreground/85 leading-[1.85] flex-1">
                     {v.text}
                   </p>
 
                   {/* Bottom accent */}
-                  <div className={`mt-5 h-[3px] w-8 ${v.accent} rounded-full opacity-40 group-hover:w-14 group-hover:opacity-70 transition-all duration-500`} />
+                  <div className={`mt-6 h-[3px] w-10 ${v.accent} rounded-full opacity-60 group-hover:w-20 group-hover:opacity-100 transition-all duration-500`} />
                 </div>
               </motion.div>
             );

@@ -1,149 +1,219 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getDb } from '@/lib/db';
+import { db } from '@/lib/db';
 import { galleryImages } from '@/lib/schema';
-import { eq, desc, asc } from 'drizzle-orm';
+import { eq, asc } from 'drizzle-orm';
 import { getSession } from '@/lib/auth';
-import { writeFile, mkdir, unlink } from 'fs/promises';
-import path from 'path';
+import {
+  ALLOWED_MIME_TYPES,
+  MAX_UPLOAD_BYTES,
+  deleteUpload,
+  saveUpload,
+} from '@/lib/uploads';
 
-const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
-const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
-
-// Magic bytes for image validation
-const MAGIC_BYTES: Record<string, number[]> = {
-  'image/jpeg': [0xFF, 0xD8, 0xFF],
-  'image/png': [0x89, 0x50, 0x4E, 0x47],
-  'image/webp': [0x52, 0x49, 0x46, 0x46], // RIFF header
-};
-
-function validateMagicBytes(buffer: Buffer, mimeType: string): boolean {
-  const expected = MAGIC_BYTES[mimeType];
-  if (!expected) return false;
-  for (let i = 0; i < expected.length; i++) {
-    if (buffer[i] !== expected[i]) return false;
-  }
-  return true;
-}
-
-// GET — fetch all gallery images (public)
-export async function GET() {
-  try {
-    const db = getDb();
-    const images = await db
-      .select()
-      .from(galleryImages)
-      .orderBy(asc(galleryImages.sortOrder), desc(galleryImages.uploadedAt));
-
-    return NextResponse.json(images);
-  } catch {
-    return NextResponse.json({ error: 'Failed to fetch images' }, { status: 500 });
-  }
-}
-
-// POST — upload a new image (admin only)
-export async function POST(req: NextRequest) {
-  const session = await getSession(req);
-  if (!session) {
+async function requireAdmin(request: NextRequest) {
+  const session = await getSession(request);
+  if (!session || !session.admin) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
+  return null;
+}
+
+export async function GET(request: NextRequest) {
+  try {
+    const { searchParams } = new URL(request.url);
+    const all = searchParams.get('all') === '1';
+
+    const rows = await db.query.galleryImages.findMany({
+      orderBy: [asc(galleryImages.displayOrder), asc(galleryImages.id)],
+    });
+
+    const visible = all ? rows : rows.filter((r) => r.active);
+    return NextResponse.json(visible);
+  } catch (error) {
+    console.error('Error reading gallery:', error);
+    return NextResponse.json({ error: 'Failed to fetch gallery' }, { status: 500 });
+  }
+}
+
+export async function POST(request: NextRequest) {
+  const unauth = await requireAdmin(request);
+  if (unauth) return unauth;
 
   try {
-    const db = getDb();
-    const formData = await req.formData();
-    const file = formData.get('file') as File;
-    const category = (formData.get('category') as string) || 'Campus';
-    const caption = formData.get('caption') as string;
+    const form = await request.formData();
+    const file = form.get('file');
+    const title = String(form.get('title') ?? '').trim();
+    const category = String(form.get('category') ?? '').trim();
+    const displayOrderRaw = form.get('displayOrder');
+    const activeRaw = form.get('active');
 
-    if (!file) {
-      return NextResponse.json({ error: 'No file provided' }, { status: 400 });
+    if (!title || !category || !(file instanceof File)) {
+      return NextResponse.json(
+        { error: 'title, category, and file are required' },
+        { status: 400 },
+      );
+    }
+    if (!ALLOWED_MIME_TYPES.has(file.type)) {
+      return NextResponse.json(
+        { error: 'File must be jpeg, png, webp, or gif' },
+        { status: 400 },
+      );
+    }
+    if (file.size > MAX_UPLOAD_BYTES) {
+      return NextResponse.json(
+        { error: 'Image too large. Max 10 MB.' },
+        { status: 413 },
+      );
     }
 
-    // File size check
-    if (file.size > MAX_FILE_SIZE) {
-      return NextResponse.json({ error: 'File too large. Maximum size is 5MB.' }, { status: 400 });
+    const displayOrder = Number.isFinite(Number(displayOrderRaw)) ? Number(displayOrderRaw) : 0;
+    const active = activeRaw == null ? true : String(activeRaw) !== 'false';
+
+    const buffer = Buffer.from(await file.arrayBuffer());
+    const filename = await saveUpload(buffer, file.type);
+
+    try {
+      const [row] = await db
+        .insert(galleryImages)
+        .values({
+          title,
+          category,
+          filename,
+          mimeType: file.type,
+          displayOrder,
+          active,
+        })
+        .returning();
+
+      return NextResponse.json({ message: 'Image uploaded', image: row }, { status: 201 });
+    } catch (dbErr) {
+      await deleteUpload(filename).catch(() => {});
+      throw dbErr;
     }
-
-    // MIME type check
-    if (!ALLOWED_TYPES.includes(file.type)) {
-      return NextResponse.json({ error: 'Invalid file type. Use JPEG, PNG, or WebP.' }, { status: 400 });
-    }
-
-    const bytes = await file.arrayBuffer();
-    const buffer = Buffer.from(bytes);
-
-    // Magic byte verification — check actual file content, not just MIME header
-    if (!validateMagicBytes(buffer, file.type)) {
-      return NextResponse.json({ error: 'File content does not match declared type.' }, { status: 400 });
-    }
-
-    // Category whitelist
-    const validCategories = ['Campus', 'Events', 'Sports', 'Academics'];
-    const safeCategory = validCategories.includes(category) ? category : 'Campus';
-
-    // Generate safe filename — no user input in the name
-    const extMap: Record<string, string> = { 'image/jpeg': 'jpg', 'image/png': 'png', 'image/webp': 'webp' };
-    const ext = extMap[file.type];
-    const filename = `gallery-${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
-
-    // Save file
-    const uploadDir = path.join(process.cwd(), 'public', 'images', 'gallery');
-    await mkdir(uploadDir, { recursive: true });
-    await writeFile(path.join(uploadDir, filename), buffer);
-
-    // Save to database
-    const [image] = await db
-      .insert(galleryImages)
-      .values({
-        filename,
-        originalName: file.name.slice(0, 200),
-        category: safeCategory as "Campus" | "Events" | "Sports" | "Academics",
-        caption: caption ? caption.slice(0, 300) : null,
-      })
-      .returning();
-
-    return NextResponse.json(image, { status: 201 });
   } catch (error) {
-    console.error('Upload error:', error);
+    console.error('Error uploading gallery image:', error);
     return NextResponse.json({ error: 'Failed to upload image' }, { status: 500 });
   }
 }
 
-// DELETE — delete an image (admin only)
-export async function DELETE(req: NextRequest) {
-  const session = await getSession(req);
-  if (!session) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  }
+export async function PATCH(request: NextRequest) {
+  const unauth = await requireAdmin(request);
+  if (unauth) return unauth;
 
   try {
-    const db = getDb();
-    const { id } = await req.json();
+    const contentType = request.headers.get('content-type') ?? '';
+    const patch: Partial<typeof galleryImages.$inferInsert> = {};
+    let id: number | null = null;
+    let newFile: File | null = null;
 
-    if (typeof id !== 'number' || id <= 0) {
-      return NextResponse.json({ error: 'Invalid image ID' }, { status: 400 });
+    if (contentType.includes('multipart/form-data')) {
+      const form = await request.formData();
+      const rawId = form.get('id');
+      id = rawId != null ? Number(rawId) : null;
+      const title = form.get('title');
+      const category = form.get('category');
+      const displayOrder = form.get('displayOrder');
+      const active = form.get('active');
+      const file = form.get('file');
+      if (typeof title === 'string' && title) patch.title = title;
+      if (typeof category === 'string' && category) patch.category = category;
+      if (typeof displayOrder === 'string' && displayOrder !== '')
+        patch.displayOrder = Number(displayOrder);
+      if (typeof active === 'string') patch.active = active === 'true';
+      if (file instanceof File) newFile = file;
+    } else {
+      const body = await request.json();
+      id = body?.id != null ? Number(body.id) : null;
+      if (typeof body.title === 'string') patch.title = body.title;
+      if (typeof body.category === 'string') patch.category = body.category;
+      if (typeof body.displayOrder === 'number') patch.displayOrder = body.displayOrder;
+      if (typeof body.active === 'boolean') patch.active = body.active;
     }
 
-    const [image] = await db
+    if (!id || !Number.isFinite(id)) {
+      return NextResponse.json({ error: 'id is required' }, { status: 400 });
+    }
+
+    const [existing] = await db
       .select()
       .from(galleryImages)
       .where(eq(galleryImages.id, id));
-
-    if (!image) {
+    if (!existing) {
       return NextResponse.json({ error: 'Image not found' }, { status: 404 });
     }
 
-    // Delete file from disk
-    const filePath = path.join(process.cwd(), 'public', 'images', 'gallery', image.filename);
+    let savedFilename: string | null = null;
+    if (newFile) {
+      if (!ALLOWED_MIME_TYPES.has(newFile.type)) {
+        return NextResponse.json(
+          { error: 'File must be jpeg, png, webp, or gif' },
+          { status: 400 },
+        );
+      }
+      if (newFile.size > MAX_UPLOAD_BYTES) {
+        return NextResponse.json({ error: 'Image too large. Max 10 MB.' }, { status: 413 });
+      }
+      const buffer = Buffer.from(await newFile.arrayBuffer());
+      savedFilename = await saveUpload(buffer, newFile.type);
+      patch.filename = savedFilename;
+      patch.mimeType = newFile.type;
+    }
+
+    if (Object.keys(patch).length === 0) {
+      return NextResponse.json({ error: 'No updatable fields provided' }, { status: 400 });
+    }
+
     try {
-      await unlink(filePath);
-    } catch {
-      // File may already be deleted
+      await db.update(galleryImages).set(patch).where(eq(galleryImages.id, id));
+    } catch (dbErr) {
+      if (savedFilename) await deleteUpload(savedFilename).catch(() => {});
+      throw dbErr;
+    }
+
+    if (savedFilename && existing.filename) {
+      await deleteUpload(existing.filename).catch((e) =>
+        console.warn('Failed to delete old upload:', e),
+      );
+    }
+
+    return NextResponse.json({ message: 'Image updated' });
+  } catch (error) {
+    console.error('Error updating gallery image:', error);
+    return NextResponse.json({ error: 'Failed to update image' }, { status: 500 });
+  }
+}
+
+export async function DELETE(request: NextRequest) {
+  const unauth = await requireAdmin(request);
+  if (unauth) return unauth;
+
+  try {
+    const { searchParams } = new URL(request.url);
+    const idParam = searchParams.get('id');
+    const id = idParam ? parseInt(idParam, 10) : NaN;
+    if (!Number.isFinite(id)) {
+      return NextResponse.json({ error: 'id is required' }, { status: 400 });
+    }
+
+    const [existing] = await db
+      .select()
+      .from(galleryImages)
+      .where(eq(galleryImages.id, id));
+    if (!existing) {
+      return NextResponse.json({ error: 'Image not found' }, { status: 404 });
     }
 
     await db.delete(galleryImages).where(eq(galleryImages.id, id));
 
-    return NextResponse.json({ success: true });
-  } catch {
+    if (existing.filename) {
+      await deleteUpload(existing.filename).catch((e) =>
+        console.warn('Failed to delete upload file:', e),
+      );
+    }
+
+    return NextResponse.json({ message: 'Image deleted' });
+  } catch (error) {
+    console.error('Error deleting gallery image:', error);
     return NextResponse.json({ error: 'Failed to delete image' }, { status: 500 });
   }
 }

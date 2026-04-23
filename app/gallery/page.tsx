@@ -10,11 +10,12 @@ const categories = ['All', 'Campus', 'Events', 'Sports', 'Academics'] as const;
 
 type GalleryImage = {
   id: number;
-  filename: string;
-  originalName: string;
+  title: string;
   category: string;
-  caption: string | null;
-  uploadedAt: string;
+  filename: string;
+  displayOrder: number;
+  active: boolean;
+  createdAt: string;
 };
 
 export default function GalleryPage() {
@@ -107,16 +108,14 @@ export default function GalleryPage() {
                 >
                   <div className="relative rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-shadow duration-300">
                     <img
-                      src={`/images/gallery/${image.filename}`}
-                      alt={image.caption || image.originalName}
+                      src={`/api/gallery/file/${image.filename}`}
+                      alt={image.title}
                       className="w-full h-auto object-cover transition-transform duration-500 group-hover:scale-105"
                       loading="lazy"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                     <div className="absolute bottom-0 left-0 right-0 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300">
-                      {image.caption && (
-                        <p className="text-white text-sm font-medium">{image.caption}</p>
-                      )}
+                      <p className="text-white text-sm font-medium">{image.title}</p>
                       <p className="text-white/70 text-xs mt-1">{image.category}</p>
                     </div>
                   </div>
@@ -159,8 +158,8 @@ export default function GalleryPage() {
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.9 }}
                 transition={{ duration: 0.2 }}
-                src={`/images/gallery/${filtered[selectedIndex].filename}`}
-                alt={filtered[selectedIndex].caption || ''}
+                src={`/api/gallery/file/${filtered[selectedIndex].filename}`}
+                alt={filtered[selectedIndex].title}
                 className="max-w-full max-h-[85vh] object-contain rounded-lg shadow-2xl"
                 onClick={(e) => e.stopPropagation()}
               />
@@ -174,12 +173,10 @@ export default function GalleryPage() {
               </button>
 
               {/* Caption */}
-              {filtered[selectedIndex].caption && (
-                <div className="absolute bottom-8 left-1/2 -translate-x-1/2 text-center">
-                  <p className="text-white text-lg font-medium">{filtered[selectedIndex].caption}</p>
-                  <p className="text-white/50 text-sm mt-1">{filtered[selectedIndex].category}</p>
-                </div>
-              )}
+              <div className="absolute bottom-8 left-1/2 -translate-x-1/2 text-center">
+                <p className="text-white text-lg font-medium">{filtered[selectedIndex].title}</p>
+                <p className="text-white/50 text-sm mt-1">{filtered[selectedIndex].category}</p>
+              </div>
             </motion.div>
           )}
         </AnimatePresence>

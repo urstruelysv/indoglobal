@@ -71,29 +71,29 @@ const highlights = [
 
 export default function CampusHighlights() {
   return (
-    <section id="campus" className="py-14 md:py-20 lg:py-24 bg-background overflow-hidden">
-      <div className="max-w-7xl mx-auto px-5 md:px-6">
+    <section id="campus" className="relative section-y surface-warm overflow-hidden">
+      <div className="decor-blob top-20 right-10 w-80 h-80 bg-secondary/12" />
+      <div className="max-w-7xl mx-auto px-5 md:px-8 relative">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: '-80px' }}
           transition={{ duration: 0.5 }}
-          className="text-center mb-10 md:mb-14 space-y-2 md:space-y-3"
+          className="text-center mb-14 md:mb-20 space-y-4"
         >
-          <p className="text-secondary font-serif text-xs md:text-sm uppercase tracking-widest font-semibold">
-            Our World-Class Facilities
-          </p>
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-serif font-bold text-primary">
-            Campus Highlights
+          <span className="eyebrow centered">Our World-Class Facilities</span>
+          <h2 className="font-serif font-bold">
+            <span className="gradient-text-brand">Campus Highlights</span>
           </h2>
-          <p className="text-sm md:text-base text-muted-foreground max-w-xl mx-auto">
+          <div className="ornament"><span className="ornament-dot" /></div>
+          <p className="text-base md:text-lg text-muted-foreground max-w-2xl mx-auto pt-1">
             Spread across a sprawling <span className="text-primary font-semibold">3-acre campus</span>, every corner has been thoughtfully designed to inspire learning, creativity, and comfort.
           </p>
         </motion.div>
 
         {/* Grid — 2 cols on mobile, 4 cols on desktop */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5 md:gap-3">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
           {highlights.map((item, i) => (
             <motion.div
               key={i}
@@ -101,7 +101,7 @@ export default function CampusHighlights() {
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true, margin: '-40px' }}
               transition={{ duration: 0.4, delay: i * 0.04 }}
-              className={`group relative rounded-xl md:rounded-2xl overflow-hidden cursor-pointer ${item.height} ${item.span}`}
+              className={`group relative rounded-2xl md:rounded-[1.25rem] overflow-hidden cursor-pointer shadow-[0_4px_14px_-6px_rgba(15,42,63,0.15)] hover:shadow-[0_20px_40px_-16px_rgba(15,42,63,0.3)] transition-shadow duration-500 ${item.height} ${item.span}`}
             >
               {/* Image */}
               <img
@@ -112,17 +112,21 @@ export default function CampusHighlights() {
               />
 
               {/* Default overlay — title always visible */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
-              <div className="absolute bottom-0 left-0 right-0 p-3 md:p-5">
+              <div className="absolute inset-0 bg-gradient-to-t from-[#0A1F2E]/80 via-[#0A1F2E]/20 to-transparent" />
+              <div className="absolute bottom-0 left-0 right-0 p-4 md:p-6">
+                <div className="flex items-center gap-2 mb-1.5">
+                  <span className="w-1 h-4 bg-accent rounded-full" />
+                </div>
                 <h3 className="font-serif font-bold text-white text-sm md:text-lg lg:text-xl drop-shadow-lg leading-snug">
                   {item.title}
                 </h3>
               </div>
 
               {/* Hover overlay — description appears */}
-              <div className="absolute inset-0 bg-primary/80 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center p-4 md:p-6">
-                <div className="text-center text-white space-y-2">
+              <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-400 flex items-center justify-center p-5 md:p-7" style={{ background: 'linear-gradient(135deg, rgba(15,118,110,0.92) 0%, rgba(11,94,88,0.92) 100%)' }}>
+                <div className="text-center text-white space-y-3">
                   <h3 className="font-serif font-bold text-base md:text-xl">{item.title}</h3>
+                  <div className="w-10 h-[2px] bg-accent mx-auto rounded-full" />
                   <p className="text-white/90 leading-relaxed text-xs md:text-sm max-w-xs mx-auto">{item.description}</p>
                 </div>
               </div>
