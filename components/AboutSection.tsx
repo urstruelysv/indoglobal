@@ -299,9 +299,9 @@ export default function AboutSection() {
             <span className="h-px w-10 bg-gradient-to-r from-secondary to-accent" />
             <span className="eyebrow !tracking-[0.28em]">Discover Our Story</span>
           </div>
-          <h2 className="font-serif font-bold leading-[1.02] tracking-tight">
+          <h2 className="font-serif font-bold leading-[1.12] tracking-tight">
             <span className="text-foreground">About </span>
-            <span className="gradient-text-brand italic">Indo Global School</span>
+            <span className="gradient-text-brand italic inline-block pr-[0.12em] pb-[0.08em]">Indo Global School</span>
           </h2>
           <p className="mt-6 text-lg md:text-xl text-muted-foreground leading-[1.6] max-w-2xl">
             Where every child is encouraged to dream, explore, and shine.
