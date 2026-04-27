@@ -351,11 +351,7 @@ export default function AdminDashboard() {
             ))}
           </div>
 
-          {activeTab === 'gallery' ? (
-            <div className="flex items-center gap-2">
-              <span className="text-sm text-muted-foreground italic">Gallery management is handled in the Gallery tab.</span>
-            </div>
-          ) : (
+          {activeTab === 'gallery' ? null : (
             <div className="flex items-center gap-2">
               <Filter size={16} className="text-muted-foreground" />
               <select
