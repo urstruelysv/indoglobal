@@ -8,7 +8,7 @@ export default function VideoShowcase() {
   const [isPlaying, setIsPlaying] = useState(false);
 
   return (
-    <section className="relative section-y overflow-hidden" style={{ background: 'linear-gradient(180deg, var(--background) 0%, #FAF3E4 100%)' }}>
+    <section id="video" className="relative section-y overflow-hidden" style={{ background: 'linear-gradient(180deg, var(--background) 0%, #FAF3E4 100%)' }}>
       <div className="decor-blob top-10 left-10 w-80 h-80 bg-primary/8" />
       <div className="decor-blob bottom-10 right-10 w-80 h-80 bg-accent/10" />
       <div className="max-w-5xl mx-auto px-5 md:px-8 relative">
