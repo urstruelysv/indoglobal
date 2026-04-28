@@ -7,7 +7,7 @@ const highlights = [
   {
     title: 'Centralized A/C Campus',
     description: 'Fully air-conditioned classrooms and common areas for comfortable learning all year round.',
-    image: '/images/campus/school-building-hd.png',
+    image: '/images/campus/school-building-hd.jpg',
     span: 'col-span-2 row-span-2',
     mobileSpan: '',
     height: 'h-48 md:h-full',
@@ -15,7 +15,7 @@ const highlights = [
   {
     title: 'Smart Classrooms',
     description: 'Bright, airy spaces equipped with smart boards and digital learning aids.',
-    image: '/images/campus/surveillance.png',
+    image: '/images/campus/surveillance.jpg',
     span: '',
     mobileSpan: '',
     height: 'h-40 md:h-56',
@@ -31,7 +31,7 @@ const highlights = [
   {
     title: 'Library of Inspiration',
     description: 'A curated collection of books to nurture imagination, knowledge, and curiosity.',
-    image: '/images/campus/teacher-students.png',
+    image: '/images/campus/teacher-students.jpg',
     span: '',
     mobileSpan: '',
     height: 'h-40 md:h-56',
@@ -47,7 +47,7 @@ const highlights = [
   {
     title: 'Performing Arts Studio',
     description: 'Music, dance, and art spaces that celebrate every child\'s creative expression.',
-    image: '/images/campus/performing-arts.png',
+    image: '/images/campus/performing-arts.jpg',
     span: '',
     mobileSpan: '',
     height: 'h-40 md:h-56',
@@ -55,7 +55,7 @@ const highlights = [
   {
     title: 'Safe Transportation',
     description: 'GPS-enabled school buses with trained attendants for safe and reliable commutes.',
-    image: '/images/campus/transportation.png',
+    image: '/images/campus/transportation.jpg',
     span: '',
     mobileSpan: '',
     height: 'h-40 md:h-56',
@@ -63,7 +63,7 @@ const highlights = [
   {
     title: 'Health & Wellness',
     description: 'Medical room with first-aid facilities, regular wellness check-ups, and dedicated care.',
-    image: '/images/campus/health-hygiene.png',
+    image: '/images/campus/health-hygiene.jpg',
     span: 'col-span-2',
     mobileSpan: '',
     height: 'h-40 md:h-56',
