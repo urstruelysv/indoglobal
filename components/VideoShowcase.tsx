@@ -41,7 +41,7 @@ export default function VideoShowcase() {
               >
                 {/* Thumbnail — school building from booklet */}
                 <img
-                  src="/images/campus/school-building-hd.png"
+                  src="/images/campus/school-building-hd.jpg"
                   alt="Indo Global School Campus"
                   className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
                 />

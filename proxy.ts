@@ -22,10 +22,8 @@ export async function proxy(req: NextRequest) {
       return NextResponse.redirect(new URL('/login', req.url));
     }
 
-    try {
-      await decrypt(session);
-      return NextResponse.next();
-    } catch {
+    const payload = await decrypt(session);
+    if (!payload || payload.admin !== true) {
       if (isProtectedApi) {
         return NextResponse.json({ error: 'Invalid session' }, { status: 401 });
       }

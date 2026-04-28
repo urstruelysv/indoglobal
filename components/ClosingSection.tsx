@@ -8,7 +8,7 @@ export default function ClosingSection() {
       {/* Background Image */}
       <div className="absolute inset-0">
         <img
-          src="/images/campus/school-building-hd.png"
+          src="/images/campus/school-building-hd.jpg"
           alt="Indo Global School Campus"
           className="w-full h-full object-cover"
         />
