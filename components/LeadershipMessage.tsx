@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { useCallback, useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowUpRight, ChevronLeft, ChevronRight, Quote } from 'lucide-react';
@@ -11,7 +12,7 @@ const leaders = [
     slug: 'chairman',
     name: 'Chinnabathini Sagar',
     role: 'Chairman',
-    photo: '/images/people/chairman.png',
+    photo: '/images/people/chairman.jpg',
     excerpt:
       'Indo Global School was born from a passionate dream — to provide children with an education that truly empowers them to Learn, Lead, and Shine. Every child carries within them a spark of brilliance waiting to be discovered.',
     pull: 'We do not make promises — we simply do justice to our responsibilities.',
@@ -94,7 +95,14 @@ export default function LeadershipMessage() {
                     className="absolute inset-0 translate-x-4 translate-y-4 rounded-[1.25rem] bg-gradient-to-br from-primary/20 via-accent/15 to-secondary/15"
                   />
                   <div className="relative h-full w-full rounded-[1.25rem] overflow-hidden ring-1 ring-border/60 shadow-[0_30px_80px_-30px_rgba(15,42,63,0.35)]">
-                    <img src={leader.photo} alt={leader.name} className="w-full h-full object-cover" />
+                    <Image
+                      src={leader.photo}
+                      alt={leader.name}
+                      fill
+                      sizes="(max-width: 768px) 100vw, 480px"
+                      className="object-cover"
+                      priority={active === 0}
+                    />
                     <div className="absolute inset-0 bg-gradient-to-t from-primary/35 via-transparent to-transparent" />
                     <div className="absolute bottom-0 left-0 right-0 p-5 md:p-6 text-white">
                       <p className="text-[11px] uppercase tracking-[0.24em] font-semibold text-white/85">
