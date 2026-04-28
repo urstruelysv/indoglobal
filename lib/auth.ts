@@ -7,9 +7,13 @@ function getKey() {
 
   if (!secretKey) {
     if (process.env.NODE_ENV === "production") {
-      console.warn("JWT_SECRET is missing");
+      throw new Error("JWT_SECRET environment variable is required in production");
     }
     return new TextEncoder().encode("dev-only-secret-do-not-use-in-prod");
+  }
+
+  if (secretKey.length < 32) {
+    throw new Error("JWT_SECRET must be at least 32 characters");
   }
 
   return new TextEncoder().encode(secretKey);

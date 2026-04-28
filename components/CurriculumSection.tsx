@@ -90,7 +90,7 @@ const holisticAreas = [
     icon: HeartPulse,
     title: 'Wellness',
     description: 'Yoga, sports, mindfulness programmes, and regular wellness check-ups — nurturing physical and emotional well-being.',
-    image: '/images/campus/sports-arena.png',
+    image: '/images/campus/health-hygiene.png',
     iconColor: 'text-primary',
     iconBg: 'bg-primary/10',
   },

@@ -22,7 +22,7 @@ const leaders: Leader[] = [
     slug: 'chairman',
     name: 'Chinnabathini Sagar',
     role: "Chairman's Message",
-    photo: '/images/people/chairman.png',
+    photo: '/images/people/chairman.jpg',
     greeting: 'Dear Parents and Students,',
     paragraphs: [
       'It gives me immense pleasure, joy, and pride to welcome you to Indo Global School — an institution born from a passionate dream to provide children with an education that truly empowers them to Learn, Lead, and Shine.',

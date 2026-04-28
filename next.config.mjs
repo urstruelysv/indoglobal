@@ -1,8 +1,11 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
-    unoptimized: true,
+    formats: ['image/avif', 'image/webp'],
+    minimumCacheTTL: 60 * 60 * 24 * 7,
   },
-}
+  poweredByHeader: false,
+  reactStrictMode: true,
+};
 
-export default nextConfig
+export default nextConfig;
