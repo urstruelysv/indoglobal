@@ -2,11 +2,12 @@
 
 import { motion } from 'framer-motion';
 import { useState } from 'react';
-import { Globe, User, Award, Building2, GraduationCap, Shield, Trophy, HeartPulse, ChevronDown } from 'lucide-react';
+import { Globe2, Sprout, Compass, Landmark, BookOpenCheck, ShieldCheck, Medal, Smile, ChevronDown } from 'lucide-react';
+import SectionHeader from './SectionHeader';
 
 const reasons = [
   {
-    icon: Globe,
+    icon: Globe2,
     title: 'Global Perspective with Indian Roots',
     description: 'A curriculum designed to balance modern educational standards with traditional cultural wisdom. We prepare children to thrive globally while staying rooted in the values that define who they are.',
     iconBg: 'bg-primary/10',
@@ -14,7 +15,7 @@ const reasons = [
     ring: 'ring-primary/15',
   },
   {
-    icon: User,
+    icon: Sprout,
     title: 'Child-Centred Learning',
     description: 'Each child learns at their own pace through experiential, activity-based, and enquiry-driven approaches. We don\'t fit children into a mould — we let them shape their own path to brilliance.',
     iconBg: 'bg-secondary/12',
@@ -22,7 +23,7 @@ const reasons = [
     ring: 'ring-secondary/15',
   },
   {
-    icon: Award,
+    icon: Compass,
     title: 'Leadership & Values',
     description: 'Character building, moral education, and public speaking form the backbone of our learning philosophy. Every student is mentored to lead with integrity, empathy, and purpose.',
     iconBg: 'bg-accent/15',
@@ -30,7 +31,7 @@ const reasons = [
     ring: 'ring-accent/20',
   },
   {
-    icon: Building2,
+    icon: Landmark,
     title: 'Modern Infrastructure',
     description: 'A sprawling 3-acre campus with smart classrooms, digital learning systems, centralized air conditioning, and interactive spaces that encourage creativity and collaboration — infrastructure built for the learners of tomorrow.',
     iconBg: 'bg-primary/10',
@@ -38,7 +39,7 @@ const reasons = [
     ring: 'ring-primary/15',
   },
   {
-    icon: GraduationCap,
+    icon: BookOpenCheck,
     title: 'Dedicated & Qualified Faculty',
     description: 'Our teachers are mentors who inspire learning beyond the classroom. They nurture every child\'s potential with passion, care, and expertise — helping children achieve their best.',
     iconBg: 'bg-secondary/12',
@@ -46,7 +47,7 @@ const reasons = [
     ring: 'ring-secondary/15',
   },
   {
-    icon: Shield,
+    icon: ShieldCheck,
     title: 'Safety & Security',
     description: '24/7 surveillance, trained staff, GPS-enabled school buses, and a nurturing environment that ensures every child\'s safety and well-being — giving parents complete peace of mind.',
     iconBg: 'bg-accent/15',
@@ -54,7 +55,7 @@ const reasons = [
     ring: 'ring-accent/20',
   },
   {
-    icon: Trophy,
+    icon: Medal,
     title: 'Sports & Co-Curricular Excellence',
     description: 'From basketball and football to tennis and athletics, from yoga and chess to art and music — we believe in the all-round development of every student, on and off the field.',
     iconBg: 'bg-primary/10',
@@ -62,7 +63,7 @@ const reasons = [
     ring: 'ring-primary/15',
   },
   {
-    icon: HeartPulse,
+    icon: Smile,
     title: 'Wellness & Mindfulness',
     description: 'Yoga, mindfulness programmes, a dedicated medical room, and regular wellness check-ups — because a healthy mind and body are the foundation of all learning.',
     iconBg: 'bg-secondary/12',
@@ -77,24 +78,11 @@ export default function WhyChooseIGS() {
   return (
     <section id="why-igs" className="relative section-y surface-warm overflow-hidden">
       <div className="max-w-7xl mx-auto px-5 md:px-8 relative">
-        {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-80px' }}
-          transition={{ duration: 0.5 }}
-          className="text-center mb-14 md:mb-20 space-y-4"
-        >
-          <span className="eyebrow centered">The IGS Difference</span>
-          <h2 className="font-serif font-bold">
-            <span className="text-foreground">Why Choose </span>
-            <span className="gradient-text-brand">Indo Global School?</span>
-          </h2>
-          <div className="ornament"><span className="ornament-dot" /></div>
-          <p className="text-base md:text-lg text-muted-foreground max-w-xl mx-auto pt-1">
-            Eight reasons parents trust us with what matters most — their children&apos;s future.
-          </p>
-        </motion.div>
+        <SectionHeader
+          eyebrow="The IGS Difference"
+          title="Why Choose Indo Global School"
+          subtitle="Eight reasons parents trust us with what matters most — their children's future."
+        />
 
         {/* Accordion Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 md:gap-4">
@@ -166,7 +154,7 @@ export default function WhyChooseIGS() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5, delay: 0.2 }}
-          className="text-center mt-14 md:mt-20"
+          className="text-center mt-12 md:mt-16"
         >
           <div className="inline-flex items-center gap-3 text-accent">
             <span className="h-px w-12 bg-gradient-to-r from-transparent to-accent" />

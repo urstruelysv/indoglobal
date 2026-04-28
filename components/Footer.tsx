@@ -1,13 +1,37 @@
 'use client';
 
 import Link from 'next/link';
-import { Mail, MapPin, Phone, Instagram, Heart } from 'lucide-react';
+import { Mail, MapPin, Phone, Instagram, Facebook, Youtube, Linkedin, Briefcase, Heart } from 'lucide-react';
+
+// X / Twitter inline glyph (lucide doesn't ship the new X mark)
+const XIcon = ({ size = 17 }: { size?: number }) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width={size}
+    height={size}
+    viewBox="0 0 24 24"
+    fill="currentColor"
+    aria-hidden="true"
+  >
+    <path d="M18.244 2H21.5l-7.51 8.59L23 22h-6.945l-5.44-6.61L4.4 22H1.13l8.04-9.2L1 2h7.115l4.92 6.05L18.244 2Zm-1.22 18h1.86L7.06 4H5.07l11.954 16Z" />
+  </svg>
+);
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
 
+  // Update hrefs when accounts go live
   const socialLinks = [
-    { icon: Instagram, href: 'https://www.instagram.com/indoglobal2025?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==', label: 'Instagram' },
+    {
+      icon: Instagram,
+      href: 'https://www.instagram.com/indoglobal2025?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==',
+      label: 'Instagram',
+    },
+    { icon: Facebook, href: '#', label: 'Facebook' },
+    { icon: Youtube, href: '#', label: 'YouTube' },
+    { icon: XIcon, href: '#', label: 'X' },
+    { icon: Linkedin, href: '#', label: 'LinkedIn' },
+    { icon: Briefcase, href: '#', label: 'Indeed' },
   ];
 
   return (
@@ -41,17 +65,20 @@ export default function Footer() {
               Nurturing Experiential Learning, Creativity, and Global Citizens with strong Indian values. Join our community in Kishan Nagar, Shadnagar.
             </p>
 
-            <div className="flex gap-3">
-              {socialLinks.map((social) => (
-                <Link
-                  key={social.label}
-                  href={social.href}
-                  className="w-10 h-10 md:w-11 md:h-11 rounded-full bg-white/10 ring-1 ring-white/15 flex items-center justify-center hover:bg-gradient-to-br hover:from-secondary hover:to-accent hover:ring-transparent hover:scale-110 transition-all duration-300"
-                  aria-label={social.label}
-                >
-                  <social.icon size={17} />
-                </Link>
-              ))}
+            <div className="flex flex-wrap gap-2.5 md:gap-3">
+              {socialLinks.map((social) => {
+                const Icon = social.icon;
+                return (
+                  <Link
+                    key={social.label}
+                    href={social.href}
+                    className="w-10 h-10 md:w-11 md:h-11 rounded-full bg-white/10 ring-1 ring-white/15 flex items-center justify-center hover:bg-gradient-to-br hover:from-secondary hover:to-accent hover:ring-transparent hover:scale-110 transition-all duration-300"
+                    aria-label={social.label}
+                  >
+                    <Icon size={17} />
+                  </Link>
+                );
+              })}
             </div>
           </div>
 
@@ -85,9 +112,12 @@ export default function Footer() {
               {[
                 { label: 'Photo Gallery', href: '/gallery' },
                 { label: 'Academic Calendar', href: '/academic-calendar' },
+                { label: 'Leadership Message', href: '/leadership' },
+                { label: 'Blogs', href: '/blogs' },
                 { label: 'Admissions Open', href: '/#apply' },
                 { label: 'Careers', href: '/careers' },
                 { label: 'School Location', href: '/#location' },
+                { label: 'Admin', href: '/admin' },
               ].map((link) => (
                 <Link
                   key={link.label}
@@ -123,8 +153,18 @@ export default function Footer() {
                   <Mail size={16} className="md:w-[18px] md:h-[18px]" />
                 </div>
                 <div>
-                  <a href="mailto:indoglobalschool@gmail.com" className="text-white font-bold text-xs md:text-sm hover:text-accent transition-colors">indoglobalschool@gmail.com</a>
+                  <a href="mailto:info@indoglobaligs.com" className="text-white font-bold text-xs md:text-sm hover:text-accent transition-colors">info@indoglobaligs.com</a>
                   <p className="text-white/60 text-[9px] md:text-[10px] uppercase font-bold tracking-widest mt-1">Admissions Team</p>
+                </div>
+              </div>
+
+              <div className="flex gap-3 md:gap-4 group">
+                <div className="w-9 h-9 md:w-10 md:h-10 rounded-xl bg-white/10 flex items-center justify-center text-accent shrink-0 group-hover:bg-accent group-hover:text-white transition-all">
+                  <Mail size={16} className="md:w-[18px] md:h-[18px]" />
+                </div>
+                <div>
+                  <a href="mailto:chairman@indoglobaligs.com" className="text-white font-bold text-xs md:text-sm hover:text-accent transition-colors">chairman@indoglobaligs.com</a>
+                  <p className="text-white/60 text-[9px] md:text-[10px] uppercase font-bold tracking-widest mt-1">Chairman&rsquo;s Office</p>
                 </div>
               </div>
 

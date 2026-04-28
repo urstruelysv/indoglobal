@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Mail, ArrowRight, Loader2 } from 'lucide-react';
+import SectionHeader from './SectionHeader';
 
 export default function ContactSection() {
   const [formData, setFormData] = useState({
@@ -52,23 +53,13 @@ export default function ContactSection() {
       <div className="decor-blob top-20 right-10 w-80 h-80 bg-primary/8" />
       <div className="decor-blob bottom-20 left-10 w-80 h-80 bg-secondary/10" />
       <div className="max-w-7xl mx-auto px-5 md:px-8 relative">
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-80px' }}
-          transition={{ duration: 0.5 }}
-          className="text-center mb-12 md:mb-16 space-y-4"
-        >
-          <span className="eyebrow centered">Take the First Step</span>
-          <h2 className="font-serif font-bold">
-            <span className="text-foreground">Start Your </span>
-            <span className="gradient-text-sunrise">Child&apos;s Journey</span>
-          </h2>
-          <div className="ornament"><span className="ornament-dot" /></div>
-          <p className="text-base md:text-lg text-muted-foreground max-w-2xl mx-auto pt-1">
-            Call us at <a href="tel:+9121689898" className="text-primary font-bold hover:text-secondary transition-colors">+91 21 68 98 98</a> or <a href="tel:+9121983838" className="text-primary font-bold hover:text-secondary transition-colors">+91 21 98 38 38</a>, or fill out the form below.
-          </p>
-        </motion.div>
+        <SectionHeader
+          eyebrow="Take the First Step"
+          title="Start Your Child's Journey"
+        />
+        <p className="-mt-6 md:-mt-10 mb-10 md:mb-14 text-[15px] md:text-base text-muted-foreground max-w-2xl leading-[1.7]">
+          Call us at <a href="tel:+9121689898" className="text-primary font-semibold hover:text-secondary transition-colors">+91 21 68 98 98</a> or <a href="tel:+9121983838" className="text-primary font-semibold hover:text-secondary transition-colors">+91 21 98 38 38</a>, or fill out the form below.
+        </p>
 
         <motion.div
           initial={{ opacity: 0, y: 16 }}

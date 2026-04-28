@@ -2,28 +2,18 @@
 
 import { motion } from 'framer-motion';
 import { MapPin, Phone, Clock } from 'lucide-react';
+import SectionHeader from './SectionHeader';
 
 export default function LocationSection() {
   return (
     <section id="location" className="relative section-y surface-warm overflow-hidden">
       <div className="decor-blob top-10 left-10 w-80 h-80 bg-secondary/10" />
       <div className="max-w-7xl mx-auto px-5 md:px-8 relative">
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-80px' }}
-          transition={{ duration: 0.5 }}
-          className="text-center mb-14 md:mb-20 space-y-4"
-        >
-          <span className="eyebrow centered">Visit Us in Kishan Nagar, Shadnagar</span>
-          <h2 className="font-serif font-bold">
-            <span className="gradient-text-brand">School Location</span>
-          </h2>
-          <div className="ornament"><span className="ornament-dot" /></div>
-          <p className="text-base md:text-lg text-muted-foreground max-w-xl mx-auto pt-1">
-            Easily accessible with free transport facility for students.
-          </p>
-        </motion.div>
+        <SectionHeader
+          eyebrow="Visit Us"
+          title="School Location"
+          subtitle="Kishan Nagar, Shadnagar — easily accessible with free transport facility for students."
+        />
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 items-start">
           {/* Map */}

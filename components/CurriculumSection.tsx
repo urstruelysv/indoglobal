@@ -3,19 +3,20 @@
 import { motion } from 'framer-motion';
 import { useState } from 'react';
 import { BookOpen, Palette, Brain, HeartPulse, Baby, School, GraduationCap } from 'lucide-react';
+import SectionHeader from './SectionHeader';
 
 type TabId = 'curriculum' | 'holistic';
 
 const curriculumStages = [
   {
     icon: Baby,
-    stage: 'Foundation Stage',
-    grades: 'Pre-Primary',
+    stage: 'Foundational Stage',
+    grades: 'Nursery – Grade 2',
     color: 'bg-gradient-to-br from-accent/[0.08] to-accent/[0.02]',
     borderColor: 'border-accent/25',
     dotColor: 'bg-accent',
     iconColor: 'text-[#8A5A10]',
-    description: 'The early years are the corner stone of a child\'s development. Our Pre-Primary curriculum focuses on joyful learning through play, storytelling, music, movement, and creative exploration.',
+    description: 'The early years are the corner stone of a child\'s development. Our Foundational Stage focuses on joyful learning through play, storytelling, music, movement, and creative exploration — building a confident, curious learner.',
     skills: [
       'Early literacy and numeracy skills',
       'Fine and gross motor coordination',
@@ -26,13 +27,13 @@ const curriculumStages = [
   },
   {
     icon: School,
-    stage: 'Primary Stage',
-    grades: 'Grade I – V',
+    stage: 'Preparatory Stage',
+    grades: 'Grade 3 – Grade 5',
     color: 'bg-gradient-to-br from-primary/[0.08] to-primary/[0.02]',
     borderColor: 'border-primary/25',
     dotColor: 'bg-primary',
     iconColor: 'text-primary',
-    description: 'Children are introduced to a structured learning environment that encourages curiosity and self-expression. Our integrated curriculum blends core subjects with arts, sports, and life skills for balanced development.',
+    description: 'Children move into a structured learning environment that encourages curiosity and self-expression. Our integrated curriculum blends core subjects with arts, sports, and life skills for balanced development.',
     skills: [
       'Concept-based learning in English, Math, Science, and Social Science',
       'Introduction to computers, AI, and technology',
@@ -44,7 +45,7 @@ const curriculumStages = [
   {
     icon: GraduationCap,
     stage: 'Middle Stage',
-    grades: 'Grade VI – VII',
+    grades: 'Grade 6 – Grade 7',
     color: 'bg-gradient-to-br from-secondary/[0.08] to-secondary/[0.02]',
     borderColor: 'border-secondary/25',
     dotColor: 'bg-secondary',
@@ -104,27 +105,14 @@ export default function CurriculumSection() {
       <div className="decor-blob bottom-10 left-10 w-80 h-80 bg-primary/8" />
 
       <div className="max-w-7xl mx-auto px-5 md:px-8 relative">
-        {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-80px' }}
-          transition={{ duration: 0.5 }}
-          className="text-center mb-12 md:mb-16 space-y-4"
-        >
-          <span className="eyebrow centered">What We Teach &amp; How We Grow</span>
-          <h2 className="font-serif font-bold">
-            <span className="text-foreground">Curriculum &amp; </span>
-            <span className="gradient-text-sunrise">Holistic Development</span>
-          </h2>
-          <div className="ornament"><span className="ornament-dot" /></div>
-          <p className="text-base md:text-lg text-muted-foreground max-w-2xl mx-auto pt-1">
-            At IGS, education goes beyond textbooks — it is a journey of exploration, understanding, and development.
-          </p>
-        </motion.div>
+        <SectionHeader
+          eyebrow="What We Teach & How We Grow"
+          title="Curriculum & Holistic Development"
+          subtitle="At IGS, education goes beyond textbooks — it is a journey of exploration, understanding, and development."
+        />
 
         {/* Tabs */}
-        <div className="flex justify-center gap-3 mb-12 md:mb-16">
+        <div className="flex flex-wrap gap-3 mb-10 md:mb-14">
           <button
             onClick={() => setActiveTab('curriculum')}
             className={`px-6 md:px-9 py-3 md:py-3.5 rounded-full font-semibold text-sm md:text-base transition-all duration-300 ${
