@@ -1,6 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
+import SectionHeader from './SectionHeader';
 
 // India map outline — custom SVG
 function IconIndiaMap({ className }: { className?: string }) {
@@ -287,29 +288,14 @@ export default function AboutSection() {
       />
 
       <div className="relative max-w-[1240px] mx-auto px-5 md:px-8">
-        {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-80px' }}
-          transition={{ duration: 0.6 }}
-          className="max-w-3xl mb-16 md:mb-24"
-        >
-          <div className="flex items-center gap-3 mb-5">
-            <span className="h-px w-10 bg-gradient-to-r from-secondary to-accent" />
-            <span className="eyebrow !tracking-[0.28em]">Discover Our Story</span>
-          </div>
-          <h2 className="font-serif font-bold leading-[1.12] tracking-tight">
-            <span className="text-foreground">About </span>
-            <span className="gradient-text-brand italic inline-block pr-[0.12em] pb-[0.08em]">Indo Global School</span>
-          </h2>
-          <p className="mt-6 text-lg md:text-xl text-muted-foreground leading-[1.6] max-w-2xl">
-            Where every child is encouraged to dream, explore, and shine.
-          </p>
-        </motion.div>
+        <SectionHeader
+          eyebrow="Discover Our Story"
+          title="About Indo Global School"
+          subtitle="Where every child is encouraged to dream, explore, and shine."
+        />
 
         {/* Editorial spread — image + text */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-center mb-24 md:mb-32">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-center mb-20 md:mb-24">
           {/* Image */}
           <motion.div
             initial={{ opacity: 0, y: 24 }}

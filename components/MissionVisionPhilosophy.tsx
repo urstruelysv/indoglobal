@@ -2,30 +2,15 @@
 
 import { motion } from 'framer-motion';
 import { Target, Eye, Sparkles } from 'lucide-react';
+import SectionHeader from './SectionHeader';
 
 const values = [
   {
-    num: '01',
-    icon: Target,
-    title: 'Mission',
-    text: 'To deliver a holistic, future-ready education that blends global learning standards with the richness of Indian values — inspiring creativity, character, and a lifelong love for learning.',
-    gradient: 'linear-gradient(135deg, rgba(15,118,110,0.08) 0%, rgba(15,118,110,0.02) 100%)',
-    ringClass: 'ring-primary/15',
-    numColor: 'text-primary/8',
-    iconBg: 'bg-primary/10',
-    iconColor: 'text-primary',
-    titleColor: 'text-primary',
-    accent: 'bg-primary',
-    topBar: 'bg-gradient-to-r from-primary to-primary/60',
-  },
-  {
-    num: '02',
     icon: Eye,
     title: 'Vision',
     text: 'A world where every child learns with curiosity, leads with integrity, and shines with purpose — growing into a confident, compassionate, and globally aware citizen rooted in strong values.',
     gradient: 'linear-gradient(135deg, rgba(229,106,31,0.08) 0%, rgba(229,106,31,0.02) 100%)',
     ringClass: 'ring-secondary/15',
-    numColor: 'text-secondary/8',
     iconBg: 'bg-secondary/10',
     iconColor: 'text-secondary',
     titleColor: 'text-secondary',
@@ -33,13 +18,23 @@ const values = [
     topBar: 'bg-gradient-to-r from-secondary to-secondary/60',
   },
   {
-    num: '03',
+    icon: Target,
+    title: 'Mission',
+    text: 'To deliver a holistic, future-ready education that blends global learning standards with the richness of Indian values — inspiring creativity, character, and a lifelong love for learning.',
+    gradient: 'linear-gradient(135deg, rgba(15,118,110,0.08) 0%, rgba(15,118,110,0.02) 100%)',
+    ringClass: 'ring-primary/15',
+    iconBg: 'bg-primary/10',
+    iconColor: 'text-primary',
+    titleColor: 'text-primary',
+    accent: 'bg-primary',
+    topBar: 'bg-gradient-to-r from-primary to-primary/60',
+  },
+  {
     icon: Sparkles,
     title: 'Philosophy',
     text: 'Every child carries a spark of brilliance. We create the right environment for that spark to shine — because education is not confined to textbooks; it is an awakening of the mind and spirit.',
     gradient: 'linear-gradient(135deg, rgba(240,167,38,0.1) 0%, rgba(240,167,38,0.02) 100%)',
     ringClass: 'ring-accent/20',
-    numColor: 'text-accent/15',
     iconBg: 'bg-accent/15',
     iconColor: 'text-[#8A5A10]',
     titleColor: 'text-[#8A5A10]',
@@ -55,24 +50,11 @@ export default function MissionVisionPhilosophy() {
       <div className="decor-blob bottom-20 right-10 w-80 h-80 bg-secondary/10" />
 
       <div className="max-w-7xl mx-auto px-5 md:px-8 relative">
-        {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-80px' }}
-          transition={{ duration: 0.5 }}
-          className="text-center mb-14 md:mb-20 space-y-4"
-        >
-          <span className="eyebrow centered">Our Foundation</span>
-          <h2 className="font-serif font-bold">
-            <span className="text-foreground">What </span>
-            <span className="gradient-text-sunrise">Drives Us</span>
-          </h2>
-          <div className="ornament"><span className="ornament-dot" /></div>
-          <p className="text-base md:text-lg text-muted-foreground max-w-xl mx-auto pt-1">
-            The pillars that guide every decision we make and every child we shape.
-          </p>
-        </motion.div>
+        <SectionHeader
+          eyebrow="Our Foundation"
+          title="What Drives Us"
+          subtitle="The pillars that guide every decision we make and every child we shape."
+        />
 
         {/* Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-5 md:gap-6">
@@ -80,7 +62,7 @@ export default function MissionVisionPhilosophy() {
             const Icon = v.icon;
             return (
               <motion.div
-                key={v.num}
+                key={v.title}
                 initial={{ opacity: 0, y: 24 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: '-40px' }}
@@ -91,11 +73,6 @@ export default function MissionVisionPhilosophy() {
               >
                 {/* Top gradient bar */}
                 <div className={`h-1.5 w-full ${v.topBar}`} />
-
-                {/* Big background number */}
-                <span className={`absolute -top-2 -right-2 text-[7rem] md:text-[7.5rem] lg:text-[9rem] font-serif font-black leading-none pointer-events-none select-none ${v.numColor} group-hover:scale-110 transition-transform duration-700`}>
-                  {v.num}
-                </span>
 
                 {/* Content */}
                 <div className="relative z-10 p-7 md:p-8 lg:p-10 flex flex-col h-full">

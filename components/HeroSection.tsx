@@ -12,7 +12,7 @@ import { ArrowRight, Bus, GraduationCap, MapPin, Monitor, Play, Trees, X } from 
 
 const HERO_IMAGES = [
   '/students-hero.webp',
-  '/students-hero.png',
+  '/student-2.png',
   '/student-hero-3.webp',
 ];
 

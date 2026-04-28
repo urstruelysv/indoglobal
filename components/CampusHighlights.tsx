@@ -1,6 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
+import SectionHeader from './SectionHeader';
 
 const highlights = [
   {
@@ -74,23 +75,11 @@ export default function CampusHighlights() {
     <section id="campus" className="relative section-y surface-warm overflow-hidden">
       <div className="decor-blob top-20 right-10 w-80 h-80 bg-secondary/12" />
       <div className="max-w-7xl mx-auto px-5 md:px-8 relative">
-        {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-80px' }}
-          transition={{ duration: 0.5 }}
-          className="text-center mb-14 md:mb-20 space-y-4"
-        >
-          <span className="eyebrow centered">Our World-Class Facilities</span>
-          <h2 className="font-serif font-bold">
-            <span className="gradient-text-brand">Campus Highlights</span>
-          </h2>
-          <div className="ornament"><span className="ornament-dot" /></div>
-          <p className="text-base md:text-lg text-muted-foreground max-w-2xl mx-auto pt-1">
-            Spread across a sprawling <span className="text-primary font-semibold">3-acre campus</span>, every corner has been thoughtfully designed to inspire learning, creativity, and comfort.
-          </p>
-        </motion.div>
+        <SectionHeader
+          eyebrow="World-Class Facilities"
+          title="Campus Highlights"
+          subtitle="A sprawling 3-acre campus where every corner is thoughtfully designed to inspire learning, creativity, and comfort."
+        />
 
         {/* Grid — 2 cols on mobile, 4 cols on desktop */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">

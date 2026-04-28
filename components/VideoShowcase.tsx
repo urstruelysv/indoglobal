@@ -3,6 +3,7 @@
 import { Play } from 'lucide-react';
 import { useState } from 'react';
 import { motion } from 'framer-motion';
+import SectionHeader from './SectionHeader';
 
 export default function VideoShowcase() {
   const [isPlaying, setIsPlaying] = useState(false);
@@ -12,21 +13,11 @@ export default function VideoShowcase() {
       <div className="decor-blob top-10 left-10 w-80 h-80 bg-primary/8" />
       <div className="decor-blob bottom-10 right-10 w-80 h-80 bg-accent/10" />
       <div className="max-w-5xl mx-auto px-5 md:px-8 relative">
-        {/* Section Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-80px' }}
-          transition={{ duration: 0.5 }}
-          className="text-center mb-12 md:mb-16 space-y-4"
-        >
-          <span className="eyebrow centered">Our Story in Motion</span>
-          <h2 className="font-serif font-bold">
-            <span className="text-foreground">Experience </span>
-            <span className="gradient-text-brand">Indo Global School</span>
-          </h2>
-          <div className="ornament"><span className="ornament-dot" /></div>
-        </motion.div>
+        <SectionHeader
+          eyebrow="Our Story in Motion"
+          title="Experience Indo Global School"
+          compact
+        />
 
         {/* Video Player */}
         <motion.div
