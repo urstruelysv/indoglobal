@@ -11,7 +11,7 @@ const leaders = [
     slug: 'chairman',
     name: 'Chinnabathini Sagar',
     role: 'Chairman',
-    photo: '/images/people/chairman.png',
+    photo: '/images/people/chairman.jpg',
     excerpt:
       'Indo Global School was born from a passionate dream — to provide children with an education that truly empowers them to Learn, Lead, and Shine. Every child carries within them a spark of brilliance waiting to be discovered.',
     pull: 'We do not make promises — we simply do justice to our responsibilities.',
