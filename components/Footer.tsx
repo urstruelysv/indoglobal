@@ -187,6 +187,8 @@ export default function Footer() {
               <p className="text-white/50 text-[10px] md:text-xs font-medium">
                 &copy; {currentYear} Indo Global School, Kishan Nagar, Shadnagar.
               </p>
+         
+          
               <div className="flex gap-4 md:gap-6">
                 <Link href="#" className="text-white/50 hover:text-white transition-all text-[10px] md:text-xs font-medium">Privacy Policy</Link>
                 <Link href="#" className="text-white/50 hover:text-white transition-all text-[10px] md:text-xs font-medium">Terms of Service</Link>
@@ -194,13 +196,13 @@ export default function Footer() {
               </div>
             </div>
 
-            <div className="flex items-center gap-2 text-white/50 text-[10px] md:text-xs font-medium">
+            {/* <div className="flex items-center gap-2 text-white/50 text-[10px] md:text-xs font-medium">
               <a href="https://saivamshi.aethoscompany.in/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 hover:text-white/80 transition-colors">
                 <span>Made with</span>
                 <Heart size={10} className="md:w-3 md:h-3 text-rose-400 fill-rose-400" />
                 <span>for education</span>
               </a>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>
