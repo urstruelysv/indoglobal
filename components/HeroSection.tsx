@@ -370,7 +370,7 @@ export default function HeroSection() {
                     Now Enrolling
                   </span>
                   <span className="text-[11px] uppercase tracking-[0.22em] text-muted-foreground font-semibold">
-                    2025&ndash;26
+                    2026&ndash;27
                   </span>
                 </div>
                 <h2 className="text-[1.4rem] md:text-[1.55rem] font-serif font-bold text-foreground leading-[1.05]">
