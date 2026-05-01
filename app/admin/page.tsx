@@ -23,6 +23,9 @@ import {
   Loader2,
   FileText,
   Briefcase,
+  Edit2,
+  Eye,
+  EyeOff,
 } from 'lucide-react';
 import { format } from 'date-fns';
 import { useRouter } from 'next/navigation';
@@ -78,6 +81,26 @@ interface CareerApplication {
   submittedAt: string;
 }
 
+interface BlogPost {
+  id: number;
+  title: string;
+  slug: string;
+  excerpt: string | null;
+  content: string;
+  coverImage: string | null;
+  author: string;
+  published: boolean;
+  publishedAt: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+interface SiteImageSlot {
+  key: string;
+  label: string;
+  publicPath: string;
+}
+
 const statusColors: Record<Status, string> = {
   'New': 'bg-blue-100 text-blue-700 border-blue-200',
   'Called': 'bg-amber-100 text-amber-700 border-amber-200',
@@ -94,16 +117,40 @@ const statusIcons: Record<Status, React.ElementType> = {
   'Not Converted': XCircle,
 };
 
+const tabLabels: Record<string, string> = {
+  admissions: 'Admissions',
+  contacts: 'Inquiries',
+  careers: 'Careers',
+  gallery: 'Gallery',
+  blogs: 'Blogs',
+  'site-images': 'Site Images',
+};
+
 export default function AdminDashboard() {
   const [admissions, setAdmissions] = useState<Admission[]>([]);
   const [contacts, setContacts] = useState<Contact[]>([]);
   const [careers, setCareers] = useState<CareerApplication[]>([]);
-  const [activeTab, setActiveTab] = useState<'admissions' | 'contacts' | 'gallery' | 'careers'>('admissions');
+  const [activeTab, setActiveTab] = useState<'admissions' | 'contacts' | 'gallery' | 'careers' | 'blogs' | 'site-images'>('admissions');
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<Status | 'All'>('All');
   const router = useRouter();
 
   const [careersLoading, setCareersLoading] = useState(true);
+
+  const [blogs, setBlogs] = useState<BlogPost[]>([]);
+  const [blogsLoading, setBlogsLoading] = useState(false);
+  const [editingBlog, setEditingBlog] = useState<BlogPost | null>(null);
+  const [newTitle, setNewTitle] = useState('');
+  const [newExcerpt, setNewExcerpt] = useState('');
+  const [newContent, setNewContent] = useState('');
+  const [newAuthor, setNewAuthor] = useState('IGS Team');
+  const [newPublished, setNewPublished] = useState(false);
+  const [newCoverFile, setNewCoverFile] = useState<File | null>(null);
+  const [blogSubmitting, setBlogSubmitting] = useState(false);
+
+  const [siteImageSlots, setSiteImageSlots] = useState<SiteImageSlot[]>([]);
+  const [siteImagesLoading, setSiteImagesLoading] = useState(false);
+  const [siteImageUploading, setSiteImageUploading] = useState<string | null>(null);
 
   useEffect(() => {
     fetchData();
@@ -160,6 +207,177 @@ export default function AdminDashboard() {
       setCareersLoading(false);
     }
   }, []);
+
+  const fetchBlogs = useCallback(async () => {
+    try {
+      setBlogsLoading(true);
+      const res = await fetch('/api/blogs?all=1');
+      if (res.ok) {
+        const data = await res.json();
+        setBlogs(Array.isArray(data) ? data : []);
+      }
+    } catch {
+      toast.error('Failed to load blog posts');
+    } finally {
+      setBlogsLoading(false);
+    }
+  }, []);
+
+  const fetchSiteImages = useCallback(async () => {
+    try {
+      setSiteImagesLoading(true);
+      const res = await fetch('/api/site-images');
+      if (res.ok) {
+        const data = await res.json();
+        setSiteImageSlots(Array.isArray(data) ? data : []);
+      }
+    } catch {
+      toast.error('Failed to load site image slots');
+    } finally {
+      setSiteImagesLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (activeTab === 'blogs' && blogs.length === 0) fetchBlogs();
+    if (activeTab === 'site-images' && siteImageSlots.length === 0) fetchSiteImages();
+  }, [activeTab]);
+
+  const resetBlogForm = () => {
+    setEditingBlog(null);
+    setNewTitle('');
+    setNewExcerpt('');
+    setNewContent('');
+    setNewAuthor('IGS Team');
+    setNewPublished(false);
+    setNewCoverFile(null);
+  };
+
+  const startEditBlog = (post: BlogPost) => {
+    setEditingBlog(post);
+    setNewTitle(post.title);
+    setNewExcerpt(post.excerpt ?? '');
+    setNewContent(post.content);
+    setNewAuthor(post.author);
+    setNewPublished(post.published);
+    setNewCoverFile(null);
+    window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+  };
+
+  const createBlog = async () => {
+    if (!newTitle.trim() || !newContent.trim()) {
+      toast.error('Title and content are required');
+      return;
+    }
+    try {
+      setBlogSubmitting(true);
+      const form = new FormData();
+      form.append('title', newTitle.trim());
+      form.append('content', newContent.trim());
+      form.append('excerpt', newExcerpt.trim());
+      form.append('author', newAuthor.trim() || 'IGS Team');
+      form.append('published', String(newPublished));
+      if (newCoverFile) form.append('file', newCoverFile);
+
+      const res = await fetch('/api/blogs', { method: 'POST', body: form });
+      if (!res.ok) {
+        const err = await res.json();
+        throw new Error(err.error ?? 'Failed to create');
+      }
+      toast.success('Blog post created');
+      resetBlogForm();
+      fetchBlogs();
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : 'Failed to create blog post');
+    } finally {
+      setBlogSubmitting(false);
+    }
+  };
+
+  const updateBlog = async () => {
+    if (!editingBlog) return;
+    if (!newTitle.trim() || !newContent.trim()) {
+      toast.error('Title and content are required');
+      return;
+    }
+    try {
+      setBlogSubmitting(true);
+      const form = new FormData();
+      form.append('id', String(editingBlog.id));
+      form.append('title', newTitle.trim());
+      form.append('content', newContent.trim());
+      form.append('excerpt', newExcerpt.trim());
+      form.append('author', newAuthor.trim() || 'IGS Team');
+      form.append('published', String(newPublished));
+      if (newCoverFile) form.append('file', newCoverFile);
+
+      const res = await fetch('/api/blogs', { method: 'PATCH', body: form });
+      if (!res.ok) {
+        const err = await res.json();
+        throw new Error(err.error ?? 'Failed to update');
+      }
+      toast.success('Blog post updated');
+      resetBlogForm();
+      fetchBlogs();
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : 'Failed to update blog post');
+    } finally {
+      setBlogSubmitting(false);
+    }
+  };
+
+  const deleteBlog = async (id: number) => {
+    if (!confirm('Delete this blog post? This cannot be undone.')) return;
+    try {
+      const res = await fetch(`/api/blogs?id=${id}`, { method: 'DELETE' });
+      if (res.ok) {
+        setBlogs((prev) => prev.filter((b) => b.id !== id));
+        toast.success('Blog post deleted');
+      } else {
+        throw new Error();
+      }
+    } catch {
+      toast.error('Failed to delete blog post');
+    }
+  };
+
+  const togglePublished = async (post: BlogPost) => {
+    try {
+      const form = new FormData();
+      form.append('id', String(post.id));
+      form.append('published', String(!post.published));
+      const res = await fetch('/api/blogs', { method: 'PATCH', body: form });
+      if (res.ok) {
+        setBlogs((prev) =>
+          prev.map((b) => (b.id === post.id ? { ...b, published: !post.published } : b)),
+        );
+        toast.success(post.published ? 'Post unpublished' : 'Post published');
+      } else {
+        throw new Error();
+      }
+    } catch {
+      toast.error('Failed to toggle publish status');
+    }
+  };
+
+  const uploadSiteImage = async (slot: string, file: File) => {
+    try {
+      setSiteImageUploading(slot);
+      const form = new FormData();
+      form.append('slot', slot);
+      form.append('file', file);
+      const res = await fetch('/api/site-images', { method: 'POST', body: form });
+      if (!res.ok) {
+        const err = await res.json();
+        throw new Error(err.error ?? 'Failed to upload');
+      }
+      toast.success('Image updated successfully');
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : 'Failed to upload image');
+    } finally {
+      setSiteImageUploading(null);
+    }
+  };
 
   const updateCareerStatus = async (id: number, newStatus: Status) => {
     try {
@@ -268,6 +486,8 @@ export default function AdminDashboard() {
     );
   };
 
+  const noFilterTabs = ['gallery', 'blogs', 'site-images'];
+
   return (
     <div className="min-h-screen bg-[#F8FAFC]">
       {/* Header */}
@@ -283,7 +503,7 @@ export default function AdminDashboard() {
             </div>
           </div>
           <div className="flex items-center gap-2 md:gap-3">
-            {activeTab !== 'gallery' && (
+            {!noFilterTabs.includes(activeTab) && (
               <Button
                 variant="outline"
                 size="sm"
@@ -336,22 +556,22 @@ export default function AdminDashboard() {
         {/* Tabs & Filters */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
           <div className="flex bg-white p-1 rounded-xl shadow-sm border border-border/40 w-fit overflow-x-auto">
-            {(['admissions', 'contacts', 'careers', 'gallery'] as const).map((tab) => (
+            {(['admissions', 'contacts', 'careers', 'gallery', 'blogs', 'site-images'] as const).map((tab) => (
               <button
                 key={tab}
                 onClick={() => { setActiveTab(tab); setFilter('All'); }}
-                className={`px-3 md:px-6 py-2 rounded-lg text-xs md:text-sm font-semibold transition-all whitespace-nowrap ${
+                className={`px-3 md:px-5 py-2 rounded-lg text-xs md:text-sm font-semibold transition-all whitespace-nowrap ${
                   activeTab === tab
                     ? 'bg-primary text-white shadow-md'
                     : 'text-muted-foreground hover:text-primary'
                 }`}
               >
-                {tab === 'admissions' ? 'Admissions' : tab === 'contacts' ? 'Inquiries' : tab === 'careers' ? 'Careers' : 'Gallery'}
+                {tabLabels[tab]}
               </button>
             ))}
           </div>
 
-          {activeTab === 'gallery' ? null : (
+          {!noFilterTabs.includes(activeTab) && (
             <div className="flex items-center gap-2">
               <Filter size={16} className="text-muted-foreground" />
               <select
@@ -589,7 +809,6 @@ export default function AdminDashboard() {
                               <div className="font-bold text-primary text-sm">{app.fullName}</div>
                               <div className="text-xs text-muted-foreground">{app.email}</div>
                               <div className="text-xs text-muted-foreground">{app.phone}</div>
-                              {/* Show position on mobile since column is hidden */}
                               <div className="md:hidden mt-1">
                                 <Badge variant="secondary" className="bg-primary/5 text-primary border-primary/10 text-[10px]">
                                   {app.positionType} — {app.positionApplying}
@@ -663,6 +882,266 @@ export default function AdminDashboard() {
                   </div>
                 </div>
               )}
+            </div>
+          )
+        )}
+
+        {/* ========= BLOGS TAB ========= */}
+        {activeTab === 'blogs' && (
+          <div className="grid gap-6">
+            {blogsLoading ? (
+              <div className="flex flex-col items-center justify-center py-24 gap-4">
+                <div className="w-8 h-8 border-4 border-primary/20 border-t-primary rounded-full animate-spin" />
+                <p className="text-muted-foreground font-medium animate-pulse">Fetching posts...</p>
+              </div>
+            ) : (
+              <div className="bg-white rounded-xl shadow-sm border border-border/40 overflow-hidden">
+                {blogs.length === 0 ? (
+                  <div className="p-12 text-center">
+                    <FileText className="w-12 h-12 text-muted-foreground/30 mx-auto mb-3" />
+                    <p className="text-muted-foreground">No blog posts yet. Create one below.</p>
+                  </div>
+                ) : (
+                  <div className="overflow-x-auto">
+                    <table className="w-full">
+                      <thead>
+                        <tr className="bg-muted/30 border-b border-border/40">
+                          <th className="text-left py-4 px-4 md:px-6 font-bold text-xs uppercase tracking-wider text-muted-foreground">Title</th>
+                          <th className="text-left py-4 px-4 md:px-6 font-bold text-xs uppercase tracking-wider text-muted-foreground hidden md:table-cell">Author</th>
+                          <th className="text-left py-4 px-4 md:px-6 font-bold text-xs uppercase tracking-wider text-muted-foreground">Status</th>
+                          <th className="text-left py-4 px-4 md:px-6 font-bold text-xs uppercase tracking-wider text-muted-foreground hidden lg:table-cell">Date</th>
+                          <th className="text-right py-4 px-4 md:px-6 font-bold text-xs uppercase tracking-wider text-muted-foreground">Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-border/40">
+                        {blogs.map((post) => (
+                          <tr key={post.id} className="hover:bg-muted/10 transition-colors group">
+                            <td className="py-4 px-4 md:px-6">
+                              <div className="font-bold text-primary text-sm">{post.title}</div>
+                              <div className="text-xs text-muted-foreground mt-0.5 font-mono">/blogs/{post.slug}</div>
+                            </td>
+                            <td className="py-4 px-4 md:px-6 hidden md:table-cell">
+                              <div className="text-sm text-foreground">{post.author}</div>
+                            </td>
+                            <td className="py-4 px-4 md:px-6">
+                              <button
+                                onClick={() => togglePublished(post)}
+                                className="flex items-center gap-1.5"
+                                title={post.published ? 'Click to unpublish' : 'Click to publish'}
+                              >
+                                {post.published ? (
+                                  <Badge className="bg-emerald-100 text-emerald-700 border-emerald-200 border flex items-center gap-1 hover:bg-emerald-200 transition-colors">
+                                    <Eye size={11} />
+                                    Published
+                                  </Badge>
+                                ) : (
+                                  <Badge variant="outline" className="bg-amber-50 text-amber-700 border-amber-200 flex items-center gap-1 hover:bg-amber-100 transition-colors">
+                                    <EyeOff size={11} />
+                                    Draft
+                                  </Badge>
+                                )}
+                              </button>
+                            </td>
+                            <td className="py-4 px-4 md:px-6 hidden lg:table-cell">
+                              <div className="text-xs text-muted-foreground">
+                                {format(new Date(post.createdAt), 'MMM dd, yyyy')}
+                              </div>
+                            </td>
+                            <td className="py-4 px-4 md:px-6 text-right">
+                              <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-all">
+                                <button
+                                  onClick={() => startEditBlog(post)}
+                                  className="p-2 text-primary hover:bg-primary/10 rounded-lg transition-all"
+                                  title="Edit"
+                                >
+                                  <Edit2 size={15} />
+                                </button>
+                                <button
+                                  onClick={() => deleteBlog(post.id)}
+                                  className="p-2 text-rose-500 hover:bg-rose-50 rounded-lg transition-all"
+                                  title="Delete"
+                                >
+                                  <Trash2 size={15} />
+                                </button>
+                              </div>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Blog Form */}
+            <Card className="p-6 bg-white border-none shadow-sm">
+              <h3 className="font-serif font-bold text-lg text-primary mb-5">
+                {editingBlog ? `Editing: ${editingBlog.title}` : 'Create New Post'}
+              </h3>
+              <div className="grid gap-4">
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Title *</label>
+                    <Input
+                      value={newTitle}
+                      onChange={(e) => setNewTitle(e.target.value)}
+                      placeholder="Post title"
+                      className="bg-[#F8FAFC]"
+                    />
+                  </div>
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Author</label>
+                    <Input
+                      value={newAuthor}
+                      onChange={(e) => setNewAuthor(e.target.value)}
+                      placeholder="IGS Team"
+                      className="bg-[#F8FAFC]"
+                    />
+                  </div>
+                </div>
+                <div className="space-y-1.5">
+                  <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Excerpt</label>
+                  <textarea
+                    value={newExcerpt}
+                    onChange={(e) => setNewExcerpt(e.target.value)}
+                    placeholder="Short summary shown on blog listing..."
+                    rows={2}
+                    className="w-full rounded-lg border border-input bg-[#F8FAFC] px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-primary/20 resize-none"
+                  />
+                </div>
+                <div className="space-y-1.5">
+                  <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Content *</label>
+                  <textarea
+                    value={newContent}
+                    onChange={(e) => setNewContent(e.target.value)}
+                    placeholder="Full post content. Separate paragraphs with a blank line..."
+                    rows={10}
+                    className="w-full rounded-lg border border-input bg-[#F8FAFC] px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-primary/20 resize-y"
+                  />
+                </div>
+                <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
+                  <div className="space-y-1.5 flex-1">
+                    <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Cover Image</label>
+                    <label className="flex items-center gap-2 cursor-pointer px-4 py-2 rounded-lg border border-dashed border-border/70 hover:border-primary/40 transition-colors bg-[#F8FAFC] w-fit">
+                      <Upload size={14} className="text-muted-foreground" />
+                      <span className="text-sm text-muted-foreground">
+                        {newCoverFile ? newCoverFile.name : 'Choose image...'}
+                      </span>
+                      <input
+                        type="file"
+                        accept="image/jpeg,image/png,image/webp,image/gif"
+                        className="hidden"
+                        onChange={(e) => setNewCoverFile(e.target.files?.[0] ?? null)}
+                      />
+                    </label>
+                  </div>
+                  <div className="flex items-center gap-2.5 pt-5">
+                    <button
+                      type="button"
+                      role="switch"
+                      aria-checked={newPublished}
+                      onClick={() => setNewPublished(!newPublished)}
+                      className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-primary/20 ${
+                        newPublished ? 'bg-primary' : 'bg-muted'
+                      }`}
+                    >
+                      <span
+                        className={`inline-block h-4 w-4 transform rounded-full bg-white shadow transition-transform ${
+                          newPublished ? 'translate-x-6' : 'translate-x-1'
+                        }`}
+                      />
+                    </button>
+                    <span className="text-sm font-medium text-foreground">
+                      {newPublished ? 'Published' : 'Draft'}
+                    </span>
+                  </div>
+                </div>
+                <div className="flex gap-3 pt-2">
+                  <Button
+                    onClick={editingBlog ? updateBlog : createBlog}
+                    disabled={blogSubmitting}
+                    className="bg-primary hover:bg-primary/90 text-white"
+                  >
+                    {blogSubmitting ? (
+                      <Loader2 size={14} className="animate-spin mr-2" />
+                    ) : null}
+                    {editingBlog ? 'Update Post' : 'Create Post'}
+                  </Button>
+                  {editingBlog && (
+                    <Button
+                      variant="outline"
+                      onClick={resetBlogForm}
+                      disabled={blogSubmitting}
+                    >
+                      Cancel
+                    </Button>
+                  )}
+                </div>
+              </div>
+            </Card>
+          </div>
+        )}
+
+        {/* ========= SITE IMAGES TAB ========= */}
+        {activeTab === 'site-images' && (
+          siteImagesLoading ? (
+            <div className="flex flex-col items-center justify-center py-24 gap-4">
+              <div className="w-8 h-8 border-4 border-primary/20 border-t-primary rounded-full animate-spin" />
+              <p className="text-muted-foreground font-medium animate-pulse">Loading image slots...</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+              {siteImageSlots.map((slot) => (
+                <Card key={slot.key} className="overflow-hidden bg-white border-none shadow-sm">
+                  <div className="h-44 overflow-hidden bg-muted relative">
+                    <img
+                      src={`/${slot.publicPath}`}
+                      alt={slot.label}
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).style.display = 'none';
+                      }}
+                    />
+                    <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                      <ImageIcon className="w-10 h-10 text-muted-foreground/20" />
+                    </div>
+                  </div>
+                  <div className="p-4">
+                    <h4 className="font-semibold text-sm text-foreground mb-1">{slot.label}</h4>
+                    <p className="text-[11px] text-muted-foreground font-mono mb-3 truncate">{slot.publicPath}</p>
+                    <label className="flex items-center gap-2 cursor-pointer">
+                      <Button
+                        asChild
+                        variant="outline"
+                        size="sm"
+                        className="border-primary/30 text-primary hover:bg-primary/5 pointer-events-none"
+                        disabled={siteImageUploading === slot.key}
+                      >
+                        <span>
+                          {siteImageUploading === slot.key ? (
+                            <Loader2 size={13} className="animate-spin mr-1.5" />
+                          ) : (
+                            <Upload size={13} className="mr-1.5" />
+                          )}
+                          Replace
+                        </span>
+                      </Button>
+                      <input
+                        type="file"
+                        accept="image/jpeg,image/png,image/webp,image/gif"
+                        className="hidden"
+                        disabled={siteImageUploading !== null}
+                        onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          if (file) uploadSiteImage(slot.key, file);
+                          e.target.value = '';
+                        }}
+                      />
+                    </label>
+                  </div>
+                </Card>
+              ))}
             </div>
           )
         )}

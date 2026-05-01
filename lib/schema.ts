@@ -53,3 +53,17 @@ export const careerApplications = pgTable("career_applications", {
   status: statusEnum("status").default("New").notNull(),
   submittedAt: timestamp("submitted_at").defaultNow().notNull(),
 });
+
+export const blogPosts = pgTable('blog_posts', {
+  id: serial('id').primaryKey(),
+  title: text('title').notNull(),
+  slug: varchar('slug', { length: 255 }).notNull().unique(),
+  excerpt: text('excerpt'),
+  content: text('content').notNull(),
+  coverImage: text('cover_image'),
+  author: varchar('author', { length: 100 }).default('IGS Team').notNull(),
+  published: boolean('published').default(false).notNull(),
+  publishedAt: timestamp('published_at'),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+});

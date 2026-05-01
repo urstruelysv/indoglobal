@@ -1,104 +1,197 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { ArrowLeft, BookOpen } from 'lucide-react';
+import { Calendar, User, ArrowRight, BookOpen } from 'lucide-react';
+import { format } from 'date-fns';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 
+interface BlogPost {
+  id: number;
+  title: string;
+  slug: string;
+  excerpt: string | null;
+  content: string;
+  coverImage: string | null;
+  author: string;
+  published: boolean;
+  publishedAt: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+function SkeletonCard() {
+  return (
+    <div className="bg-white rounded-2xl overflow-hidden shadow-sm border border-border/40 animate-pulse">
+      <div className="h-48 bg-muted" />
+      <div className="p-6 space-y-3">
+        <div className="h-4 bg-muted rounded w-3/4" />
+        <div className="h-3 bg-muted rounded w-full" />
+        <div className="h-3 bg-muted rounded w-5/6" />
+        <div className="flex gap-4 pt-2">
+          <div className="h-3 bg-muted rounded w-24" />
+          <div className="h-3 bg-muted rounded w-20" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function BlogsPage() {
+  const [posts, setPosts] = useState<BlogPost[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch('/api/blogs')
+      .then((r) => r.json())
+      .then((data: BlogPost[]) => setPosts(Array.isArray(data) ? data : []))
+      .catch(() => setPosts([]))
+      .finally(() => setLoading(false));
+  }, []);
+
   return (
     <>
       <Header />
-      <main className="relative min-h-[80vh] bg-background overflow-hidden">
-        <div
-          aria-hidden
-          className="absolute inset-0 pointer-events-none"
+      <main className="min-h-screen bg-background">
+        {/* Hero */}
+        <section
+          className="relative py-20 md:py-28 overflow-hidden"
           style={{
             background:
-              'radial-gradient(900px 500px at 10% 10%, rgba(15,118,110,0.07), transparent 60%), radial-gradient(800px 460px at 95% 90%, rgba(240,167,38,0.10), transparent 60%)',
+              'linear-gradient(135deg, #0F2A3F 0%, #1a4a3a 60%, #2B7F6B 100%)',
           }}
-        />
-
-        <div className="relative max-w-[1100px] mx-auto px-5 md:px-8 pt-10 md:pt-14 pb-24 md:pb-32">
-          <Link
-            href="/"
-            className="inline-flex items-center gap-2 text-[12px] font-semibold uppercase tracking-[0.18em] text-muted-foreground hover:text-primary transition-colors mb-12 md:mb-16"
-          >
-            <ArrowLeft className="w-3.5 h-3.5" />
-            Back to home
-          </Link>
-
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-            className="max-w-2xl"
-          >
-            <div className="flex items-center gap-3 mb-5">
-              <span className="h-px w-10 bg-gradient-to-r from-secondary to-accent" />
-              <span className="text-[11px] font-semibold uppercase tracking-[0.28em] text-accent">
-                Stories &amp; Reflections
-              </span>
-            </div>
-
-            <h1 className="font-serif font-bold leading-[0.95] tracking-tight text-[3rem] md:text-[4rem] lg:text-[5rem]">
-              <span className="block text-foreground">The IGS</span>
-              <span className="block italic text-primary">Journal.</span>
-            </h1>
-
-            <p className="mt-7 md:mt-8 text-[15px] md:text-[17px] text-muted-foreground leading-[1.75]">
-              A space for stories from our classrooms, thoughts from our educators, and
-              moments from our community. Our journal is just being put together —
-              the first chapter goes live soon.
-            </p>
-          </motion.div>
-
-          {/* Coming-soon card */}
-          <motion.div
-            initial={{ opacity: 0, y: 24 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
-            className="relative mt-16 md:mt-20 max-w-2xl"
-          >
-            <div
-              aria-hidden
-              className="absolute inset-0 translate-x-3 translate-y-3 rounded-[1.5rem] bg-gradient-to-br from-primary/20 via-accent/15 to-secondary/15"
-            />
-            <div className="relative bg-card rounded-[1.5rem] border border-border/60 p-8 md:p-10 shadow-[0_24px_60px_-30px_rgba(15,42,63,0.22)]">
-              <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary mb-5">
-                <BookOpen className="w-5 h-5" />
+        >
+          <div
+            aria-hidden
+            className="absolute inset-0 pointer-events-none"
+            style={{
+              background:
+                'radial-gradient(600px 400px at 80% 50%, rgba(255,140,66,0.12), transparent 70%)',
+            }}
+          />
+          <div className="relative max-w-5xl mx-auto px-5 md:px-8 text-center">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+            >
+              <div className="flex items-center justify-center gap-3 mb-5">
+                <span className="h-px w-8 bg-[#FFB84D]" />
+                <span className="text-[11px] font-semibold uppercase tracking-[0.28em] text-[#FFB84D]">
+                  Stories &amp; Insights
+                </span>
+                <span className="h-px w-8 bg-[#FFB84D]" />
               </div>
-              <h2 className="font-serif font-bold text-2xl md:text-[1.75rem] text-foreground leading-tight">
-                Coming soon
-              </h2>
-              <p className="mt-3 text-[14.5px] md:text-[15.5px] text-muted-foreground leading-[1.7]">
-                We&rsquo;re curating thoughtful pieces on learning, parenting, and the
-                everyday wonder of school life. Check back shortly — and in the meantime,
-                follow us on social to catch our first stories as they go up.
+              <h1 className="font-serif font-bold text-white text-4xl md:text-5xl lg:text-6xl leading-tight mb-5">
+                The IGS Journal
+              </h1>
+              <p className="text-white/75 text-base md:text-lg max-w-2xl mx-auto leading-relaxed">
+                Stories from our classrooms, thoughts from our educators, and moments from our community.
               </p>
+            </motion.div>
+          </div>
+        </section>
 
-              <div className="mt-7 flex flex-wrap gap-3">
-                <Link
-                  href="/#contact"
-                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-[13px] font-semibold text-white transition-all hover:-translate-y-0.5"
-                  style={{
-                    background: 'var(--gradient-brand)',
-                    boxShadow: '0 14px 30px -12px rgba(15,118,110,0.55)',
-                  }}
-                >
-                  Get in touch
-                </Link>
-                <Link
-                  href="/"
-                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-[13px] font-semibold text-foreground border border-border/70 hover:border-foreground/40 hover:bg-card transition-all"
-                >
-                  Explore the school
-                </Link>
-              </div>
+        {/* Blog Grid */}
+        <section className="max-w-6xl mx-auto px-5 md:px-8 py-16 md:py-20">
+          {loading ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+              {[1, 2, 3, 4, 5, 6].map((i) => (
+                <SkeletonCard key={i} />
+              ))}
             </div>
-          </motion.div>
-        </div>
+          ) : posts.length === 0 ? (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="flex flex-col items-center justify-center py-24 text-center"
+            >
+              <div className="w-20 h-20 rounded-2xl bg-primary/10 flex items-center justify-center mb-6">
+                <BookOpen className="w-9 h-9 text-primary" />
+              </div>
+              <h2 className="font-serif font-bold text-2xl md:text-3xl text-foreground mb-3">
+                No posts yet
+              </h2>
+              <p className="text-muted-foreground max-w-md leading-relaxed">
+                We&rsquo;re curating thoughtful pieces on learning, parenting, and the
+                everyday wonder of school life. Check back soon.
+              </p>
+              <Link
+                href="/"
+                className="mt-8 inline-flex items-center gap-2 px-6 py-2.5 rounded-full text-sm font-semibold text-white transition-all hover:-translate-y-0.5"
+                style={{
+                  background: 'linear-gradient(135deg, #2B7F6B, #FF8C42)',
+                  boxShadow: '0 14px 30px -12px rgba(43,127,107,0.5)',
+                }}
+              >
+                Explore the school
+              </Link>
+            </motion.div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+              {posts.map((post, i) => (
+                <motion.article
+                  key={post.id}
+                  initial={{ opacity: 0, y: 24 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: i * 0.07 }}
+                  className="group bg-white rounded-2xl overflow-hidden shadow-sm border border-border/40 hover:shadow-md hover:-translate-y-1 transition-all duration-300"
+                >
+                  {post.coverImage ? (
+                    <div className="h-48 overflow-hidden">
+                      <img
+                        src={`/api/gallery/file/${post.coverImage}`}
+                        alt={post.title}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      />
+                    </div>
+                  ) : (
+                    <div
+                      className="h-48 flex items-center justify-center"
+                      style={{
+                        background:
+                          'linear-gradient(135deg, rgba(43,127,107,0.15) 0%, rgba(255,140,66,0.12) 100%)',
+                      }}
+                    >
+                      <BookOpen className="w-10 h-10 text-primary/40" />
+                    </div>
+                  )}
+                  <div className="p-6">
+                    <h2 className="font-serif font-bold text-foreground text-lg leading-snug mb-2 group-hover:text-primary transition-colors line-clamp-2">
+                      {post.title}
+                    </h2>
+                    {post.excerpt && (
+                      <p className="text-muted-foreground text-sm leading-relaxed mb-4 line-clamp-3">
+                        {post.excerpt}
+                      </p>
+                    )}
+                    <div className="flex items-center gap-4 text-xs text-muted-foreground mb-4">
+                      <span className="flex items-center gap-1.5">
+                        <User size={12} />
+                        {post.author}
+                      </span>
+                      <span className="flex items-center gap-1.5">
+                        <Calendar size={12} />
+                        {post.publishedAt
+                          ? format(new Date(post.publishedAt), 'MMM dd, yyyy')
+                          : format(new Date(post.createdAt), 'MMM dd, yyyy')}
+                      </span>
+                    </div>
+                    <Link
+                      href={`/blogs/${post.slug}`}
+                      className="inline-flex items-center gap-1.5 text-sm font-semibold text-primary hover:gap-2.5 transition-all"
+                    >
+                      Read more
+                      <ArrowRight size={14} />
+                    </Link>
+                  </div>
+                </motion.article>
+              ))}
+            </div>
+          )}
+        </section>
       </main>
       <Footer />
     </>
