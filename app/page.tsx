@@ -11,6 +11,7 @@ import CampusHighlights from '@/components/CampusHighlights';
 import VideoShowcase from '@/components/VideoShowcase';
 import LocationSection from '@/components/LocationSection';
 import ContactSection from '@/components/ContactSection';
+import PartnersSection from '@/components/PartnersSection';
 import ClosingSection from '@/components/ClosingSection';
 import Footer from '@/components/Footer';
 
@@ -26,6 +27,7 @@ export default function Home() {
         <WhyChooseIGS />
         <CurriculumSection />
         <CampusHighlights />
+        <PartnersSection />
         <VideoShowcase />
         <LocationSection />
         <ContactSection />
