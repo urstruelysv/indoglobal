@@ -201,6 +201,28 @@ export default function PartnersPage() {
                       </p>
                     </div>
 
+                    {/* CognoSpace lab photo */}
+                    {partner.slug === 'cognospace' && (
+                      <div className="mt-8 relative rounded-2xl overflow-hidden shadow-[0_20px_60px_-20px_rgba(15,42,63,0.25)]">
+                        <div
+                          aria-hidden
+                          className="absolute inset-0 translate-x-3 translate-y-3 rounded-2xl bg-gradient-to-br from-orange-200 via-amber-200 to-yellow-200 opacity-80 -z-10"
+                        />
+                        <Image
+                          src="/images/partners/cognospace-lab.jpg"
+                          alt="CognoSpace Composite Skill Lab at Indo Global School"
+                          width={800}
+                          height={530}
+                          className="w-full h-auto rounded-2xl object-cover"
+                        />
+                        <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent px-5 py-4 rounded-b-2xl">
+                          <p className="text-white text-[12px] font-semibold tracking-wide">
+                            CognoSpace Composite Skill Lab — Indo Global School Campus
+                          </p>
+                        </div>
+                      </div>
+                    )}
+
                     {/* Website link */}
                     <a
                       href={partner.website}
