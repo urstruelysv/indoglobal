@@ -101,6 +101,21 @@ interface SiteImageSlot {
   publicPath: string;
 }
 
+interface NewsItem {
+  id: number;
+  title: string;
+  slug: string;
+  excerpt: string | null;
+  content: string;
+  coverImage: string | null;
+  category: string;
+  author: string;
+  published: boolean;
+  publishedAt: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
 const statusColors: Record<Status, string> = {
   'New': 'bg-blue-100 text-blue-700 border-blue-200',
   'Called': 'bg-amber-100 text-amber-700 border-amber-200',
@@ -123,6 +138,7 @@ const tabLabels: Record<string, string> = {
   careers: 'Careers',
   gallery: 'Gallery',
   blogs: 'Blogs',
+  news: 'News',
   'site-images': 'Site Images',
 };
 
@@ -130,7 +146,7 @@ export default function AdminDashboard() {
   const [admissions, setAdmissions] = useState<Admission[]>([]);
   const [contacts, setContacts] = useState<Contact[]>([]);
   const [careers, setCareers] = useState<CareerApplication[]>([]);
-  const [activeTab, setActiveTab] = useState<'admissions' | 'contacts' | 'gallery' | 'careers' | 'blogs' | 'site-images'>('admissions');
+  const [activeTab, setActiveTab] = useState<'admissions' | 'contacts' | 'gallery' | 'careers' | 'blogs' | 'news' | 'site-images'>('admissions');
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<Status | 'All'>('All');
   const router = useRouter();
@@ -151,6 +167,18 @@ export default function AdminDashboard() {
   const [siteImageSlots, setSiteImageSlots] = useState<SiteImageSlot[]>([]);
   const [siteImagesLoading, setSiteImagesLoading] = useState(false);
   const [siteImageUploading, setSiteImageUploading] = useState<string | null>(null);
+
+  const [newsItems, setNewsItems] = useState<NewsItem[]>([]);
+  const [newsLoading, setNewsLoading] = useState(false);
+  const [editingNews, setEditingNews] = useState<NewsItem | null>(null);
+  const [newsTitle, setNewsTitle] = useState('');
+  const [newsExcerpt, setNewsExcerpt] = useState('');
+  const [newsContent, setNewsContent] = useState('');
+  const [newsAuthor, setNewsAuthor] = useState('IGS Team');
+  const [newsCategory, setNewsCategory] = useState('news');
+  const [newsPublished, setNewsPublished] = useState(false);
+  const [newsCoverFile, setNewsCoverFile] = useState<File | null>(null);
+  const [newsSubmitting, setNewsSubmitting] = useState(false);
 
   useEffect(() => {
     fetchData();
@@ -238,8 +266,24 @@ export default function AdminDashboard() {
     }
   }, []);
 
+  const fetchNews = useCallback(async () => {
+    try {
+      setNewsLoading(true);
+      const res = await fetch('/api/news?all=1');
+      if (res.ok) {
+        const data = await res.json();
+        setNewsItems(Array.isArray(data) ? data : []);
+      }
+    } catch {
+      toast.error('Failed to load news items');
+    } finally {
+      setNewsLoading(false);
+    }
+  }, []);
+
   useEffect(() => {
     if (activeTab === 'blogs' && blogs.length === 0) fetchBlogs();
+    if (activeTab === 'news' && newsItems.length === 0) fetchNews();
     if (activeTab === 'site-images' && siteImageSlots.length === 0) fetchSiteImages();
   }, [activeTab]);
 
@@ -358,6 +402,101 @@ export default function AdminDashboard() {
     } catch {
       toast.error('Failed to toggle publish status');
     }
+  };
+
+  const resetNewsForm = () => {
+    setEditingNews(null);
+    setNewsTitle('');
+    setNewsExcerpt('');
+    setNewsContent('');
+    setNewsAuthor('IGS Team');
+    setNewsCategory('news');
+    setNewsPublished(false);
+    setNewsCoverFile(null);
+  };
+
+  const startEditNews = (item: NewsItem) => {
+    setEditingNews(item);
+    setNewsTitle(item.title);
+    setNewsExcerpt(item.excerpt ?? '');
+    setNewsContent(item.content);
+    setNewsAuthor(item.author);
+    setNewsCategory(item.category ?? 'news');
+    setNewsPublished(item.published);
+    setNewsCoverFile(null);
+    window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+  };
+
+  const createNews = async () => {
+    if (!newsTitle.trim() || !newsContent.trim()) { toast.error('Title and content are required'); return; }
+    try {
+      setNewsSubmitting(true);
+      const form = new FormData();
+      form.append('title', newsTitle.trim());
+      form.append('content', newsContent.trim());
+      form.append('excerpt', newsExcerpt.trim());
+      form.append('author', newsAuthor.trim() || 'IGS Team');
+      form.append('category', newsCategory);
+      form.append('published', String(newsPublished));
+      if (newsCoverFile) form.append('file', newsCoverFile);
+      const res = await fetch('/api/news', { method: 'POST', body: form });
+      if (!res.ok) { const err = await res.json(); throw new Error(err.error ?? 'Failed'); }
+      toast.success('News item created');
+      resetNewsForm();
+      fetchNews();
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : 'Failed to create');
+    } finally {
+      setNewsSubmitting(false);
+    }
+  };
+
+  const updateNews = async () => {
+    if (!editingNews) return;
+    if (!newsTitle.trim() || !newsContent.trim()) { toast.error('Title and content are required'); return; }
+    try {
+      setNewsSubmitting(true);
+      const form = new FormData();
+      form.append('id', String(editingNews.id));
+      form.append('title', newsTitle.trim());
+      form.append('content', newsContent.trim());
+      form.append('excerpt', newsExcerpt.trim());
+      form.append('author', newsAuthor.trim() || 'IGS Team');
+      form.append('category', newsCategory);
+      form.append('published', String(newsPublished));
+      if (newsCoverFile) form.append('file', newsCoverFile);
+      const res = await fetch('/api/news', { method: 'PATCH', body: form });
+      if (!res.ok) { const err = await res.json(); throw new Error(err.error ?? 'Failed'); }
+      toast.success('News item updated');
+      resetNewsForm();
+      fetchNews();
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : 'Failed to update');
+    } finally {
+      setNewsSubmitting(false);
+    }
+  };
+
+  const deleteNews = async (id: number) => {
+    if (!confirm('Delete this news item?')) return;
+    try {
+      const res = await fetch(`/api/news?id=${id}`, { method: 'DELETE' });
+      if (res.ok) { setNewsItems((prev) => prev.filter((n) => n.id !== id)); toast.success('Deleted'); }
+      else throw new Error();
+    } catch { toast.error('Failed to delete'); }
+  };
+
+  const toggleNewsPublished = async (item: NewsItem) => {
+    try {
+      const form = new FormData();
+      form.append('id', String(item.id));
+      form.append('published', String(!item.published));
+      const res = await fetch('/api/news', { method: 'PATCH', body: form });
+      if (res.ok) {
+        setNewsItems((prev) => prev.map((n) => (n.id === item.id ? { ...n, published: !item.published } : n)));
+        toast.success(item.published ? 'Unpublished' : 'Published');
+      } else throw new Error();
+    } catch { toast.error('Failed to toggle'); }
   };
 
   const uploadSiteImage = async (slot: string, file: File) => {
@@ -486,7 +625,7 @@ export default function AdminDashboard() {
     );
   };
 
-  const noFilterTabs = ['gallery', 'blogs', 'site-images'];
+  const noFilterTabs = ['gallery', 'blogs', 'news', 'site-images'];
 
   return (
     <div className="min-h-screen bg-[#F8FAFC]">
@@ -556,7 +695,7 @@ export default function AdminDashboard() {
         {/* Tabs & Filters */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
           <div className="flex bg-white p-1 rounded-xl shadow-sm border border-border/40 w-fit overflow-x-auto">
-            {(['admissions', 'contacts', 'careers', 'gallery', 'blogs', 'site-images'] as const).map((tab) => (
+            {(['admissions', 'contacts', 'careers', 'gallery', 'blogs', 'news', 'site-images'] as const).map((tab) => (
               <button
                 key={tab}
                 onClick={() => { setActiveTab(tab); setFilter('All'); }}
@@ -1076,6 +1215,141 @@ export default function AdminDashboard() {
                     >
                       Cancel
                     </Button>
+                  )}
+                </div>
+              </div>
+            </Card>
+          </div>
+        )}
+
+        {/* ========= NEWS TAB ========= */}
+        {activeTab === 'news' && (
+          <div className="space-y-6">
+            {newsLoading ? (
+              <div className="flex flex-col items-center justify-center py-24 gap-4">
+                <div className="w-8 h-8 border-4 border-primary/20 border-t-primary rounded-full animate-spin" />
+                <p className="text-muted-foreground font-medium animate-pulse">Loading news items...</p>
+              </div>
+            ) : (
+              <div className="bg-white rounded-xl shadow-sm border border-border/40 overflow-hidden">
+                {newsItems.length === 0 ? (
+                  <div className="p-12 text-center">
+                    <FileText className="w-12 h-12 text-muted-foreground/30 mx-auto mb-3" />
+                    <p className="text-muted-foreground">No news items yet. Create one below.</p>
+                  </div>
+                ) : (
+                  <div className="overflow-x-auto">
+                    <table className="w-full">
+                      <thead>
+                        <tr className="bg-muted/30 border-b border-border/40">
+                          <th className="text-left py-4 px-4 md:px-6 font-bold text-xs uppercase tracking-wider text-muted-foreground">Title</th>
+                          <th className="text-left py-4 px-4 md:px-6 font-bold text-xs uppercase tracking-wider text-muted-foreground hidden md:table-cell">Category</th>
+                          <th className="text-left py-4 px-4 md:px-6 font-bold text-xs uppercase tracking-wider text-muted-foreground">Status</th>
+                          <th className="text-left py-4 px-4 md:px-6 font-bold text-xs uppercase tracking-wider text-muted-foreground hidden lg:table-cell">Date</th>
+                          <th className="text-right py-4 px-4 md:px-6 font-bold text-xs uppercase tracking-wider text-muted-foreground">Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-border/40">
+                        {newsItems.map((item) => (
+                          <tr key={item.id} className="hover:bg-muted/10 transition-colors group">
+                            <td className="py-4 px-4 md:px-6">
+                              <div className="font-bold text-primary text-sm">{item.title}</div>
+                              <div className="text-xs text-muted-foreground mt-0.5 font-mono">/newsie/{item.slug}</div>
+                            </td>
+                            <td className="py-4 px-4 md:px-6 hidden md:table-cell">
+                              <Badge variant="outline" className="text-xs capitalize">{item.category}</Badge>
+                            </td>
+                            <td className="py-4 px-4 md:px-6">
+                              <button onClick={() => toggleNewsPublished(item)} title={item.published ? 'Click to unpublish' : 'Click to publish'} className="flex items-center gap-1.5">
+                                {item.published ? (
+                                  <Badge className="bg-emerald-100 text-emerald-700 border-emerald-200 border flex items-center gap-1 hover:bg-emerald-200 transition-colors">
+                                    <Eye size={11} />Published
+                                  </Badge>
+                                ) : (
+                                  <Badge variant="outline" className="bg-amber-50 text-amber-700 border-amber-200 flex items-center gap-1 hover:bg-amber-100 transition-colors">
+                                    <EyeOff size={11} />Draft
+                                  </Badge>
+                                )}
+                              </button>
+                            </td>
+                            <td className="py-4 px-4 md:px-6 hidden lg:table-cell">
+                              <div className="text-xs text-muted-foreground">{format(new Date(item.createdAt), 'MMM dd, yyyy')}</div>
+                            </td>
+                            <td className="py-4 px-4 md:px-6 text-right">
+                              <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-all">
+                                <button onClick={() => startEditNews(item)} className="p-2 text-primary hover:bg-primary/10 rounded-lg transition-all" title="Edit">
+                                  <Edit2 size={15} />
+                                </button>
+                                <button onClick={() => deleteNews(item.id)} className="p-2 text-rose-500 hover:bg-rose-50 rounded-lg transition-all" title="Delete">
+                                  <Trash2 size={15} />
+                                </button>
+                              </div>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* News Form */}
+            <Card className="p-6 bg-white border-none shadow-sm">
+              <h3 className="font-serif font-bold text-lg text-primary mb-5">
+                {editingNews ? `Editing: ${editingNews.title}` : 'Create News Item'}
+              </h3>
+              <div className="grid gap-4">
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Title *</label>
+                    <Input value={newsTitle} onChange={(e) => setNewsTitle(e.target.value)} placeholder="News title" className="bg-[#F8FAFC]" />
+                  </div>
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Author</label>
+                    <Input value={newsAuthor} onChange={(e) => setNewsAuthor(e.target.value)} placeholder="IGS Team" className="bg-[#F8FAFC]" />
+                  </div>
+                </div>
+                <div className="space-y-1.5">
+                  <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Category</label>
+                  <select value={newsCategory} onChange={(e) => setNewsCategory(e.target.value)} className="w-full rounded-lg border border-input bg-[#F8FAFC] px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-primary/20">
+                    <option value="news">School News</option>
+                    <option value="announcement">Announcement</option>
+                    <option value="achievement">Achievement</option>
+                    <option value="event">School Event</option>
+                  </select>
+                </div>
+                <div className="space-y-1.5">
+                  <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Excerpt</label>
+                  <textarea value={newsExcerpt} onChange={(e) => setNewsExcerpt(e.target.value)} placeholder="Short summary..." rows={2} className="w-full rounded-lg border border-input bg-[#F8FAFC] px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-primary/20 resize-none" />
+                </div>
+                <div className="space-y-1.5">
+                  <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Content *</label>
+                  <textarea value={newsContent} onChange={(e) => setNewsContent(e.target.value)} placeholder="Full content. Separate paragraphs with a blank line..." rows={10} className="w-full rounded-lg border border-input bg-[#F8FAFC] px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-primary/20 resize-y" />
+                </div>
+                <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
+                  <div className="space-y-1.5 flex-1">
+                    <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Cover Image</label>
+                    <label className="flex items-center gap-2 cursor-pointer px-4 py-2 rounded-lg border border-dashed border-border/70 hover:border-primary/40 transition-colors bg-[#F8FAFC] w-fit">
+                      <Upload size={14} className="text-muted-foreground" />
+                      <span className="text-sm text-muted-foreground">{newsCoverFile ? newsCoverFile.name : 'Choose image...'}</span>
+                      <input type="file" accept="image/jpeg,image/png,image/webp,image/gif" className="hidden" onChange={(e) => setNewsCoverFile(e.target.files?.[0] ?? null)} />
+                    </label>
+                  </div>
+                  <div className="flex items-center gap-2.5 pt-5">
+                    <button type="button" role="switch" aria-checked={newsPublished} onClick={() => setNewsPublished(!newsPublished)} className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-primary/20 ${newsPublished ? 'bg-primary' : 'bg-muted'}`}>
+                      <span className={`inline-block h-4 w-4 transform rounded-full bg-white shadow transition-transform ${newsPublished ? 'translate-x-6' : 'translate-x-1'}`} />
+                    </button>
+                    <span className="text-sm font-medium text-foreground">{newsPublished ? 'Published' : 'Draft'}</span>
+                  </div>
+                </div>
+                <div className="flex gap-3 pt-2">
+                  <Button onClick={editingNews ? updateNews : createNews} disabled={newsSubmitting} className="bg-primary hover:bg-primary/90 text-white">
+                    {newsSubmitting ? <Loader2 size={14} className="animate-spin mr-2" /> : null}
+                    {editingNews ? 'Update Item' : 'Create Item'}
+                  </Button>
+                  {editingNews && (
+                    <Button variant="outline" onClick={resetNewsForm} disabled={newsSubmitting}>Cancel</Button>
                   )}
                 </div>
               </div>

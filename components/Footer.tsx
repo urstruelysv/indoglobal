@@ -113,12 +113,14 @@ export default function Footer() {
                 { label: 'Photo Gallery', href: '/gallery' },
                 { label: 'Blogs', href: '/blogs' },
                 { label: 'News & Updates', href: '/newsie' },
+                { label: 'Academic Calendar', href: '/academic-calendar' },
                 { label: 'Leadership Message', href: '/leadership' },
                 { label: 'Partners & Tie-ups', href: '/partners' },
                 { label: 'Merit Scholarship', href: '/#scholarship' },
                 { label: 'Summer Camp', href: '/#summer-camp' },
                 { label: 'Careers at IGS', href: '/careers' },
                 { label: 'Admissions Open', href: '/#apply' },
+                { label: 'Admin', href: '/admin' },
               ].map((link) => (
                 <Link
                   key={link.label}
