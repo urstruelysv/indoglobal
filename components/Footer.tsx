@@ -107,17 +107,18 @@ export default function Footer() {
 
           {/* Key Resources */}
           <div className="space-y-5 md:space-y-7">
-            <h4 className="font-serif font-bold text-base md:text-lg text-white border-l-4 border-accent pl-3 md:pl-4">Resources</h4>
+            <h4 className="font-serif font-bold text-base md:text-lg text-white border-l-4 border-accent pl-3 md:pl-4">Explore IGS</h4>
             <nav className="grid grid-cols-1 gap-3 md:gap-4">
               {[
                 { label: 'Photo Gallery', href: '/gallery' },
-                { label: 'Academic Calendar', href: '/academic-calendar' },
-                { label: 'Leadership Message', href: '/leadership' },
                 { label: 'Blogs', href: '/blogs' },
+                { label: 'News & Updates', href: '/newsie' },
+                { label: 'Leadership Message', href: '/leadership' },
+                { label: 'Partners & Tie-ups', href: '/partners' },
+                { label: 'Merit Scholarship', href: '/#scholarship' },
+                { label: 'Summer Camp', href: '/#summer-camp' },
+                { label: 'Careers at IGS', href: '/careers' },
                 { label: 'Admissions Open', href: '/#apply' },
-                { label: 'Careers', href: '/careers' },
-                { label: 'School Location', href: '/#location' },
-                { label: 'Admin', href: '/admin' },
               ].map((link) => (
                 <Link
                   key={link.label}
