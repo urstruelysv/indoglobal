@@ -18,13 +18,13 @@ const leaders = [
     pull: 'We do not make promises — we simply do justice to our responsibilities.',
   },
   {
-    slug: ‘principal’,
-    name: ‘Bambina Raju’,
-    role: ‘Principal’,
-    photo: ‘/images/people/principal.jpg’,
+    slug: 'principal',
+    name: 'Bambina Raju',
+    role: 'Principal',
+    photo: '/images/people/principal.jpg',
     excerpt:
-      ‘It is an honour to lead a school founded on this conviction — every child deserves a place to Learn, Lead, and Shine. We aren\’t simply setting up classrooms; we are building a learning community.’,
-    pull: ‘Where wonder is encouraged, integrity is lived, and excellence is pursued with purpose.’,
+      'It is an honour to lead a school founded on this conviction — every child deserves a place to Learn, Lead, and Shine. We aren\'t simply setting up classrooms; we are building a learning community.',
+    pull: 'Where wonder is encouraged, integrity is lived, and excellence is pursued with purpose.',
   },
 ];
 
