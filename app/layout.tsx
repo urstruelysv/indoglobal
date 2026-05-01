@@ -1,6 +1,8 @@
 import type { Metadata } from 'next'
 import { Playfair_Display, Inter } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
+import ScholarshipBanner from '@/components/ScholarshipBanner'
+import ScholarshipPopup from '@/components/ScholarshipPopup'
 import './globals.css'
 
 const playfair = Playfair_Display({ 
@@ -119,7 +121,9 @@ export default function RootLayout({
         <a href="#main-content" className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[100] focus:px-4 focus:py-2 focus:bg-primary focus:text-primary-foreground focus:rounded-lg focus:text-sm focus:font-bold">
           Skip to main content
         </a>
+        <ScholarshipBanner />
         {children}
+        <ScholarshipPopup />
         {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>
     </html>

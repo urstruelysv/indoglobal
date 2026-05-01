@@ -27,7 +27,7 @@ export default function Footer() {
       href: 'https://www.instagram.com/indoglobal2025?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==',
       label: 'Instagram',
     },
-    { icon: Facebook, href: '#', label: 'Facebook' },
+    { icon: Facebook, href: 'https://www.facebook.com/share/r/1J3awMTNMz/', label: 'Facebook' },
     { icon: Youtube, href: '#', label: 'YouTube' },
     { icon: XIcon, href: '#', label: 'X' },
     { icon: Linkedin, href: '#', label: 'LinkedIn' },
