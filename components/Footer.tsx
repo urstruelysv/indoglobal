@@ -116,21 +116,35 @@ export default function Footer() {
                 { label: 'Academic Calendar', href: '/academic-calendar' },
                 { label: 'Leadership Message', href: '/leadership' },
                 { label: 'Partners & Tie-ups', href: '/partners' },
-                { label: 'Merit Scholarship', href: '/#scholarship' },
+                { label: 'Merit Scholarship', href: 'https://docs.google.com/forms/d/e/1FAIpQLSfYtAM8CoJDwWLlXSMUjpmo8iU5akenloIiHheIm3Jax32mtw/viewform' },
                 { label: 'Summer Camp', href: '/#summer-camp' },
                 { label: 'Careers at IGS', href: '/careers' },
                 { label: 'Admissions Open', href: '/#apply' },
                 { label: 'Admin', href: '/admin' },
-              ].map((link) => (
-                <Link
-                  key={link.label}
-                  href={link.href}
-                  className="text-white/70 hover:text-accent transition-all flex items-center gap-2 group text-xs md:text-sm font-medium"
-                >
-                  <span className="h-px w-0 bg-accent group-hover:w-4 transition-all duration-300" />
-                  {link.label}
-                </Link>
-              ))}
+              ].map((link) => {
+                const isExternal = link.href.startsWith('http');
+                return isExternal ? (
+                  <a
+                    key={link.label}
+                    href={link.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-white/70 hover:text-accent transition-all flex items-center gap-2 group text-xs md:text-sm font-medium"
+                  >
+                    <span className="h-px w-0 bg-accent group-hover:w-4 transition-all duration-300" />
+                    {link.label}
+                  </a>
+                ) : (
+                  <Link
+                    key={link.label}
+                    href={link.href}
+                    className="text-white/70 hover:text-accent transition-all flex items-center gap-2 group text-xs md:text-sm font-medium"
+                  >
+                    <span className="h-px w-0 bg-accent group-hover:w-4 transition-all duration-300" />
+                    {link.label}
+                  </Link>
+                );
+              })}
             </nav>
           </div>
 
