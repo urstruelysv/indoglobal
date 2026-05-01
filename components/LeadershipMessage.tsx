@@ -17,15 +17,15 @@ const leaders = [
       'Indo Global School was born from a passionate dream — to provide children with an education that truly empowers them to Learn, Lead, and Shine. Every child carries within them a spark of brilliance waiting to be discovered.',
     pull: 'We do not make promises — we simply do justice to our responsibilities.',
   },
-  // {
-  //   slug: ‘principal’,
-  //   name: ‘Bambina Raju’,
-  //   role: ‘Principal’,
-  //   photo: ‘/images/people/principal-placeholder.jpg’,
-  //   excerpt:
-  //     ‘It is an honour to lead a school founded on this conviction — every child deserves a place to Learn, Lead, and Shine. We aren\’t simply setting up classrooms; we are building a learning community.’,
-  //   pull: ‘Where wonder is encouraged, integrity is lived, and excellence is pursued with purpose.’,
-  // },
+  {
+    slug: ‘principal’,
+    name: ‘Bambina Raju’,
+    role: ‘Principal’,
+    photo: ‘/images/people/principal.jpg’,
+    excerpt:
+      ‘It is an honour to lead a school founded on this conviction — every child deserves a place to Learn, Lead, and Shine. We aren\’t simply setting up classrooms; we are building a learning community.’,
+    pull: ‘Where wonder is encouraged, integrity is lived, and excellence is pursued with purpose.’,
+  },
 ];
 
 const INTERVAL = 9000;
