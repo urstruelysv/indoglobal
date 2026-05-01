@@ -35,23 +35,23 @@ const leaders: Leader[] = [
     signoff: 'With warm regards,',
     accent: 'from-primary/25 via-accent/15 to-secondary/15',
   },
-  {
-    slug: 'principal',
-    name: 'Bambina Raju',
-    role: "Principal's Message",
-    photo: '/images/people/principal-placeholder.jpg',
-    greeting: 'Welcome to Indo Global School.',
-    paragraphs: [
-      'It is an honour to lead a school founded on this conviction: every child deserves a place to Learn, Lead, and Shine.',
-      'As we lay the first stones of Indo Global School, I am moved by the passion, dedication, and faith our founding team brings each day. We aren’t simply setting up classrooms — we are building a learning community where wonder is encouraged, integrity is lived, and excellence is pursued with purpose.',
-      'At Indo Global School, learning reaches far beyond the page. We integrate global best practices with the strength of our roots, pairing modern teaching approaches with enduring values. Through experienced educators and a nurturing environment, we focus on academic excellence, strong moral character, and 21st-century skills. Your child’s safety, well-being, and all-round development are our foremost priorities.',
-      'Our goal is to equip students to navigate both textbooks and the real world with confidence, kindness, and the courage to drive positive change — prepared for higher education and ready to contribute meaningfully to society.',
-      'To our parents: thank you for the trust you have placed in us. To our students: this is your home to grow — may your potential take flight here. To our team: your commitment is the foundation of this shared vision.',
-      'Our journey has just begun, and together, we look forward to a future of growth, achievement, and excellence.',
-    ],
-    signoff: 'Warm regards,',
-    accent: 'from-secondary/25 via-accent/15 to-primary/15',
-  },
+  // {
+  //   slug: ‘principal’,
+  //   name: ‘Bambina Raju’,
+  //   role: "Principal’s Message",
+  //   photo: ‘/images/people/principal-placeholder.jpg’,
+  //   greeting: ‘Welcome to Indo Global School.’,
+  //   paragraphs: [
+  //     ‘It is an honour to lead a school founded on this conviction: every child deserves a place to Learn, Lead, and Shine.’,
+  //     ‘As we lay the first stones of Indo Global School, I am moved by the passion, dedication, and faith our founding team brings each day.’,
+  //     ‘At Indo Global School, learning reaches far beyond the page. We integrate global best practices with the strength of our roots.’,
+  //     ‘Our goal is to equip students to navigate both textbooks and the real world with confidence, kindness, and the courage to drive positive change.’,
+  //     ‘To our parents: thank you for the trust you have placed in us. To our students: this is your home to grow.’,
+  //     ‘Our journey has just begun, and together, we look forward to a future of growth, achievement, and excellence.’,
+  //   ],
+  //   signoff: ‘Warm regards,’,
+  //   accent: ‘from-secondary/25 via-accent/15 to-primary/15’,
+  // },
 ];
 
 export default function LeadershipPage() {
@@ -97,7 +97,7 @@ export default function LeadershipPage() {
               <span className="block italic text-primary">Leadership.</span>
             </h1>
             <p className="mt-6 md:mt-8 text-[15px] md:text-[17px] text-muted-foreground max-w-[40rem] leading-[1.75]">
-              The full messages from our Chairman and Principal — on the founding belief
+              The full message from our Chairman — on the founding belief
               that shapes Indo Global School, and the journey we invite you to share with us.
             </p>
           </motion.header>
