@@ -22,12 +22,13 @@ export default function Home() {
       <main id="main-content" className="min-h-screen">
         <HeroSection />
         <LeadershipMessage />
+        <PartnersSection />
         <AboutSection />
         <MissionVisionPhilosophy />
         <WhyChooseIGS />
         <CurriculumSection />
         <CampusHighlights />
-        <PartnersSection />
+        
         <VideoShowcase />
         <LocationSection />
         <ContactSection />
